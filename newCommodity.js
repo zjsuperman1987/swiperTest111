@@ -1,6 +1,6 @@
-PubAjax = (function () {
+PubAjax = (function() {
     return {
-        post: function (BusinessType, date, successFun, errorFun, completeFunc) {
+        post: function(BusinessType, date, successFun, errorFun, completeFunc) {
             date = date || {};
             date.voucher = ""
             if (BusinessType) {
@@ -24,11 +24,7 @@ PubAjax = (function () {
 })();
 
 
-var mySwiper,
-    subScroller1,
-    subScroller2;
-
-window.onload = function () {
+window.onload = function() {
 
     //    commodityDetail.init();
     //    commodityDetail.clickAnnouncement();
@@ -37,22 +33,24 @@ window.onload = function () {
 }
 
 
-var commodityDetail = (function () {
+var commodityDetail = (function() {
+    var my = {};
+
     return {
-        init: function () {
+        init: function() {
             var ContractGUID = PubRequest.Query("contractguid");
             var CustomerGUID = PubRequest.Query("customerGUID");
 
             PubAjax.post("selectcommodityDetail", {
-                ContractGUID: escape(ContractGUID),
-                CustomerGUID: escape(CustomerGUID)
-            },
-                function (result) {
+                    ContractGUID: escape(ContractGUID),
+                    CustomerGUID: escape(CustomerGUID)
+                },
+                function(result) {
                     $('.brandInfoTitle').text(PubRequest.Query("brandName"));
                 });
         },
         //点击公告
-        clickAnnouncement: function () {
+        clickAnnouncement: function() {
             //公告
             var slide = document.querySelector('#wrapper')
 
@@ -76,31 +74,33 @@ var commodityDetail = (function () {
             $('.iconAnnouncement').on('click', toggleSlider);
             $('.brandInfo_bottom').on('click', toggleSlider);
             //选项卡
-            $.each($('.secondMenu span'), function (i, item) {
-                item.addEventListener("touchstart", function (e) {
+            $.each($('.secondMenu span'), function(i, item) {
+                item.addEventListener("touchstart", function(e) {
                     this.classList.add("addShadow");
                 })
-                item.addEventListener("touchend", function (e) {
+                item.addEventListener("touchend", function(e) {
                     this.classList.remove("addShadow");
                     $(".secondMenu span i").removeClass("secondMenu_border_bottom").eq(i).addClass("secondMenu_border_bottom");
                     $('.secondMenuContent').hide().eq(i).show();
                 })
             })
         },
-        // 初始滚动
-        initScroll: function (swiper) {
-            var scaleValue = 10,
+        initScroll: function(index, contentTransform) {
+            var index = index ? index : 0,
+                mySwiper = my.mySwiper,
+                transformScroller = mySwiper.passedParams.scrollerTransform[mySwiper.activeIndex],
+                contentTransform = contentTransform ? contentTransform : 0,
+                scaleValue = 10,
                 searchOpacity = 0,
                 arrayLiHeight = [],
                 nextPosition = 0,
                 prevPosition = 0,
-                index = 0,
                 isBoolean = true,
                 isBottom = false,
                 len;
 
             // 计算滑动距离
-            $('.rightNav li').each(function (i, item) {
+            $('.rightNav li').each(function(i, item) {
                 i === 0 ? arrayLiHeight.push(-$(item).outerHeight() + $('.rn_title').outerHeight()) : arrayLiHeight.push((arrayLiHeight[i - 1] - $(item).outerHeight()));
                 //                $(item).css('height', $(item).outerHeight() + 20);
             });
@@ -133,19 +133,23 @@ var commodityDetail = (function () {
 
                 console.log(y);
 
-                //控制 transform;
-                // if (y <= 0) {
-                //     $('.container').css('transform', 'translateY(' + y + 'px)');
-                //     $('#scroller').css('transform', 'translate(0,0)');
-                // }
 
-                if (y < -213) {
-                   $('.container').css('transform', 'translate(0,-213px)');
+                if (y <= -213) {
+                    $('.container').css('transform', 'translate(0,-213px)');
                     $(this.scroller).css('transform', 'translate(0,' + (y + 213) + 'px)');
-                    console.log('==============================lllllllllllllllllllllllllllllllllllllllll')
-                }else{
+                } else {
                     $('.container').css('transform', 'translate(0,' + y + 'px)');
                     $(this.scroller).css('transform', 'translate(0,' + (this.options.hasScroller ? this.options.hasScroller : 0) + 'px)');
+                } 
+
+
+
+                if (y < -213 && this.startY > -213 || y > -213 && this.startY < -213) {
+                    this.options.zeroPoint = true;
+                    this.options.subMargin = -213;
+                    // this._translate(0, -213);
+                    // $(this.scroller).css('transform', 'translate(0,' + (y + 213) + 'px)');
+                    // $('.container').css('transform', 'translate(0,-213px)');
                 }
 
 
@@ -204,18 +208,8 @@ var commodityDetail = (function () {
                     $('.header').removeClass('headerPosition').css('clip', 'unset');
                 }
 
-                if (y <= -213) {
-                    $('.selectWrapper').appendTo('body').addClass('con_top_position');
-                } else {
-                    $('.selectWrapper').insertAfter($('.container_inner_bottom')).removeClass('con_top_position');
-                }
+            
 
-                if (y < -213 && this.startY > -213 || y > -213 && this.startY < -213) {
-                    this.options.subMargin = -213;
-                    this._translate(0, -213);
-                    $('#scroller').css('transform', 'translate(0,0)');
-                    $('.container').css('transform', 'translateY(' + -213 + 'px)');
-                }
 
                 // 设置 二级 定位
 
@@ -240,10 +234,10 @@ var commodityDetail = (function () {
                         if (prevPosition && y < prevPosition - 40) {
                             $('.rightNav li').eq(index - 1).find('.rn_title').removeClass('active_rn_title');
                             $('.rightNav li').eq(index)
-                                            .css('margin-top', '.4rem')
-                                            .find('.rn_title')
-                                            .addClass('active_rn_title')
-                                            .appendTo('body');
+                                .css('margin-top', '.4rem')
+                                .find('.rn_title')
+                                .addClass('active_rn_title')
+                                .appendTo('body');
                         }
                         if (mySwiper.activeIndex != 0) {
                             $('.active_rn_title').hide();
@@ -255,7 +249,7 @@ var commodityDetail = (function () {
                     if (this.directionY < 0 || this.distY > 0) {
                         if (y > prevPosition - 40 && prevPosition) {
                             $('body>.active_rn_title').prependTo($('.rightNav li').eq(index).css('margin-top', 0))
-                                                 .removeClass('active_rn_title');
+                                .removeClass('active_rn_title');
 
                             $('.rightNav li').eq(index - 1).find('.rn_title').addClass('active_rn_title');
                             //                            isBottom = true;
@@ -268,8 +262,7 @@ var commodityDetail = (function () {
                             $('.leftNav li').removeClass('activeLeft').eq(index).addClass('activeLeft');
                         }
                     }
-                }
-                else {
+                } else {
                     $('#leftWrapper').prependTo('.GoodsList').css('margin-top', 0);
                     $('body>.active_rn_title').prependTo($('.rightNav li').eq(0)).removeClass('active_rn_title');
                     $('.rightNav li').eq(0).css('margin-top', '0');
@@ -278,10 +271,11 @@ var commodityDetail = (function () {
                     prevPosition = 0;
                 }
                 if (y < -553 && this.startY > -553 || y > -553 && this.startY < -553) {
+                    console.log('进来了')
                     this.options.subMargin = -553;
                     this._translate(0, -553);
-                    $('#scroller').css('transform', 'translate(0,0)');
-                    $('.container').css('transform', 'translateY(' + -553 + 'px)');
+                    $(this.scroller).css('transform', 'translate(0,' + (y + 213) +'px)');
+                    $('.container').css('transform', 'translate(0,-213px)');
                 }
 
                 if (y === 0) {
@@ -298,46 +292,118 @@ var commodityDetail = (function () {
                     $('.leftNav li').removeClass('activeLeft').eq(index).addClass('activeLeft');
                 }
             }
+
             function cancelScroll() {
                 var y = this.y >> 0;
 
-                $('#scroller').css('transform', 'translate(0,0)');
-                $('.container').css('transform', 'translateY(' + y + 'px)');
+                if (y < -213) {
+                    $('.container').css('transform', 'translate(0,-213px)');
+                    $(this.scroller).css('transform', 'translate(0,' + (y + 213) + 'px)');
+                } else {
+                    $('.container').css('transform', 'translate(0,' + y + 'px)');
+                    $(this.scroller).css('transform', 'translate(0,' + (this.options.hasScroller ? this.options.hasScroller : 0) + 'px)');
+                }
+
             }
 
 
-            // 主滚动
-            mainScroll = new IScroll("#mainWrapper", {
-                probeType: 3,
-                bounce: false,
-                subMargin: -213
-            });
-            mainScroll.on('scrollCancel', cancelScroll);
-            mainScroll.on('scroll', animateScroll);
-            mainScroll.on('scrollEnd', animateScroll);
 
-            // 左边 滚动栏
-            leftScroll = new IScroll('#leftWrapper', {
-                probeType: 3,
-                bounce: false
-            });
-            leftScroll.on('scroll', function () {
-                var y = this.y >> 0;
 
-                if (this.directionY < 0 && y === 0 && this.startY === 0) {
+
+
+
+
+            if (index === 0) {
+                if (!my.oneScroller) {
+                    oneScroller = my.oneScroller = new IScroll('.wrapper_one', {
+                        probeType: 3,
+                        bounce: false,
+                        subMargin: -213
+
+                    })
+                    oneScroller.on('scroll', animateScroll)
+                    oneScroller.on('scrollEnd', animateScroll)
+                    oneScroller.on('scrollCancel', animateScroll)
+
+                    my.mySwiper.passedParams.scrollerObj.push(oneScroller);
+                }
+                // console.log(mySwiper.passedParams.scrollerTransform[0])
+            }
+
+            if (index === 1) {
+                y = parseInt(sessionStorage.getItem(1), 10)
+
+                if (!my.twoScroller) {
+                    twoScroller = my.twoScroller = new IScroll('.wrapper_two', {
+                        probeType: 3,
+                        bounce: false
+
+                    })
+                    twoScroller.on('scroll', animateScroll)
+                    twoScroller.on('scrollEnd', animateScroll)
+                    twoScroller.on('scrollCancel', animateScroll)
+
+                    my.mySwiper.passedParams.scrollerObj.push(twoScroller);
 
                 }
-            });
+
+                $(twoScroller.scroller).css('tranform', 'translate(0,' + y + 'px)')
+
+            }
+            if (index === 2) {
+                y = parseInt(sessionStorage.getItem(2), 10)
+
+                if (!my.threeScroller) {
+                    threeScroller = my.threeScroller = new IScroll('.wrapper_three', {
+                        probeType: 3,
+                        bounce: false
+
+                    })
+                    threeScroller.on('scroll', animateScroll)
+                    threeScroller.on('scrollEnd', animateScroll)
+                    threeScroller.on('scrollCancel', animateScroll)
+
+                    my.mySwiper.passedParams.scrollerObj.push(threeScroller);
+                }
+            }
+
+
+
+            $('.container').css('transform', 'translate(0,' + contentTransform + 'px)');
+            mySwiper.slides[mySwiper.activeIndex].children[0].children[0].style.transform =
+                'translate(0,' + mySwiper.passedParams.scrollerTransform[mySwiper.activeIndex] + 'px)';
+
+            mySwiper.passedParams.scrollerObj[mySwiper.activeIndex].y = mySwiper.passedParams.scrollerTransform[mySwiper.activeIndex] + contentTransform;
+            mySwiper.passedParams.scrollerObj[mySwiper.activeIndex].options.rechanged = true;
+
+
+            if (contentTransform > -100) {
+                if (transformScroller) {
+
+                    mySwiper.passedParams.scrollerObj[mySwiper.activeIndex].y = contentTransform;
+
+                    // 控制iscroll 弹动
+                    mySwiper.passedParams.scrollerMove[mySwiper.activeIndex] = true;
+
+                    mySwiper.passedParams.scrollerObj[mySwiper.activeIndex].options.momentumY_value = true;
+                    mySwiper.passedParams.scrollerObj[mySwiper.activeIndex].options.rechanged = false;
+                    mySwiper.passedParams.scrollerObj[mySwiper.activeIndex].options.realY =
+                        mySwiper.passedParams.scrollerTransform[mySwiper.activeIndex] - 100;
+                }
+            }
         },
+
+
         // 轮播 切换标签页
-        initSwiper: function () {
+        initSwiper: function() {
+
             // 点击 选项卡 阴影 
             function clickColor(elArray) {
-                $.each(elArray, function (i, item) {
-                    item.addEventListener('touchstart', function () {
+                $.each(elArray, function(i, item) {
+                    item.addEventListener('touchstart', function() {
                         this.style.background = 'rgba(128,128,128, .5)';
                     });
-                    item.addEventListener('touchend', function () {
+                    item.addEventListener('touchend', function() {
                         this.style.background = 'white';
                     });
                 })
@@ -347,57 +413,58 @@ var commodityDetail = (function () {
             function setCss(index) {
                 var index = index ? index : 0;
                 var firstLineWidth = $('.co_top span').eq(index).outerWidth(),
-                margin = ($('.co_top .cot_item').eq(0).outerWidth() - firstLineWidth) / 2;
+                    margin = ($('.co_top .cot_item').eq(0).outerWidth() - firstLineWidth) / 2;
                 $('.border-line').css({ width: firstLineWidth, 'margin-left': margin, height: 2, background: '#1B8CE0', transition: 'width .1s' });
                 $('.co_top span').css('color', 'black').eq(index).css('color', '#1B8CE0');
             }
             setCss();
-                        // 切换样式
+            // 切换样式
 
-            // 初始化swiper
-            mySwiper = new Swiper('.swiper-container', {
-                autoplay: false, //可选选项，自动滑动
+            var mySwiper = my.mySwiper = new Swiper('.swiper-container', {
                 resistanceRatio: 0,
                 freeMode: false,
                 touchAngle: 10,
+                // touchMoveStopPropagation : false,
 
-                oldY: [0, 0, 0],
-                currentScroll: [0,0,0],
+                swiperRun: false,
+                scrollerObj: [],
+                scrollerTransform: [0, 0, 0],
+                scrollerMove: [false, false, false],
 
                 on: {
-                    setTranslate: function (translate) {
-                        $('.border-line').css({ transform: 'translateX(' + -translate / 3 + 'px)' });
-                    },
-                    slideChange: function () {
-                        var currentY = this.passedParams.oldY[this.activeIndex];
+                    sliderMove: function(event) {
+                        this.passedParams.swiperRun = true;
 
-                        this.passedParams.oldY[this.previousIndex] = (mainScroll.y >> 0);
+                        if (parseInt($('.container').css('transform').match(/-?\d+/g)[5], 10) > -100) {
 
-                        if (mainScroll.y < -213) {
-                        }else{
-                            if (currentY < -213) {
-                                // this.passedParams.currentScroll[this.activeIndex] = currentY + 213;
-                                // $(mainScroll.scroller).css('transform', 'translate(0,' + this.passedParams.currentScroll[this.activeIndex] + 'px)');
-                                mainScroll.options.hasScroller = true;
-                                mainScroll._translate(0,currentY);
-                                // mainScroll._execEvent('scroll');
-                            }
                         }
+                    },
+                    slideChange: function() {
+                        this.previousIndex = this.previousIndex ? this.previousIndex : 0;
 
-
-
-
-
+                        if (this.slides[this.previousIndex].children[0].children[0].style.transform) {
+                            this.passedParams.scrollerTransform[this.previousIndex] =
+                                parseInt((this.slides[this.previousIndex].children[0].children[0].style.transform).match(/-?\d+/g)[1], 10);
+                        }
+                        // 关闭前一个iScroll
+                        this.passedParams.scrollerObj[this.previousIndex].disable();
+                        commodityDetail.initScroll(this.activeIndex, parseInt($('.container').css('transform').match(/-?\d+/g)[5], 10));
+                        this.passedParams.scrollerObj[this.activeIndex].enable();
 
                         setCss(this.activeIndex);
+
+                    },
+
+                    touchEnd: function() {
+                        this.passedParams.swiperRun = false;
                     }
                 }
-            })
+            });
 
             clickColor($('.cot_item'));
 
             // 监听点击切换
-            $('.co_top .cot_item').on('click', function () {
+            $('.co_top .cot_item').on('click', function() {
                 mySwiper.slideTo($(this).index());
             });
 
