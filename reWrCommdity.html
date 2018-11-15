@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html style="font-size: 100px;">
+
+<head>
+    <!-- meta使用viewport以确保页面可自由缩放 -->
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <!-- 引入 底层css 样式 -->
+    <link type="text/css" rel="stylesheet" href="/Mobile/WeChat/_css/common.css" />
+    <link type="text/css" rel="stylesheet" href="/Mobile/WeChat/_css/CommonPartially.css" />
+    <!--字体样式-->
+    <!--<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css"
+        integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp"
+        crossorigin="anonymous">-->
+    <!--轮播swiper.css-->
+    <link rel="stylesheet" href="swiper.css">
+    <!--引入pullToRefresh.css-->
+    <link rel="stylesheet" type="text/css" href="reset.css" />
+    <!-- 引入 底层Js 库-->
+    <script type="text/javascript" language="javascript" src="jquery.js"></script>
+    <script type="text/javascript" language="javascript" src="common.js"></script>
+    <!-- 引入Swiper轮播插件-->
+    <script src="swiper.js"></script>
+    <!--引入IScroll.js-->
+    <script src="iscroll-probe.js"></script>
+    <!--引入自身js-->
+    <script type="text/javascript" language="javascript" src="reWrCommdity.js"></script>
+    <title>会员中心</title>
+    <style>
+    * {
+        font-size: 12px;
+        box-sizing: border-box;
+    }
+
+    body {
+        overflow: hidden;
+        font-size: 12px;
+    }
+
+    .clearfix:after {
+        content: ".";
+        display: block;
+        clear: both;
+        visibility: hidden;
+        line-height: 0;
+        height: 0;
+    }
+
+    .clearfix {
+        display: inline-block;
+    }
+
+    /*头部*/
+    .header {
+        width: 100%;
+        height: 1rem;
+        background: white;
+    }
+
+    .headerPosition {
+        position: fixed;
+        z-index: 1;
+
+    }
+
+    .header img {
+        width: 100%;
+        height: 100%;
+    }
+
+    .h_searchWrapper {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: .5rem;
+        padding: .1rem;
+        /*background: blue;*/
+    }
+
+    .hsw_left {
+        float: left;
+        width: .3rem;
+        height: .3rem;
+        line-height: .3rem;
+        text-align: center;
+    }
+
+    .hsw_left i {
+        color: White;
+    }
+
+    .hsw_right {
+        float: right;
+        width: .3rem;
+        height: .3rem;
+        line-height: .3rem;
+        text-align: center;
+    }
+
+    .hsw_right i {
+        color: White;
+    }
+
+    .hsw_right svg {
+        height: 20px;
+        margin-top: .05rem;
+        fill: white;
+    }
+
+    .hsw_right span {
+        display: inline-block;
+        height: .2rem;
+        width: .2rem;
+        line-height: .2rem;
+        text-align: center;
+        border: 1px solid white;
+        border-radius: .1rem;
+        margin-top: .05rem;
+        color: white;
+    }
+
+    .hsw_middle {
+        width: 100%;
+        height: 100%;
+        padding: 0 .5rem;
+        /*background: gold;*/
+    }
+
+    .hswm_search {
+        width: 100%;
+        height: 100%;
+        line-height: .3rem;
+        text-align: center;
+        background: white;
+        display: none
+    }
+
+    .hswm_search svg {
+        height: 12px;
+        vertical-align: middle;
+        margin-top: -.02rem;
+    }
+
+    .hswm_search span {
+        height: 12px;
+        color: Gray;
+    }
+
+    .container {
+        position: relative;
+        width: 100%;
+        /*height: 468px;*/
+        background: red;
+    }
+
+    .innerWrapper {
+        width: 100%;
+        height: 100%;
+    }
+
+    .iw_info {
+        width: 100%;
+        height: 163px;
+        background: gold;
+    }
+
+    .outerWrapper {
+        position: absolute;
+        top: 163px;
+        width: 100%;
+        /*height: 468px;*/
+        background: pink;
+    }
+
+    .swiper-container {
+        height: 100%;
+        overflow: unset;
+    }
+
+    .leftNav {
+        float: left;
+        width: 60px;
+        /*overflow: hidden;*/
+        background: gray;
+    }
+
+    .leftNav li {
+        padding: 10px;
+    }
+
+    .rightNav {
+        float: right;
+        width: 260px;
+        padding-left: 10px;
+        overflow: hidden;
+        background: white;
+    }
+
+    .good_header {
+        width: 100%;
+        height: 30px;
+    }
+
+    .good_container {
+        width: 100%;
+        height: 100px;
+        line-height: 100px;
+        margin-bottom: 10px;
+        text-align: center;
+    }
+
+    /*滚动样式*/
+    .one_scrollWrapper,
+    .two_scrollWrapper,
+    .three_scrollWrapper {
+        height: 305px;
+        width: 100%;
+    }
+
+    .one_scroller,
+    .two_scroller,
+    .three_scroller {
+        overflow: hidden;
+    }
+    .one_goodsList {
+        overflow: hidden;
+    }
+    .recommend {
+        height: 1000px;
+        width: 100%;
+        background: blue;   
+    }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <img src="images/梅花.jpg" alt="Alternate Text" />
+        <div class="h_searchWrapper">
+            <div class="hsw_left">
+                <i class="fas fa-arrow-left"></i>
+            </div>
+            <div class="hsw_right">
+                <i class="fas fa-ellipsis-v"></i>
+            </div>
+            <div class="hsw_right spell">
+                <span>拼</span>
+            </div>
+            <div class="hsw_right spell">
+                <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 16 16">
+                    <path fill-opacity="1" d="M14.778 13.732a.739.739 0 1 1-1.056 1.036l-2.515-2.565a.864.864 0 0 1-.01-1.206 4.894 4.894 0 0 0 1.357-3.651c-.126-2.492-2.156-4.52-4.648-4.647a4.911 4.911 0 0 0-5.16 5.163c.126 2.475 2.13 4.496 4.605 4.642.451.026.896-.008 1.326-.1a.739.739 0 0 1 .308 1.446c-.56.12-1.137.164-1.72.13-3.227-.19-5.83-2.815-5.995-6.042a6.39 6.39 0 0 1 6.71-6.715c3.25.165 5.884 2.8 6.05 6.048a6.37 6.37 0 0 1-1.374 4.3l2.12 2.161z"></path>
+                </svg>
+            </div>
+            <div class="hsw_middle">
+                <div class="hswm_search">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 16 16">
+                        <path fill-opacity=".38" d="M14.778 13.732a.739.739 0 1 1-1.056 1.036l-2.515-2.565a.864.864 0 0 1-.01-1.206 4.894 4.894 0 0 0 1.357-3.651c-.126-2.492-2.156-4.52-4.648-4.647a4.911 4.911 0 0 0-5.16 5.163c.126 2.475 2.13 4.496 4.605 4.642.451.026.896-.008 1.326-.1a.739.739 0 0 1 .308 1.446c-.56.12-1.137.164-1.72.13-3.227-.19-5.83-2.815-5.995-6.042a6.39 6.39 0 0 1 6.71-6.715c3.25.165 5.884 2.8 6.05 6.048a6.37 6.37 0 0 1-1.374 4.3l2.12 2.161z"></path>
+                    </svg>
+                    <span>想要什么搜一搜</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class='container'>
+        <!-- 里层 信息 -->
+        <div class='innerWrapper'>
+            <div class='iw_info'>我是信息</div>
+        </div>
+        <!-- 标签页 -->
+        <div class='outerWrapper'>
+            <div class="swiper-container">
+                <div class="swiper-wrapper">
+                    <!-- 第一页面 -->
+                    <div class="swiper-slide" style='background: blue'>
+                        <div class='one_scrollWrapper'>
+                            <div class='one_scroller'>
+                                <div class='one_goodsList'>
+                                    <ul class='leftNav'>
+                                        <li class="hot activeLeft"><span><i class="fab fa-hotjar"></i></span>热销</li>
+                                        <li class="hot dicount"><span><i class="fab fa-hotjar"></i></span>优惠</li>
+                                        <li>店长推荐金牌披萨10寸</li>
+                                        <li>单身狗套餐</li>
+                                        <li>闺蜜情侣双人餐</li>
+                                        <li>知心披萨10寸</li>
+                                        <li>手工披萨10寸7寸</li>
+                                        <li>招牌双饼披萨</li>
+                                        <li>意面/焗饭</li>
+                                        <li>小吃</li>
+                                        <li>饮品</li>
+                                        <li>加料</li>
+                                    </ul>
+                                    <ul class='rightNav'>
+                                        <li class='good'>
+                                            <div class='good_header'>我是标题</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                        </li>
+                                        <li class='good'>
+                                            <div class='good_header'>我是标题</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                        </li>
+                                        <li class='good'>
+                                            <div class='good_header'>我是标题</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                        </li>
+                                        <li class='good'>
+                                            <div class='good_header'>我是标题</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                        </li>
+                                        <li class='good'>
+                                            <div class='good_header'>我是标题</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                        </li>
+                                        <li class='good'>
+                                            <div class='good_header'>我是标题</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                        </li>
+                                        <li class='good'>
+                                            <div class='good_header'>我是标题</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                            <div class='good_container'>我是内容</div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 第二页面 -->
+                    <div class="swiper-slide" style='background: red'>
+                        <div class='two_scrollWrapper'>
+                            <div class='two_scroller'>
+                                <div class='recommend'>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 第三页面 -->
+                    <div class="swiper-slide" style='background: pink'>
+                        <div class='three_scrollWrapper'>
+                            <div class='three_scroller'>
+                                slider3
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

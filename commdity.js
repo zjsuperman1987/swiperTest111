@@ -1,6 +1,6 @@
-PubAjax = (function () {
+PubAjax = (function() {
     return {
-        post: function (BusinessType, date, successFun, errorFun, completeFunc) {
+        post: function(BusinessType, date, successFun, errorFun, completeFunc) {
             date = date || {};
             date.voucher = ""
             if (BusinessType) {
@@ -28,7 +28,7 @@ var mySwiper,
     subScroller1,
     subScroller2;
 
-window.onload = function () {
+window.onload = function() {
 
     //    commodityDetail.init();
     //    commodityDetail.clickAnnouncement();
@@ -37,22 +37,22 @@ window.onload = function () {
 }
 
 
-var commodityDetail = (function () {
+var commodityDetail = (function() {
     return {
-        init: function () {
+        init: function() {
             var ContractGUID = PubRequest.Query("contractguid");
             var CustomerGUID = PubRequest.Query("customerGUID");
 
             PubAjax.post("selectcommodityDetail", {
-                ContractGUID: escape(ContractGUID),
-                CustomerGUID: escape(CustomerGUID)
-            },
-                function (result) {
+                    ContractGUID: escape(ContractGUID),
+                    CustomerGUID: escape(CustomerGUID)
+                },
+                function(result) {
                     $('.brandInfoTitle').text(PubRequest.Query("brandName"));
                 });
         },
         //点击公告
-        clickAnnouncement: function () {
+        clickAnnouncement: function() {
             //公告
             var slide = document.querySelector('#wrapper')
 
@@ -76,11 +76,11 @@ var commodityDetail = (function () {
             $('.iconAnnouncement').on('click', toggleSlider);
             $('.brandInfo_bottom').on('click', toggleSlider);
             //选项卡
-            $.each($('.secondMenu span'), function (i, item) {
-                item.addEventListener("touchstart", function (e) {
+            $.each($('.secondMenu span'), function(i, item) {
+                item.addEventListener("touchstart", function(e) {
                     this.classList.add("addShadow");
                 })
-                item.addEventListener("touchend", function (e) {
+                item.addEventListener("touchend", function(e) {
                     this.classList.remove("addShadow");
                     $(".secondMenu span i").removeClass("secondMenu_border_bottom").eq(i).addClass("secondMenu_border_bottom");
                     $('.secondMenuContent').hide().eq(i).show();
@@ -88,7 +88,7 @@ var commodityDetail = (function () {
             })
         },
         // 初始滚动
-        initScroll: function (swiper) {
+        initScroll: function(swiper) {
             var scaleValue = 10,
                 searchOpacity = 0,
                 arrayLiHeight = [],
@@ -100,7 +100,7 @@ var commodityDetail = (function () {
                 len;
 
             // 计算滑动距离
-            $('.rightNav li').each(function (i, item) {
+            $('.rightNav li').each(function(i, item) {
                 i === 0 ? arrayLiHeight.push(-$(item).outerHeight() + $('.rn_title').outerHeight()) : arrayLiHeight.push((arrayLiHeight[i - 1] - $(item).outerHeight()));
                 //                $(item).css('height', $(item).outerHeight() + 20);
             });
@@ -140,11 +140,11 @@ var commodityDetail = (function () {
                 // }
 
                 if (y < -213) {
-                   $('.container').css('transform', 'translate(0,-213px)');
+                    $('.container').css('transform', 'translate(0,-213px)');
                     $(this.scroller).css('transform', 'translate(0,' + (y + 213) + 'px)');
-                }else{
+                } else {
                     $('.container').css('transform', 'translate(0,' + y + 'px)');
-                    $(this.scroller).css('transform', 'translate(0,0');
+                    $(this.scroller).css('transform', 'translate(0,' + (this.options.has_gt_zeroPoint_Y ? this.options.has_gt_zeroPoint_Y : 0) + 'px)');
                 }
 
 
@@ -227,6 +227,7 @@ var commodityDetail = (function () {
                     }
 
                     nextPosition = -553 + arrayLiHeight[index];
+
                     // 上拉
                     if (this.directionY > 0) {
                         if (y < nextPosition) {
@@ -239,10 +240,10 @@ var commodityDetail = (function () {
                         if (prevPosition && y < prevPosition - 40) {
                             $('.rightNav li').eq(index - 1).find('.rn_title').removeClass('active_rn_title');
                             $('.rightNav li').eq(index)
-                                            .css('margin-top', '.4rem')
-                                            .find('.rn_title')
-                                            .addClass('active_rn_title')
-                                            .appendTo('body');
+                                .css('margin-top', '.4rem')
+                                .find('.rn_title')
+                                .addClass('active_rn_title')
+                                .appendTo('body');
                         }
                         if (mySwiper.activeIndex != 0) {
                             $('.active_rn_title').hide();
@@ -254,7 +255,7 @@ var commodityDetail = (function () {
                     if (this.directionY < 0 || this.distY > 0) {
                         if (y > prevPosition - 40 && prevPosition) {
                             $('body>.active_rn_title').prependTo($('.rightNav li').eq(index).css('margin-top', 0))
-                                                 .removeClass('active_rn_title');
+                                .removeClass('active_rn_title');
 
                             $('.rightNav li').eq(index - 1).find('.rn_title').addClass('active_rn_title');
                             //                            isBottom = true;
@@ -267,8 +268,10 @@ var commodityDetail = (function () {
                             $('.leftNav li').removeClass('activeLeft').eq(index).addClass('activeLeft');
                         }
                     }
-                }
-                else {
+
+
+
+                } else {
                     $('#leftWrapper').prependTo('.GoodsList').css('margin-top', 0);
                     $('body>.active_rn_title').prependTo($('.rightNav li').eq(0)).removeClass('active_rn_title');
                     $('.rightNav li').eq(0).css('margin-top', '0');
@@ -297,11 +300,17 @@ var commodityDetail = (function () {
                     $('.leftNav li').removeClass('activeLeft').eq(index).addClass('activeLeft');
                 }
             }
+
             function cancelScroll() {
                 var y = this.y >> 0;
 
-                $('#scroller').css('transform', 'translate(0,0)');
-                $('.container').css('transform', 'translateY(' + y + 'px)');
+                if (y < -213) {
+                    $('.container').css('transform', 'translate(0,-213px)');
+                    $(this.scroller).css('transform', 'translate(0,' + (y + 213) + 'px)');
+                } else {
+                    $('.container').css('transform', 'translate(0,' + y + 'px)');
+                    $(this.scroller).css('transform', 'translate(0,' + (this.options.has_gt_zeroPoint_Y ? this.options.has_gt_zeroPoint_Y : 0) + 'px)');
+                }
             }
 
 
@@ -320,7 +329,7 @@ var commodityDetail = (function () {
                 probeType: 3,
                 bounce: false
             });
-            leftScroll.on('scroll', function () {
+            leftScroll.on('scroll', function() {
                 var y = this.y >> 0;
 
                 if (this.directionY < 0 && y === 0 && this.startY === 0) {
@@ -329,14 +338,14 @@ var commodityDetail = (function () {
             });
         },
         // 轮播 切换标签页
-        initSwiper: function () {
+        initSwiper: function() {
             // 点击 选项卡 阴影 
             function clickColor(elArray) {
-                $.each(elArray, function (i, item) {
-                    item.addEventListener('touchstart', function () {
+                $.each(elArray, function(i, item) {
+                    item.addEventListener('touchstart', function() {
                         this.style.background = 'rgba(128,128,128, .5)';
                     });
-                    item.addEventListener('touchend', function () {
+                    item.addEventListener('touchend', function() {
                         this.style.background = 'white';
                     });
                 })
@@ -346,7 +355,7 @@ var commodityDetail = (function () {
             function setCss(index) {
                 var index = index ? index : 0;
                 var firstLineWidth = $('.co_top span').eq(index).outerWidth(),
-                margin = ($('.co_top .cot_item').eq(0).outerWidth() - firstLineWidth) / 2;
+                    margin = ($('.co_top .cot_item').eq(0).outerWidth() - firstLineWidth) / 2;
                 $('.border-line').css({ width: firstLineWidth, 'margin-left': margin, height: 2, background: '#1B8CE0', transition: 'width .1s' });
                 $('.co_top span').css('color', 'black').eq(index).css('color', '#1B8CE0');
             }
@@ -362,15 +371,22 @@ var commodityDetail = (function () {
                 oldY: [0, 0, 0],
 
                 on: {
-                    setTranslate: function (translate) {
+                    setTranslate: function(translate) {
                         $('.border-line').css({ transform: 'translateX(' + -translate / 3 + 'px)' });
                     },
-                    slideChange: function () {
+                    slideChange: function() {
+                        var currentY = this.passedParams.oldY[this.activeIndex],
+                            oldY = this.passedParams.oldY[this.previousIndex] = mainScroll.y;
 
-
-                        this.passedParams.oldY[this.previousIndex] = mainScroll.y;
-
-                        if (mainScroll.y > -213) {
+                        // 切换 swiper 页面
+                        if (oldY > -213) {
+                            // 判断 旧y 值是否<-213 也就是是否有scroller transform 如果大于 -213 y 随页面变换
+                            if (currentY < -213) {
+                                $(mainScroll.scroller).css('transform', 'translate(0,' + (currentY + 213) + 'px)');
+                                mainScroll.options.has_gt_zeroPoint_Y = currentY + 213;
+                                $('#leftWrapper').css('transform','translateY(' + (Math.abs(currentY) - 553) + 'px)');
+                            }
+                        } else {
 
                         }
 
@@ -389,7 +405,7 @@ var commodityDetail = (function () {
             clickColor($('.cot_item'));
 
             // 监听点击切换
-            $('.co_top .cot_item').on('click', function () {
+            $('.co_top .cot_item').on('click', function() {
                 mySwiper.slideTo($(this).index());
             });
 

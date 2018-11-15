@@ -17,7 +17,7 @@
     <!--轮播swiper.css-->
     <link rel="stylesheet" href="swiper.css">
     <!--引入pullToRefresh.css-->
-    <link rel="stylesheet" type="text/css" href="/Mobile/WeChat/_control/scroll/reset.css" />
+    <link rel="stylesheet" type="text/css" href="reset.css" />
     <!-- 引入 底层Js 库-->
     <script type="text/javascript" language="javascript" src="jquery.js"></script>
     <!--<script type="text/javascript" language="javascript" src="https://cdn.bootcss.com/zepto/1.0rc1/zepto.min.js"></script>-->
@@ -292,17 +292,18 @@
     .container_outer {
         position: absolute;
         top: 1.95rem;
-        bottom: 0;
+        /*bottom: 0;*/
         left: 0;
         width: 100%;
-        /*overflow:hidden;*/
+        height: 486px;
+        overflow:hidden;
         background: white;
     }
 
     .coc_middle {
         position: absolute;
         width: 100%;
-        overflow: hidden;
+        /*overflow: hidden;*/
 
         /* Prevent elements to be highlighted on tap */
         -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
