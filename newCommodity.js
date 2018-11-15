@@ -131,26 +131,52 @@ var commodityDetail = (function() {
             function animateScroll() {
                 var y = this.y >> 0;
 
+                //  变换 Y 值
+                if (mySwiper.passedParams.scrollMoveY[mySwiper.activeIndex]) {
+                    if (y < -213) {
+                        mySwiper.passedParams.scrollMoveY[mySwiper.activeIndex] = false;
+                        this.options.momentumY = false;
+                        this.options.rechanged = true;
+
+                        this._translate(0, mySwiper.passedParams.scrollerTransform[mySwiper.activeIndex]);
+                        this.y = mySwiper.passedParams.scrollerTransform[mySwiper.activeIndex] - 213;
+                    }
+                }
+
+
+                if (y > -213) {
+                    $(this.scroller).css('transform', 'translate(0,' +
+                        (this.options.rechanged ? 0 : mySwiper.passedParams.scrollerTransform[mySwiper.activeIndex]) + 'px)');
+                    $('.container').css('transform', 'translate(0,' + y + 'px)');
+
+                    if (this.options.rechanged) {
+                        mySwiper.passedParams.scrollerTransform[mySwiper.activeIndex] = 0;
+                    }
+                } else {
+                    $(this.scroller).css('transform', 'translate(0,' + (y + 213) + 'px)');
+                    $('.container').css('transform', 'translate(0,-213px)');
+                }
+
+ 
+
                 console.log(y);
 
 
-                if (y <= -213) {
-                    $('.container').css('transform', 'translate(0,-213px)');
-                    $(this.scroller).css('transform', 'translate(0,' + (y + 213) + 'px)');
-                } else {
-                    $('.container').css('transform', 'translate(0,' + y + 'px)');
-                    $(this.scroller).css('transform', 'translate(0,' + (this.options.hasScroller ? this.options.hasScroller : 0) + 'px)');
-                } 
-
-
-
                 if (y < -213 && this.startY > -213 || y > -213 && this.startY < -213) {
-                    this.options.zeroPoint = true;
-                    this.options.subMargin = -213;
-                    // this._translate(0, -213);
+                    this.options.subMargin = -213;  
+                    // this._translate(0, -213);    
                     // $(this.scroller).css('transform', 'translate(0,' + (y + 213) + 'px)');
                     // $('.container').css('transform', 'translate(0,-213px)');
                 }
+
+ 
+
+
+
+
+
+
+
 
 
 
@@ -208,7 +234,7 @@ var commodityDetail = (function() {
                     $('.header').removeClass('headerPosition').css('clip', 'unset');
                 }
 
-            
+
 
 
                 // 设置 二级 定位
@@ -270,13 +296,13 @@ var commodityDetail = (function() {
                     index = 0;
                     prevPosition = 0;
                 }
-                if (y < -553 && this.startY > -553 || y > -553 && this.startY < -553) {
-                    console.log('进来了')
-                    this.options.subMargin = -553;
-                    this._translate(0, -553);
-                    $(this.scroller).css('transform', 'translate(0,' + (y + 213) +'px)');
-                    $('.container').css('transform', 'translate(0,-213px)');
-                }
+                // if (!this.options.momentumY_exec && (y < -553 && this.startY > -553 || y > -553 && this.startY < -553)) {
+                //     console.log('进来了')
+                //     this.options.subMargin = -553;
+                //     this._translate(0, -553);
+                //     $(this.scroller).css('transform', 'translate(0,' + (y + 213) + 'px)');
+                //     $('.container').css('transform', 'translate(0,-213px)');
+                // }
 
                 if (y === 0) {
                     // 关闭 所有 效果 最终值 opacity 0 scale 0
@@ -291,18 +317,17 @@ var commodityDetail = (function() {
                     key = false;
                     $('.leftNav li').removeClass('activeLeft').eq(index).addClass('activeLeft');
                 }
-            }
 
-            function cancelScroll() {
-                var y = this.y >> 0;
 
-                if (y < -213) {
-                    $('.container').css('transform', 'translate(0,-213px)');
-                    $(this.scroller).css('transform', 'translate(0,' + (y + 213) + 'px)');
-                } else {
-                    $('.container').css('transform', 'translate(0,' + y + 'px)');
-                    $(this.scroller).css('transform', 'translate(0,' + (this.options.hasScroller ? this.options.hasScroller : 0) + 'px)');
+                if (this.options.momentumY_exec) {
+                    this.options.momentumY_exec = false;
                 }
+
+
+
+
+
+
 
             }
 
@@ -369,28 +394,28 @@ var commodityDetail = (function() {
 
 
 
+            // 设置 初始 Y 值
             $('.container').css('transform', 'translate(0,' + contentTransform + 'px)');
-            mySwiper.slides[mySwiper.activeIndex].children[0].children[0].style.transform =
-                'translate(0,' + mySwiper.passedParams.scrollerTransform[mySwiper.activeIndex] + 'px)';
-
+            mySwiper.slides[mySwiper.activeIndex].children[0].children[0].style.transform = 'translate(0,' + mySwiper.passedParams.scrollerTransform[mySwiper.activeIndex] + 'px)';
             mySwiper.passedParams.scrollerObj[mySwiper.activeIndex].y = mySwiper.passedParams.scrollerTransform[mySwiper.activeIndex] + contentTransform;
             mySwiper.passedParams.scrollerObj[mySwiper.activeIndex].options.rechanged = true;
 
-
-            if (contentTransform > -100) {
+            if (contentTransform > -213) {
                 if (transformScroller) {
-
                     mySwiper.passedParams.scrollerObj[mySwiper.activeIndex].y = contentTransform;
-
                     // 控制iscroll 弹动
-                    mySwiper.passedParams.scrollerMove[mySwiper.activeIndex] = true;
-
-                    mySwiper.passedParams.scrollerObj[mySwiper.activeIndex].options.momentumY_value = true;
+                    mySwiper.passedParams.scrollMoveY[mySwiper.activeIndex] = true;
+                    mySwiper.passedParams.scrollerObj[mySwiper.activeIndex].options.momentumY = true;
                     mySwiper.passedParams.scrollerObj[mySwiper.activeIndex].options.rechanged = false;
-                    mySwiper.passedParams.scrollerObj[mySwiper.activeIndex].options.realY =
-                        mySwiper.passedParams.scrollerTransform[mySwiper.activeIndex] - 100;
+                    mySwiper.passedParams.scrollerObj[mySwiper.activeIndex].options.realY = transformScroller - 213;
+                    // 控制 动能 进入 
                 }
             }
+
+
+
+
+
         },
 
 
@@ -424,39 +449,31 @@ var commodityDetail = (function() {
                 resistanceRatio: 0,
                 freeMode: false,
                 touchAngle: 10,
-                // touchMoveStopPropagation : false,
+                touchMoveStopPropagation: false,
 
-                swiperRun: false,
                 scrollerObj: [],
                 scrollerTransform: [0, 0, 0],
-                scrollerMove: [false, false, false],
+                scrollMoveY: [false, false, false],
 
                 on: {
                     sliderMove: function(event) {
                         this.passedParams.swiperRun = true;
 
-                        if (parseInt($('.container').css('transform').match(/-?\d+/g)[5], 10) > -100) {
+                        if (parseInt($('.container').css('transform').match(/-?\d+/g)[5], 10) > -213) {
 
                         }
                     },
-                    slideChange: function() {
-                        this.previousIndex = this.previousIndex ? this.previousIndex : 0;
-
+                    slideChangeTransitionStart: function() {
                         if (this.slides[this.previousIndex].children[0].children[0].style.transform) {
                             this.passedParams.scrollerTransform[this.previousIndex] =
                                 parseInt((this.slides[this.previousIndex].children[0].children[0].style.transform).match(/-?\d+/g)[1], 10);
                         }
-                        // 关闭前一个iScroll
+
                         this.passedParams.scrollerObj[this.previousIndex].disable();
                         commodityDetail.initScroll(this.activeIndex, parseInt($('.container').css('transform').match(/-?\d+/g)[5], 10));
                         this.passedParams.scrollerObj[this.activeIndex].enable();
+                        console.log(this.activeIndex, this.previousIndex);
 
-                        setCss(this.activeIndex);
-
-                    },
-
-                    touchEnd: function() {
-                        this.passedParams.swiperRun = false;
                     }
                 }
             });

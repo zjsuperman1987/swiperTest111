@@ -1656,6 +1656,7 @@
         },
 
         _animate: function (destX, destY, duration, easingFn) {
+
             var that = this,
 			startX = this.x,
 			startY = this.y,
@@ -1682,22 +1683,29 @@
 
 
 
-
                 now = (now - startTime) / duration;
                 easing = easingFn(now);
                 newX = (destX - startX) * easing + startX;
                 newY = (destY - startY) * easing + startY;
 
                 that._translate(newX, newY);
-                // debugger;
-                /* 自定义 */
-                if (that.options.subMargin && !that.options.zeroPoint) {
+                 
+                // 自定义
+                if (that.options.momentumY && that.options.realY && that.directionY > 0) {
+                    that.options.momentumY = false;
+                    that.options.momentumY_exec = true;
+                    that.y = that.options.realY;
+                    that._execEvent('scroll');
+                    return;
+                }
+                // 自定义
+
+                if (that.options.subMargin) {
                     var subMargin = that.options.subMargin;
                     if (newY < subMargin && that.startY > subMargin || newY > subMargin && that.startY < subMargin) {
-                    console.log('是垃圾分类的身份了就是科技时代')
-                        that.options.zeroPoint = false;
                         that._translate(0, that.options.subMargin);
                         that._execEvent('scrollEnd');
+                        console.log('_animate')
                         return;
                     }
                 }
