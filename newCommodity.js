@@ -148,7 +148,7 @@ var commodityDetail = (function() {
                     $(this.scroller).css('transform', 'translate(0,' +
                         (this.options.rechanged ? 0 : mySwiper.passedParams.scrollerTransform[mySwiper.activeIndex]) + 'px)');
                     $('.container').css('transform', 'translate(0,' + y + 'px)');
-
+                    console.log(mySwiper.passedParams.scrollerTransform[mySwiper.activeIndex], this.options.rechanged); 
                     if (this.options.rechanged) {
                         mySwiper.passedParams.scrollerTransform[mySwiper.activeIndex] = 0;
                     }
@@ -159,7 +159,7 @@ var commodityDetail = (function() {
 
  
 
-                console.log(y);
+                // console.log(y);
 
 
                 if (y < -213 && this.startY > -213 || y > -213 && this.startY < -213) {
@@ -183,56 +183,56 @@ var commodityDetail = (function() {
 
 
                 // 模糊
-                if (y >= -10) {
-                    $('.header img').css('filter', 'blur(' + -y + 'px)');
-                }
-                // 缩小
-                if (y <= -10 && this.directionY > 0 && scaleValue) {
-                    // 确保在通过 10px 移动后 模糊终值
-                    $('.header img').css('filter', 'blur(' + 10 + 'px)');
+                // if (y >= -10) {
+                //     $('.header img').css('filter', 'blur(' + -y + 'px)');
+                // }
+                // // 缩小
+                // if (y <= -10 && this.directionY > 0 && scaleValue) {
+                //     // 确保在通过 10px 移动后 模糊终值
+                //     $('.header img').css('filter', 'blur(' + 10 + 'px)');
 
-                    //图标缩小
-                    scaleValue -= 1;
-                    $('.brandIcon').css('transform', 'scale(.' + scaleValue + ')');
-                    $('.favoriteIcon').css('transform', 'scale(.' + scaleValue + ')');
-                    $('.spell').css('opacity', '.' + scaleValue);
-                    if (scaleValue == 0) {
-                        $('.spell').hide();
-                    }
-                }
-                // 放大
-                if (y >= -20 && this.directionY < 0 && scaleValue < 10) {
-                    //图标放大
-                    scaleValue += 1;
-                    $('.brandIcon').css('transform', 'scale(' + (scaleValue == 10 ? 1 : '.' + scaleValue) + ')');
-                    $('.favoriteIcon').css('transform', 'scale(' + (scaleValue == 10 ? 1 : '.' + scaleValue) + ')');
-                    $('.spell').css({ display: 'block', opacity: scaleValue == 10 ? 1 : '.' + scaleValue });
-                    if (scaleValue == 10) {
-                        $('.spell').show();
-                    }
-                }
-                // 搜索栏 透明度 显示
-                if (y <= -30 && this.directionY > 0 && searchOpacity < 10) {
-                    searchOpacity += 1;
-                    $('.hswm_search').css({ 'display': 'block', 'opacity': (searchOpacity == 10 ? 1 : '.' + searchOpacity) })
-                }
-                // 搜索栏 透明度 隐藏
-                if (y > -30 && this.directionY < 0 && searchOpacity) {
-                    searchOpacity -= 1;
-                    $('.hswm_search').css({ 'display': 'block', 'opacity': (searchOpacity == 0 ? 0 : '.' + searchOpacity) })
-                    if (searchOpacity == 0) {
-                        $('.hswm_search').hide();
-                    }
-                }
-                // 头部 模糊
-                if (y <= -50) {
-                    $('.header').addClass('headerPosition').css('clip', 'rect(0,' + window.document.body.offsetWidth + 'px, .5rem, 0)');
-                    // 开启 所有 效果 最终值 例如 opacity 1 scale 1
-                    setStatus(1);
+                //     //图标缩小
+                //     scaleValue -= 1;
+                //     $('.brandIcon').css('transform', 'scale(.' + scaleValue + ')');
+                //     $('.favoriteIcon').css('transform', 'scale(.' + scaleValue + ')');
+                //     $('.spell').css('opacity', '.' + scaleValue);
+                //     if (scaleValue == 0) {
+                //         $('.spell').hide();
+                //     }
+                // }
+                // // 放大
+                // if (y >= -20 && this.directionY < 0 && scaleValue < 10) {
+                //     //图标放大
+                //     scaleValue += 1;
+                //     $('.brandIcon').css('transform', 'scale(' + (scaleValue == 10 ? 1 : '.' + scaleValue) + ')');
+                //     $('.favoriteIcon').css('transform', 'scale(' + (scaleValue == 10 ? 1 : '.' + scaleValue) + ')');
+                //     $('.spell').css({ display: 'block', opacity: scaleValue == 10 ? 1 : '.' + scaleValue });
+                //     if (scaleValue == 10) {
+                //         $('.spell').show();
+                //     }
+                // }
+                // // 搜索栏 透明度 显示
+                // if (y <= -30 && this.directionY > 0 && searchOpacity < 10) {
+                //     searchOpacity += 1;
+                //     $('.hswm_search').css({ 'display': 'block', 'opacity': (searchOpacity == 10 ? 1 : '.' + searchOpacity) })
+                // }
+                // // 搜索栏 透明度 隐藏
+                // if (y > -30 && this.directionY < 0 && searchOpacity) {
+                //     searchOpacity -= 1;
+                //     $('.hswm_search').css({ 'display': 'block', 'opacity': (searchOpacity == 0 ? 0 : '.' + searchOpacity) })
+                //     if (searchOpacity == 0) {
+                //         $('.hswm_search').hide();
+                //     }
+                // }
+                // // 头部 模糊
+                // if (y <= -50) {
+                //     $('.header').addClass('headerPosition').css('clip', 'rect(0,' + window.document.body.offsetWidth + 'px, .5rem, 0)');
+                //     // 开启 所有 效果 最终值 例如 opacity 1 scale 1
+                //     setStatus(1);
 
-                } else {
-                    $('.header').removeClass('headerPosition').css('clip', 'unset');
-                }
+                // } else {
+                //     $('.header').removeClass('headerPosition').css('clip', 'unset');
+                // }
 
 
 
