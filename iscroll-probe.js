@@ -1689,25 +1689,27 @@
                 newY = (destY - startY) * easing + startY;
 
                 that._translate(newX, newY);
-                 
-                // 自定义
-                if (that.options.momentumY && that.options.realY && that.directionY > 0) {
-                    that.options.momentumY = false;
-                    that.options.momentumY_exec = true;
-                    that.y = that.options.realY;
-                    that._execEvent('scroll');
-                    return;
-                }
-                // 自定义
+              
 
+                /*自定义*/
                 if (that.options.subMargin) {
                     var subMargin = that.options.subMargin;
-                    if (newY < subMargin && that.startY > subMargin || newY > subMargin && that.startY < subMargin) {
+                    if (newY < subMargin && that.startY > subMargin && that.directionY > 0 || newY > subMargin && that.startY < subMargin && that.directionY < 0) {
                         that._translate(0, that.options.subMargin);
+                        
+                        console.log(newY, that.y, 'animate');
+
                         that._execEvent('scrollEnd');
                         console.log('_animate')
                         return;
                     }
+                }
+                if (that.options.fixed) {
+                    that.options.fixed = false;
+                        console.log(newY, that.y, 'animate');
+                    
+                    that._execEvent('scrollEnd');
+                    return;
                 }
                 /* 自定义 */
 
