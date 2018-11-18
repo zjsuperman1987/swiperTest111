@@ -1680,7 +1680,27 @@
                 }
 
 
+                 /*自定义*/
+                if (that.options.subMargin) {
+                    var subMargin = that.options.subMargin;
+                    if (newY < subMargin && that.startY > subMargin && that.directionY > 0 || newY > subMargin && that.startY < subMargin && that.directionY < 0) {
 
+                        that._translate(0, that.options.subMargin);
+                        that._execEvent('scrollEnd');
+                        console.log('_animate')
+                        return;
+
+                    }
+                    if (that.options.fixed) {
+                        console.log('fixed....................................')
+                        
+                        that.options.fixed = false;
+                        that._execEvent('scrollEnd');
+                        return;
+
+                    }
+                }
+                /* 自定义 */
 
 
                 now = (now - startTime) / duration;
@@ -1689,27 +1709,8 @@
                 newY = (destY - startY) * easing + startY;
 
                 that._translate(newX, newY);
-                 
-                // 自定义
-                if (that.options.momentumY && that.options.realY && that.directionY > 0) {
-                    that.options.momentumY = false;
-                    that.options.momentumY_exec = true;
-                    that.y = that.options.realY;
-                    that._execEvent('scroll');
-                    return;
-                }
-                // 自定义
-
-                if (that.options.subMargin) {
-                    var subMargin = that.options.subMargin;
-                    if (newY < subMargin && that.startY > subMargin || newY > subMargin && that.startY < subMargin) {
-                        that._translate(0, that.options.subMargin);
-                        that._execEvent('scrollEnd');
-                        console.log('_animate')
-                        return;
-                    }
-                }
-                /* 自定义 */
+                
+               
 
 
                 if (that.isAnimating) {

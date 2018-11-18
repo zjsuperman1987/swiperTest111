@@ -153,7 +153,7 @@
         position: relative;
         width: 100%;
         /*height: 468px;*/
-        background: red;
+        /*background: red;*/
     }
 
     .innerWrapper {
@@ -167,11 +167,43 @@
         background: gold;
     }
 
-    .outerWrapper {
-        position: absolute;
-        top: 163px;
+    /*导航栏*/
+    .selectTab {
+        position: relative;
+        z-index: 2;
         width: 100%;
-        /*height: 468px;*/
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+        padding: 0 10px;
+        background: white;
+    }
+
+    .selectTabItem {
+        float: left;
+        width: 33.333%;
+        height: 100%;
+        border-bottom: 1px solid gray;
+    }
+
+    .selectTabItem span {
+        position: relative;
+        display: inline-block;
+        height: 100%;
+    }
+
+    .border_bottom_line {
+        height: 2px;
+        width: 100%;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        background: red;
+    }
+
+    .outerWrapper {
+        width: 100%;
+        height: 488px;
         background: pink;
     }
 
@@ -180,62 +212,30 @@
         overflow: unset;
     }
 
-    .leftNav {
-        float: left;
-        width: 60px;
+    .oneScrollerWrapper,
+    .twoScrollerWrapper,
+    .threeScrollerWrapper {
+        width: 100%;
+        height: 275px;
         /*overflow: hidden;*/
-        background: gray;
     }
 
-    .leftNav li {
-        padding: 10px;
-    }
-
-    .rightNav {
-        float: right;
-        width: 260px;
-        padding-left: 10px;
+    .scroller {
+        width: 100%;
         overflow: hidden;
-        background: white;
-    }
 
-    .good_header {
-        width: 100%;
-        height: 30px;
-    }
-
-    .good_container {
-        width: 100%;
-        height: 100px;
-        line-height: 100px;
-        margin-bottom: 10px;
-        text-align: center;
-    }
-
-    /*滚动样式*/
-    .one_scrollWrapper,
-    .two_scrollWrapper,
-    .three_scrollWrapper {
-        height: 305px;
-        width: 100%;
-    }
-
-    .one_scroller,
-    .two_scroller,
-    .three_scroller {
-        overflow: hidden;
-    }
-    .one_goodsList {
-        overflow: hidden;
-    }
-    .recommend {
-        height: 1000px;
-        width: 100%;
-        background: blue;   
+        /* Prevent elements to be highlighted on tap */
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        /* Put the scroller into the HW Compositing layer right from the start */
+        -webkit-transform: translateZ(0);
+        -moz-transform: translateZ(0);
+        -ms-transform: translateZ(0);
+        -o-transform: translateZ(0);
+        transform: translateZ(0);
     }
     </style>
 </head>
-
+    
 <body>
     <div class="header">
         <img src="images/梅花.jpg" alt="Alternate Text" />
@@ -269,11 +269,91 @@
         <div class='innerWrapper'>
             <div class='iw_info'>我是信息</div>
         </div>
+        <!-- 导航栏 -->
+        <div class='selectTab'>
+            <div class='selectTabItem'>
+                <span>活动介绍<i class='border_bottom_line'></i></span>
+            </div>
+            <div class='selectTabItem'>
+                <span>优惠券领取</span>
+            </div>
+            <div class='selectTabItem'>
+                <span>详情介绍</span>
+            </div>
+        </div>
         <!-- 标签页 -->
         <div class='outerWrapper'>
+            <div class='swiper-container'>
+                <div class='swiper-wrapper'>
+                    <!-- 第一页面 -->
+                    <div class='swiper-slide' style='background: red'>
+                        <div class='oneScrollerWrapper'>
+                            <div class='scroller'>
+                                <div style='width: 100%;height: 300px;background: blue'></div>
+                                <div style='width: 100%;height: 300px;background: red'></div>
+                                <div style='width: 100%;height: 300px;background: gold'></div>
+                                <div style='width: 100%;height: 300px;background: black'></div>
+                                <div style='width: 100%;height: 300px;background: gray'></div>
+                                <div style='width: 100%;height: 300px;background: purple'></div>
+                                <div style='width: 100%;height: 300px;background: pink'></div>
+                                <div style='width: 100%;height: 300px;background: green'></div>
+                                <div style='width: 100%;height: 300px;background: orange'></div>
+                                <div style='width: 100%;height: 300px;background: red'></div>
+                                <div style='width: 100%;height: 300px;background: yellow'></div>
+                                <div style='width: 100%;height: 300px;background: blue'></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 第二页面 -->
+                    <div class='swiper-slide' style='background: gold'>
+                        <div class='twoScrollerWrapper'>
+                            <div class='scroller'>
+                                <div style='width: 100%;height: 300px;background: gold'></div>
+                                <div style='width: 100%;height: 300px;background: blue'></div>
+                                <div style='width: 100%;height: 300px;background: red'></div>
+                                <div style='width: 100%;height: 300px;background: black'></div>
+                                <div style='width: 100%;height: 300px;background: gray'></div>
+                                <div style='width: 100%;height: 300px;background: purple'></div>
+                                <div style='width: 100%;height: 300px;background: pink'></div>
+                                <div style='width: 100%;height: 300px;background: green'></div>
+                                <div style='width: 100%;height: 300px;background: orange'></div>
+                                <div style='width: 100%;height: 300px;background: red'></div>
+                                <div style='width: 100%;height: 300px;background: yellow'></div>
+                                <div style='width: 100%;height: 300px;background: blue'></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 第三页面 -->
+                    <div class='swiper-slide' style='background: blue'>
+                        <div class='threeScrollerWrapper'>
+                            <div class='scroller'>
+                                <div style='width: 100%;height: 300px;background: black'></div>
+                                <div style='width: 100%;height: 300px;background: blue'></div>
+                                <div style='width: 100%;height: 300px;background: gray'></div>
+                                <div style='width: 100%;height: 300px;background: red'></div>
+                                <div style='width: 100%;height: 300px;background: purple'></div>
+                                <div style='width: 100%;height: 300px;background: gold'></div>
+                                <div style='width: 100%;height: 300px;background: pink'></div>
+                                <div style='width: 100%;height: 300px;background: green'></div>
+                                <div style='width: 100%;height: 300px;background: orange'></div>
+                                <div style='width: 100%;height: 300px;background: red'></div>
+                                <div style='width: 100%;height: 300px;background: yellow'></div>
+                                <div style='width: 100%;height: 300px;background: blue'></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+<!-- 
+<div class='outerWrapper'>
             <div class="swiper-container">
                 <div class="swiper-wrapper">
-                    <!-- 第一页面 -->
+                    <!-- 第一页面  
                     <div class="swiper-slide" style='background: blue'>
                         <div class='one_scrollWrapper'>
                             <div class='one_scroller'>
@@ -382,17 +462,16 @@
                             </div>
                         </div>
                     </div>
-                    <!-- 第二页面 -->
+                    <!-- 第二页面  
                     <div class="swiper-slide" style='background: red'>
                         <div class='two_scrollWrapper'>
                             <div class='two_scroller'>
                                 <div class='recommend'>
-                                    
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <!-- 第三页面 -->
+                    <!-- 第三页面  
                     <div class="swiper-slide" style='background: pink'>
                         <div class='three_scrollWrapper'>
                             <div class='three_scroller'>
@@ -403,7 +482,7 @@
                 </div>
             </div>
         </div>
-    </div>
-</body>
 
-</html>
+
+
+ -->

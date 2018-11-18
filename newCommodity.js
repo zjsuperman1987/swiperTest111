@@ -127,182 +127,187 @@ var commodityDetail = (function() {
                     $('.container').css('transform', 'translateY(0px)');
                 }
             }
+
+
             // 效果方法
             function animateScroll() {
-                var y = this.y >> 0;
+                var y = this.y >> 0,
+                    that = this;
 
-                //  变换 Y 值
-                if (mySwiper.passedParams.scrollMoveY[mySwiper.activeIndex]) {
-                    if (y < -213) {
-                        mySwiper.passedParams.scrollMoveY[mySwiper.activeIndex] = false;
-                        this.options.momentumY = false;
+                console.log(y, this.startY);
+
+                if (y < -213 && this.startY > -213 && this.directionY > 0 || y > -213 && this.startY < -213 && this.directionY < 0) {
+                    this._translate(0, -213);
+                    y = this.y = -213;
+                    this.options.fixed = true;
+                    if (mySwiper.passedParams.scrollerTransform[mySwiper.activeIndex] && this.directionY > 0) {
+                        y = this.y = mySwiper.passedParams.scrollerTransform[mySwiper.activeIndex] - 213;
                         this.options.rechanged = true;
-
-                        this._translate(0, mySwiper.passedParams.scrollerTransform[mySwiper.activeIndex]);
-                        this.y = mySwiper.passedParams.scrollerTransform[mySwiper.activeIndex] - 213;
                     }
+                } else {
+                    this.options.fixed = false;
                 }
 
 
-                if (y > -213) {
+                // 是否 变换 Y 值
+                if (mySwiper.passedParams.scrollMoveY[mySwiper.activeIndex]) {
+                    if (y <= -213) {
+                        mySwiper.passedParams.scrollMoveY[mySwiper.activeIndex] = false;
+                        y = this.y = mySwiper.passedParams.scrollerTransform[mySwiper.activeIndex] - 213;
+                        this.options.rechanged = true;
+                    }   
+                }
+
+                if (y >= -213) {
                     $(this.scroller).css('transform', 'translate(0,' +
                         (this.options.rechanged ? 0 : mySwiper.passedParams.scrollerTransform[mySwiper.activeIndex]) + 'px)');
                     $('.container').css('transform', 'translate(0,' + y + 'px)');
-                    console.log(mySwiper.passedParams.scrollerTransform[mySwiper.activeIndex], this.options.rechanged); 
                     if (this.options.rechanged) {
                         mySwiper.passedParams.scrollerTransform[mySwiper.activeIndex] = 0;
                     }
+                    this.options.subMargin = -213;
                 } else {
                     $(this.scroller).css('transform', 'translate(0,' + (y + 213) + 'px)');
                     $('.container').css('transform', 'translate(0,-213px)');
+                    this.options.subMargin = -553;
                 }
 
  
-
-                // console.log(y);
-
-
-                if (y < -213 && this.startY > -213 || y > -213 && this.startY < -213) {
-                    this.options.subMargin = -213;  
-                    // this._translate(0, -213);    
-                    // $(this.scroller).css('transform', 'translate(0,' + (y + 213) + 'px)');
-                    // $('.container').css('transform', 'translate(0,-213px)');
-                }
-
  
 
 
 
-
-
-
-
-
-
-
-
+  
+ 
 
                 // 模糊
-                // if (y >= -10) {
-                //     $('.header img').css('filter', 'blur(' + -y + 'px)');
-                // }
-                // // 缩小
-                // if (y <= -10 && this.directionY > 0 && scaleValue) {
-                //     // 确保在通过 10px 移动后 模糊终值
-                //     $('.header img').css('filter', 'blur(' + 10 + 'px)');
+                if (y >= -10) {
+                    $('.header img').css('filter', 'blur(' + -y + 'px)');
+                }
+                // 缩小
+                if (y <= -10 && this.directionY > 0 && scaleValue) {
+                    // 确保在通过 10px 移动后 模糊终值
+                    $('.header img').css('filter', 'blur(' + 10 + 'px)');
 
-                //     //图标缩小
-                //     scaleValue -= 1;
-                //     $('.brandIcon').css('transform', 'scale(.' + scaleValue + ')');
-                //     $('.favoriteIcon').css('transform', 'scale(.' + scaleValue + ')');
-                //     $('.spell').css('opacity', '.' + scaleValue);
-                //     if (scaleValue == 0) {
-                //         $('.spell').hide();
-                //     }
-                // }
-                // // 放大
-                // if (y >= -20 && this.directionY < 0 && scaleValue < 10) {
-                //     //图标放大
-                //     scaleValue += 1;
-                //     $('.brandIcon').css('transform', 'scale(' + (scaleValue == 10 ? 1 : '.' + scaleValue) + ')');
-                //     $('.favoriteIcon').css('transform', 'scale(' + (scaleValue == 10 ? 1 : '.' + scaleValue) + ')');
-                //     $('.spell').css({ display: 'block', opacity: scaleValue == 10 ? 1 : '.' + scaleValue });
-                //     if (scaleValue == 10) {
-                //         $('.spell').show();
-                //     }
-                // }
-                // // 搜索栏 透明度 显示
-                // if (y <= -30 && this.directionY > 0 && searchOpacity < 10) {
-                //     searchOpacity += 1;
-                //     $('.hswm_search').css({ 'display': 'block', 'opacity': (searchOpacity == 10 ? 1 : '.' + searchOpacity) })
-                // }
-                // // 搜索栏 透明度 隐藏
-                // if (y > -30 && this.directionY < 0 && searchOpacity) {
-                //     searchOpacity -= 1;
-                //     $('.hswm_search').css({ 'display': 'block', 'opacity': (searchOpacity == 0 ? 0 : '.' + searchOpacity) })
-                //     if (searchOpacity == 0) {
-                //         $('.hswm_search').hide();
-                //     }
-                // }
-                // // 头部 模糊
-                // if (y <= -50) {
-                //     $('.header').addClass('headerPosition').css('clip', 'rect(0,' + window.document.body.offsetWidth + 'px, .5rem, 0)');
-                //     // 开启 所有 效果 最终值 例如 opacity 1 scale 1
-                //     setStatus(1);
+                    //图标缩小
+                    scaleValue -= 1;
+                    $('.brandIcon').css('transform', 'scale(.' + scaleValue + ')');
+                    $('.favoriteIcon').css('transform', 'scale(.' + scaleValue + ')');
+                    $('.spell').css('opacity', '.' + scaleValue);
+                    if (scaleValue == 0) {
+                        $('.spell').hide();
+                    }
+                }
+                // 放大
+                if (y >= -20 && this.directionY < 0 && scaleValue < 10) {
+                    //图标放大
+                    scaleValue += 1;
+                    $('.brandIcon').css('transform', 'scale(' + (scaleValue == 10 ? 1 : '.' + scaleValue) + ')');
+                    $('.favoriteIcon').css('transform', 'scale(' + (scaleValue == 10 ? 1 : '.' + scaleValue) + ')');
+                    $('.spell').css({ display: 'block', opacity: scaleValue == 10 ? 1 : '.' + scaleValue });
+                    if (scaleValue == 10) {
+                        $('.spell').show();
+                    }
+                }
+                // 搜索栏 透明度 显示
+                if (y <= -30 && this.directionY > 0 && searchOpacity < 10) {
+                    searchOpacity += 1;
+                    $('.hswm_search').css({ 'display': 'block', 'opacity': (searchOpacity == 10 ? 1 : '.' + searchOpacity) })
+                }
+                // 搜索栏 透明度 隐藏
+                if (y > -30 && this.directionY < 0 && searchOpacity) {
+                    searchOpacity -= 1;
+                    $('.hswm_search').css({ 'display': 'block', 'opacity': (searchOpacity == 0 ? 0 : '.' + searchOpacity) })
+                    if (searchOpacity == 0) {
+                        $('.hswm_search').hide();
+                    }
+                }
+                // 头部 模糊
+                if (y <= -50) {
+                    $('.header').addClass('headerPosition').css('clip', 'rect(0,' + window.document.body.offsetWidth + 'px, .5rem, 0)');
+                    // 开启 所有 效果 最终值 例如 opacity 1 scale 1
+                    setStatus(1);
 
-                // } else {
-                //     $('.header').removeClass('headerPosition').css('clip', 'unset');
-                // }
+                } else {
+                    $('.header').removeClass('headerPosition').css('clip', 'unset');
+                }
 
 
 
 
                 // 设置 二级 定位
 
-                if (y <= -553) {
-                    if (isBoolean) {
-                        $('#leftWrapper').appendTo('body').css('margin-top', '.82rem');
-                        $('.rightNav li').eq(0).find('.rn_title').appendTo('body').addClass('active_rn_title');
-                        $('.rightNav li').eq(0).css('margin-top', '.4rem');
-                        isBoolean = false;
-                    }
+                // if (y <= -553) {
+                //     if (isBoolean) {
+                //         $('#leftWrapper').appendTo('body').css('margin-top', '.82rem');
+                //         $('.rightNav li').eq(0).find('.rn_title').appendTo('body').addClass('active_rn_title');
+                //         $('.rightNav li').eq(0).css('margin-top', '.4rem');
+                //         isBoolean = false;
+                //     }
 
-                    nextPosition = -553 + arrayLiHeight[index];
-                    // 上拉
-                    if (this.directionY > 0) {
-                        if (y < nextPosition) {
-                            // 把active 还原回自身li 设置bottom(添加active_rn_title_middle类)
-                            $('.active_rn_title').prependTo($('.rightNav li').eq(index)).addClass('active_rn_title_middle');
-                            prevPosition = nextPosition;
-                            index = index === len - 1 ? len - 1 : index + 1;
-                            $('.leftNav li').removeClass('activeLeft').eq(index).addClass('activeLeft');
-                        }
-                        if (prevPosition && y < prevPosition - 40) {
-                            $('.rightNav li').eq(index - 1).find('.rn_title').removeClass('active_rn_title');
-                            $('.rightNav li').eq(index)
-                                .css('margin-top', '.4rem')
-                                .find('.rn_title')
-                                .addClass('active_rn_title')
-                                .appendTo('body');
-                        }
-                        if (mySwiper.activeIndex != 0) {
-                            $('.active_rn_title').hide();
-                        } else {
-                            $('.active_rn_title').show();
-                        }
-                    }
-                    // 下拉
-                    if (this.directionY < 0 || this.distY > 0) {
-                        if (y > prevPosition - 40 && prevPosition) {
-                            $('body>.active_rn_title').prependTo($('.rightNav li').eq(index).css('margin-top', 0))
-                                .removeClass('active_rn_title');
+                //     nextPosition = -553 + arrayLiHeight[index];
+                //     // 上拉
+                //     if (this.directionY > 0) {
+                //         if (y < nextPosition) {
+                //             // 把active 还原回自身li 设置bottom(添加active_rn_title_middle类)
+                //             $('.active_rn_title').prependTo($('.rightNav li').eq(index)).addClass('active_rn_title_middle');
+                //             prevPosition = nextPosition;
+                //             index = index === len - 1 ? len - 1 : index + 1;
+                //             $('.leftNav li').removeClass('activeLeft').eq(index).addClass('activeLeft');
+                //         }
+                //         if (prevPosition && y < prevPosition - 40) {
+                //             $('.rightNav li').eq(index - 1).find('.rn_title').removeClass('active_rn_title');
+                //             $('.rightNav li').eq(index)
+                //                 .css('margin-top', '.4rem')
+                //                 .find('.rn_title')
+                //                 .addClass('active_rn_title')
+                //                 .appendTo('body');
+                //         }
+                //         if (mySwiper.activeIndex != 0) {
+                //             $('.active_rn_title').hide();
+                //         } else {
+                //             $('.active_rn_title').show();
+                //         }
+                //     }
+                //     // 下拉
+                //     if (this.directionY < 0 || this.distY > 0) {
+                //         if (y > prevPosition - 40 && prevPosition) {
+                //             $('body>.active_rn_title').prependTo($('.rightNav li').eq(index).css('margin-top', 0))
+                //                 .removeClass('active_rn_title');
 
-                            $('.rightNav li').eq(index - 1).find('.rn_title').addClass('active_rn_title');
-                            //                            isBottom = true;
-                        }
-                        if (y > prevPosition) {
-                            $('.rightNav li').eq(index - 1).find('.rn_title').removeClass('active_rn_title_middle').appendTo('body');
-                            index = index === 0 ? 0 : index - 1;
-                            prevPosition = -553 + arrayLiHeight[index - 1];
-                            isBottom = false;
-                            $('.leftNav li').removeClass('activeLeft').eq(index).addClass('activeLeft');
-                        }
-                    }
-                } else {
-                    $('#leftWrapper').prependTo('.GoodsList').css('margin-top', 0);
-                    $('body>.active_rn_title').prependTo($('.rightNav li').eq(0)).removeClass('active_rn_title');
-                    $('.rightNav li').eq(0).css('margin-top', '0');
-                    isBoolean = true;
-                    index = 0;
-                    prevPosition = 0;
-                }
-                // if (!this.options.momentumY_exec && (y < -553 && this.startY > -553 || y > -553 && this.startY < -553)) {
-                //     console.log('进来了')
+                //             $('.rightNav li').eq(index - 1).find('.rn_title').addClass('active_rn_title');
+                //             //                            isBottom = true;
+                //         }
+                //         if (y > prevPosition) {
+                //             $('.rightNav li').eq(index - 1).find('.rn_title').removeClass('active_rn_title_middle').appendTo('body');
+                //             index = index === 0 ? 0 : index - 1;
+                //             prevPosition = -553 + arrayLiHeight[index - 1];
+                //             isBottom = false;
+                //             $('.leftNav li').removeClass('activeLeft').eq(index).addClass('activeLeft');
+                //         }
+                //     }
+                // } else {
+                //     $('#leftWrapper').prependTo('.GoodsList').css('margin-top', 0);
+                //     $('body>.active_rn_title').prependTo($('.rightNav li').eq(0)).removeClass('active_rn_title');
+                //     $('.rightNav li').eq(0).css('margin-top', '0');
+                //     isBoolean = true;
+                //     index = 0;
+                //     prevPosition = 0;
+                // }
+                // if (y < -553 && this.startY > -553 || y > -553 && this.startY < -553) {
                 //     this.options.subMargin = -553;
                 //     this._translate(0, -553);
                 //     $(this.scroller).css('transform', 'translate(0,' + (y + 213) + 'px)');
                 //     $('.container').css('transform', 'translate(0,-213px)');
                 // }
+
+
+
+
+
+
+
+
 
                 if (y === 0) {
                     // 关闭 所有 效果 最终值 opacity 0 scale 0
@@ -317,14 +322,6 @@ var commodityDetail = (function() {
                     key = false;
                     $('.leftNav li').removeClass('activeLeft').eq(index).addClass('activeLeft');
                 }
-
-
-                if (this.options.momentumY_exec) {
-                    this.options.momentumY_exec = false;
-                }
-
-
-
 
 
 
@@ -342,8 +339,7 @@ var commodityDetail = (function() {
                 if (!my.oneScroller) {
                     oneScroller = my.oneScroller = new IScroll('.wrapper_one', {
                         probeType: 3,
-                        bounce: false,
-                        subMargin: -213
+                        bounce: false
 
                     })
                     oneScroller.on('scroll', animateScroll)
@@ -394,20 +390,22 @@ var commodityDetail = (function() {
 
 
 
-            // 设置 初始 Y 值
+            // 设置 初始 Y 值 && iscroll 公共参数
             $('.container').css('transform', 'translate(0,' + contentTransform + 'px)');
             mySwiper.slides[mySwiper.activeIndex].children[0].children[0].style.transform = 'translate(0,' + mySwiper.passedParams.scrollerTransform[mySwiper.activeIndex] + 'px)';
             mySwiper.passedParams.scrollerObj[mySwiper.activeIndex].y = mySwiper.passedParams.scrollerTransform[mySwiper.activeIndex] + contentTransform;
             mySwiper.passedParams.scrollerObj[mySwiper.activeIndex].options.rechanged = true;
+            mySwiper.passedParams.scrollerObj[mySwiper.activeIndex].options.subMargin = -213
 
             if (contentTransform > -213) {
                 if (transformScroller) {
                     mySwiper.passedParams.scrollerObj[mySwiper.activeIndex].y = contentTransform;
                     // 控制iscroll 弹动
                     mySwiper.passedParams.scrollMoveY[mySwiper.activeIndex] = true;
-                    mySwiper.passedParams.scrollerObj[mySwiper.activeIndex].options.momentumY = true;
+                    // mySwiper.passedParams.scrollerObj[mySwiper.activeIndex].options.momentumY = true;
                     mySwiper.passedParams.scrollerObj[mySwiper.activeIndex].options.rechanged = false;
                     mySwiper.passedParams.scrollerObj[mySwiper.activeIndex].options.realY = transformScroller - 213;
+
                     // 控制 动能 进入 
                 }
             }

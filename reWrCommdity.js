@@ -3,106 +3,123 @@ window.onload = function() {
     commdityDetail.initScroll();
 }
 
-var oneScroll,
-    twoScroll,
-    threeScroll;
-
 var commdityDetail = (function() {
+    var my = {};
+
     return {
         initSwiper: function() {
-            var mySwiper = new Swiper('.swiper-container', {
+        	my.scrollTransform = [];
+        	my.scrollers = [];
+            my.scrollersDom = $('.swiper-slide').children();
+        	my.firstPosition = -($('.h_searchWrapper').outerHeight() + $('.iw_info').outerHeight());
+        	my.secondPosition = -533;
+
+
+            // 创建变量保存scroller对象
+            $.each(my.scrollersDom, function(i, item) {
+                my[i] = false;
+                my.scrollTransform.push(0);
+            })
+            // 初始化 swiper
+            my.mySwiper = new Swiper('.swiper-container', {
                 resistanceRatio: 0,
                 freeMode: false,
                 on: {
                     slideChange: function() {
-                        commdityDetail.initScroll(this.activeIndex);
+                    	var contentTransform = $('.container').css('transform') !== 'none' ? parseInt($('.container').css('transform').match(/-?\d+/g)[5], 10) : 0;
+                        my.scrollTransform[this.previousIndex] = parseInt($(my.scrollers[this.previousIndex].scroller).css('transform').match(/-?\d+/g)[5], 10);
+
+                        commdityDetail.initScroll(this.activeIndex,contentTransform);
+                    },
+                    setTranslate: function(translate) {
+                        $('.border_bottom_line').css('transform', 'translateX(' + (-translate / my.scrollersDom.length) + 'px)');
                     }
                 }
             })
         },
-        initScroll: function(index) {
-            var index = index ? index : 0;
+        initScroll: function(index, contentTransform) {
+            var index = index ? index : 0,
+            	contentTransform = contentTransform ? contentTransform : 0,
+            	scrollTransform = my.scrollTransform[index],
+            	scroller;
 
-            function scrollAnimate() {
+
+
+        	function scrollAnimate() {	
                 var y = this.y >> 0;
-                console.log(this);
 
-                if (this.scroller.className === 'one_scroller') {
-                    this.scroller.style.transform = 'translate(0,0)';
-                }
+               	console.log(y, scrollAnimate.caller.arguments[0]);
 
-                if (y < -213) {
-                	$('.container').css('transform','translate(0,-213px)');
-                	if (this.scroller.className === 'one_scroller') {
-                		$('.rightNav').css('transform','translate(0,' + (y + 213) + 'px)');
-                	}else {
-                		this.scroller.style.transform = 'translate(0,' + (y + 213) + 'px)'; 
-                	}
-                }else {
+            	// 初始定位位置 -213 
+ 				if (y < my.firstPosition && this.startY > my.firstPosition || y > my.firstPosition && this.startY < my.firstPosition) {
+        	 		y = this.y = my.scrollTransform[my.mySwiper.activeIndex] + my.firstPosition;
+        	 		this.options.fixed = true;	//进入后不执行动能
+ 				}
+
+
+                if (y > my.firstPosition) {
                 	$('.container').css('transform', 'translate(0,' + y + 'px)');
+                	$(this.scroller).css('transform', 'translate(0,' +  (my.scrollTransform[my.mySwiper.activeIndex] ? my.scrollTransform[my.mySwiper.activeIndex] : 0) + 'px)');
+                }else if (y <= my.firstPosition) {
 
-                	if (this.scroller.className === 'one_scroller') {
-	                	$('.rightNav').css('transform', 'translate(0,' + 0 + 'px)');
-                	}else {
-                		this.scroller.style.transform = 'translate(0,0)';
+                	if (y === my.firstPosition) {
+                		if (this.options.isChangeY) {
+                			y = this.y = this.startY = my.scrollTransform[my.mySwiper.activeIndex] + my.firstPosition;
+                			my.scrollTransform[my.mySwiper.activeIndex] = 0;
+                			this.options.isChangeY = false;
+                			console.log(y,'jjjjjjjjjjjjjjjjjjjjj')
+                		}
                 	}
+
+                	if (scrollAnimate.caller.arguments[0] === 'scrollEnd') {
+                		my.scrollTransform[my.mySwiper.activeIndex] = 0;
+                	}
+
+                	$('.container').css('transform', 'translate(0,' + my.firstPosition + 'px)');
+                	$(this.scroller).css('transform', 'translate(0,' +  (y - my.firstPosition) + 'px)');
+
+
                 }
-
-            }
-
-            if (index === 0) {
-                if (!oneScroll) {
-                    oneScroll = new IScroll('.one_scrollWrapper', {
-                        probeType: 3,
-                        bounce: false
-                    })
-                }
-                oneScroll.on('scroll', scrollAnimate);
-                oneScroll.on('scrollEnd', scrollAnimate);
-                oneScroll.on('scrollCancel', scrollAnimate);
-            }
-
-
-            if (index === 1) {
-                if (!twoScroll) {
-                    twoScroll = new IScroll('.two_scrollWrapper', {
-                        probeType: 3,
-                        bounce: false
-                    })
-                }
-                twoScroll.on('scroll', scrollAnimate);
-                twoScroll.on('scrollEnd', scrollAnimate);
-                twoScroll.on('scrollCancel', scrollAnimate);
-            }
-
-            if (index === 2) {
-                if (!threeScroll) {
-                    oneScroll = new IScroll('.three_scrollWrapper', {
-                        probeType: 3,
-                        bounce: false
-                    })
-                }
-                oneScroll.on('scroll', scrollAnimate);
-                oneScroll.on('scrollEnd', scrollAnimate);
-                oneScroll.on('scrollCancel', scrollAnimate);
+ 
             }
 
 
 
 
+
+            // 创建滚动对象
+            $.each(my.scrollersDom, function(i, item) {
+                if (i === index) {
+                    if (!my.scrollers[i]) {
+                       my.scrollers[i] = new IScroll(my.scrollersDom[i], {
+                            probeType: 3,
+                            bounce: false,
+                            subMargin: my.firstPosition
+                        })
+                        my.scrollers[i].on('scroll', scrollAnimate);
+                        my.scrollers[i].on('scrollEnd', scrollAnimate);
+                        my.scrollers[i].on('scrollCancel', scrollAnimate);
+                    }else {
+                		// 已初始化scroller
+                    }
+                    scroller = my.scrollers[i];
+                }
+            })
+
+            $('.container').css('transform', 'translate(0,' + contentTransform + 'px)');
+
+            // 设置 初始化 y 值
+            if (contentTransform > my.firstPosition) {
+    		 	scroller.y = contentTransform;
+            	// 第二级滚动如果有值
+            	if (scrollTransform) {
+            		$(scroller.scroller).css('transform', 'translate(0,' + scrollTransform + 'px)');
+            		scroller.options.isChangeY = true;
+            	}
+            }else {
+            	scroller.y = scrollTransform + contentTransform;
+            }
         }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
