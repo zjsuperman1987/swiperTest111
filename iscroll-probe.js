@@ -1678,8 +1678,15 @@
 
                     return;
                 }
+  
+                now = (now - startTime) / duration;
+                easing = easingFn(now);
+                newX = (destX - startX) * easing + startX;
+                newY = (destY - startY) * easing + startY;
 
-
+                that._translate(newX, newY);
+                
+                console.log('动能')
                  /*自定义*/
                 if (that.options.subMargin) {
                     var subMargin = that.options.subMargin;
@@ -1693,24 +1700,13 @@
                     }
                     if (that.options.fixed) {
                         console.log('fixed....................................')
-                        
+
                         that.options.fixed = false;
                         that._execEvent('scrollEnd');
                         return;
-
                     }
                 }
-                /* 自定义 */
-
-
-                now = (now - startTime) / duration;
-                easing = easingFn(now);
-                newX = (destX - startX) * easing + startX;
-                newY = (destY - startY) * easing + startY;
-
-                that._translate(newX, newY);
-                
-               
+                /* 自定义 */             
 
 
                 if (that.isAnimating) {
