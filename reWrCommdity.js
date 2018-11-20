@@ -3,11 +3,11 @@ window.onload = function() {
     commdityDetail.initScroll();
 }
 
- 
 
 
 
- 
+
+
 var commdityDetail = (function() {
     var my = {};
 
@@ -62,9 +62,10 @@ var commdityDetail = (function() {
                 scroller,
 
                 title_index = 0,
-                old_goodHeight,
-                goodHeight = $('.goodsList_right li').eq(title_index).outerHeight() - titleHeight,
-                titleHeight = $('.rn_title').eq(0).outerHeight();
+                title_len = $('.rn_title').length;
+            titleHeight = $('.rn_title').eq(0).outerHeight(),
+                goodHeight = $('.goodsList_right li').eq(title_index).outerHeight() - titleHeight;
+            old_goodHeight = $('.goodsList_right li').eq(title_index).outerHeight() - titleHeight;
 
 
 
@@ -126,27 +127,30 @@ var commdityDetail = (function() {
 
                             // 零界点
                             if (y <= my.secondPosition - goodHeight) {
-                                $('.rn_title').eq(title_index).prependTo($('.goodsList_right li').eq(title_index)).addClass('active_rn_title_middle');
+                                $('.rn_title').eq(0).prependTo($('.goodsList_right li').eq(title_index)).addClass('active_rn_title_middle');
+                            }
+                            if (y < my.secondPosition - goodHeight - titleHeight && title_index < title_len) {
                                 title_index = title_index + 1;
                                 old_goodHeight = my.secondPosition - goodHeight;
-                                goodHeight += $('.goodsList_right li').eq(title_index).outerHeight() - titleHeight;
-                                
-                            }
-                            if (y < old_goodHeight - titleHeight) {
-                                alert(999)
-                                $('.rn_title').eq(title_index).insertAfter('.goodsList_left').addClass('active_rn_title');
+                                goodHeight += $('.goodsList_right li').eq(title_index).outerHeight();
+
+                                $('.rn_title').eq(title_index).insertAfter('.goodsList_left').addClass('active_rn_title').eq(title_index - 1).removeClass('active_rn_title_middle');
                                 $('.goodsList_right li').eq(title_index).addClass('goodsList_right_li_loseHead');
                             }
-                        } else {
-                            if (y > old_goodHeight - titleHeight) {
+                            console.log(title_index,'====================================================================================================')
+                        } 
+                        if (this.directionY < 0) {
+                            if (y > old_goodHeight - titleHeight && title_index >= 0) {
                                 $('.rn_title').eq(title_index).prependTo($('.goodList_right li').eq(title_index)).removeClass('active_rn_title');
                                 $('.goodsList_right li').eq(title_index).removeClass('goodsList_right_li_loseHead');
-                            }
-                            if (y > old_goodHeight) {
-                                $('.rin_title').eq(title_index - 1).insertAfter('.goodsList_left').removeClass('active_rn_title_middle');
                                 title_index = title_index - 1;
-                                old_goodHeight -= $('.goodsList_right li').eq(title_index).outerHeight();
+                                old_goodHeight += $('.goodsList_right li').eq(title_index).outerHeight();
                             }
+                            if (y > old_goodHeight - $('.goodsList_right li').eq(title_index).outerHeight()) {
+                                $('.rn_title').eq(title_index).insertAfter('.goodsList_left').addClass('active_rn_title').removeClass('active_rn_title_middle');
+                                
+                            }
+                            console.log(title_index,'====================================================================================================')
                         }
 
 
@@ -224,20 +228,3 @@ var commdityDetail = (function() {
 
     }
 }())
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
