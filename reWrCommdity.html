@@ -319,43 +319,28 @@
         outline: 10px solid white;
         outline-offset: -24px;
     }
-    /*商品列表*/
 
     /*商品列表*/
-    .GoodsList {
-        position: relative;
+    .goodsList {
         margin-top: .2rem;
-        width: 100%;
     }
 
-
-
-    #leftWrapper {
+    .goodsList_left {
+        float: left;
         width: .6rem;
-        height: 4.86rem;
-        float: left;
         overflow: hidden;
     }
 
-    .leftNav {
-        position: relative;
-        z-index: 2;
-        float: left;
-        width: 100%;
-        overflow: hidden;
-        background: #EEE;
-    }
-
-    .leftNav li {
+    .goodsList_left li {
         width: 100%;
         padding: .1rem .05rem;
     }
 
-    .leftNav .hot {
+    .hot {
         font-weight: bold;
     }
 
-    .leftNav .activeLeft {
+    .activeLeft {
         background: gold;
     }
 
@@ -377,37 +362,45 @@
         background: #eee;
     }
 
-    .rightNav {
-        width: 100%;
+    /*右边*/
+
+    .goodsList_right {
+        float: left;
+        width: 2.6rem;
+        background: white;
         overflow: hidden;
     }
 
-    .rightNav li {
+    .goodsList_right li {
         position: relative;
         width: 100%;
-        padding-left: .7rem;
+        padding-left: .1rem;
+    }
+
+    .goodsList_right_li_loseHead {
+        margin-top: .4rem;
     }
 
     .rn_title {
         position: relative;
         z-index: 1;
-        width: 100%;
+        float: right;
+        width: 2.6rem;
         height: .4rem;
-        padding: .1rem .1rem .1rem 0;
+        padding: .1rem;
         font-weight: bold;
         background: white;
     }
 
     .active_rn_title {
-        margin-top: .82rem;
-        padding-left: .7rem;
+        position: fixed;
+        right: 0;
     }
 
     .active_rn_title_middle {
         position: absolute;
         bottom: 0;
         margin-top: 0;
-        padding-left: 0;
     }
 
     .rn_title i {
@@ -456,7 +449,7 @@
     .rnc_sale_evalute i {
         padding: 2px 2px;
     }
- 
+
     .rnc_bottom span {
         color: Red;
         display: inline-block;
@@ -527,10 +520,10 @@
         </div>
         <!-- 标签页 -->
         <div class='outerWrapper'>
-            <div class='swiper-container'>
+            <div class='swiper-container swiper-tab'>
                 <div class='swiper-wrapper'>
                     <!-- 第一页面 -->
-                    <div class='swiper-slide' style='background: red'>
+                    <div class='swiper-slide'>
                         <div class='oneScrollerWrapper'>
                             <div class='scroller'>
                                 <div class='advertsingImg'>
@@ -543,7 +536,7 @@
                                     <div class="specialPriceShowImg">
                                         <div class="swiper-container-nest">
                                             <div class="swiper-wrapper">
-                                                <div class="swiper-slide" style='height: 1.8rem'>
+                                                <div class="swiper-slide not-collection" style='height: 1.8rem'>
                                                     <div class="spsi_wrapper">
                                                         <img src="images/梅花.jpg" style="width: 100%; height: 1rem" />
                                                         <span class='spsi_introduce'>香辣 至尊牛排</span> <span class="spsi_month_sale">月售<i>22</i></span>
@@ -552,7 +545,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="swiper-slide" style='height: 1.8rem'>
+                                                <div class="swiper-slide not-collection" style='height: 1.8rem'>
                                                     <div class="spsi_wrapper">
                                                         <img src="images/梅花.jpg" style="width: 100%; height: 1rem" />
                                                         <span class='spsi_introduce'>香辣 至尊牛排</span> <span class="spsi_month_sale">月售<i>22</i></span>
@@ -561,7 +554,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="swiper-slide" style='height: 1.8rem'>
+                                                <div class="swiper-slide not-collection" style='height: 1.8rem'>
                                                     <div class="spsi_wrapper">
                                                         <img src="images/梅花.jpg" style="width: 100%; height: 1rem" />
                                                         <span class='spsi_introduce'>香辣 至尊牛排</span> <span class="spsi_month_sale">月售<i>22</i></span>
@@ -570,7 +563,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="swiper-slide" style='height: 1.8rem'>
+                                                <div class="swiper-slide not-collection" style='height: 1.8rem'>
                                                     <div class="spsi_wrapper">
                                                         <img src="images/梅花.jpg" style="width: 100%; height: 1rem" />
                                                         <span class='spsi_introduce'>香辣 至尊牛排</span> <span class="spsi_month_sale">月售<i>22</i></span>
@@ -579,7 +572,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="swiper-slide" style='height: 1.8rem'>
+                                                <div class="swiper-slide not-collection" style='height: 1.8rem'>
                                                     <div class="spsi_wrapper">
                                                         <img src="images/梅花.jpg" style="width: 100%; height: 1rem" />
                                                         <span class='spsi_introduce'>香辣 至尊牛排</span> <span class="spsi_month_sale">月售<i>22</i></span>
@@ -588,7 +581,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="swiper-slide" style='height: 1.8rem'>
+                                                <div class="swiper-slide not-collection" style='height: 1.8rem'>
                                                     <div class="spsi_wrapper">
                                                         <img src="images/梅花.jpg" style="width: 100%; height: 1rem" />
                                                         <span class='spsi_introduce'>香辣 至尊牛排</span> <span class="spsi_month_sale">月售<i>22</i></span>
@@ -600,25 +593,23 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <!--商品列表-->
-                                    <div class="GoodsList clearfix">
-                                        <div id='leftWrapper'>
-                                            <ul id='leftScroller' class='leftNav'>
-                                                <li class="hot activeLeft"><span><i class="fab fa-hotjar"></i></span>热销</li>
-                                                <li class="hot dicount"><span><i class="fab fa-hotjar"></i></span>优惠</li>
-                                                <li>店长推荐金牌披萨10寸</li>
-                                                <li>单身狗套餐</li>
-                                                <li>闺蜜情侣双人餐</li>
-                                                <li>知心披萨10寸</li>
-                                                <li>手工披萨10寸7寸</li>
-                                                <li>招牌双饼披萨</li>
-                                                <li>意面/焗饭</li>
-                                                <li>小吃</li>
-                                                <li>饮品</li>
-                                                <li>加料</li>
-                                            </ul>
-                                        </div>
-                                        <ul class="rightNav">
+                                    <!-- 商品列表 -->
+                                    <div class='goodsList'>
+                                        <ul class='goodsList_left'>
+                                            <li class="hot activeLeft"><span><i class="fab fa-hotjar"></i></span>热销</li>
+                                            <li class="hot dicount"><span><i class="fab fa-hotjar"></i></span>优惠</li>
+                                            <li>店长推荐金牌披萨10寸</li>
+                                            <li>单身狗套餐</li>
+                                            <li>闺蜜情侣双人餐</li>
+                                            <li>知心披萨10寸</li>
+                                            <li>手工披萨10寸7寸</li>
+                                            <li>招牌双饼披萨</li>
+                                            <li>意面/焗饭</li>
+                                            <li>小吃</li>
+                                            <li>饮品</li>
+                                            <li>加料</li>
+                                        </ul>
+                                        <ul class='goodsList_right'>
                                             <li>
                                                 <div class='rn_title'>
                                                     热销 <i>大家喜欢吃, 才叫真好吃</i></div>
