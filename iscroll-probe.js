@@ -1686,7 +1686,6 @@
 
                 that._translate(newX, newY);
                 
-                console.log('动能')
                  /*自定义*/
                 if (that.options.subMargin) {
                     var subMargin = that.options.subMargin;

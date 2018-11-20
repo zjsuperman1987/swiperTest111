@@ -4,26 +4,35 @@ window.onload = function() {
 }
 
 
-
-
-
-
 var commdityDetail = (function() {
     var my = {};
 
     return {
         initSwiper: function() {
+            my.listHeight = [];
             my.scrollTransform = [];
             my.scrollers = [];
             my.scrollersDom = $('.swiper-tab .swiper-slide:not(.not-collection)').children();
             my.firstPosition = -($('.h_searchWrapper').outerHeight() + $('.iw_info').outerHeight());
             my.secondPosition = -553;
 
+
             // 创建变量保存scroller对象
             $.each(my.scrollersDom, function(i, item) {
                 my[i] = false;
                 my.scrollTransform.push(0);
             })
+
+            // 初始化 商品列表高度
+            $.each($('.goodsList_right li'), function(i, item) {
+                if (i === 0) {
+                    my.listHeight.push($(item).outerHeight() - 40);
+                } else {
+                    var height = $(item).outerHeight() + my.listHeight[i - 1];
+                    my.listHeight.push(height);
+                }
+            })
+            console.log(my.listHeight)
             // 初始化 swiper
             my.mySwiper = new Swiper('.swiper-container', {
                 resistanceRatio: 0,
@@ -32,6 +41,7 @@ var commdityDetail = (function() {
                     slideChange: function() {
                         var contentTransform = $('.container').css('transform') !== 'none' ? parseInt($('.container').css('transform').match(/-?\d+/g)[5], 10) : 0;
                         my.scrollTransform[this.previousIndex] = parseInt($(my.scrollers[this.previousIndex].scroller).css('transform').match(/-?\d+/g)[5], 10);
+                        
 
                         my.scrollers[this.previousIndex].disable();
                         commdityDetail.initScroll(this.activeIndex, contentTransform);
@@ -57,31 +67,24 @@ var commdityDetail = (function() {
         },
         initScroll: function(index, contentTransform) {
             var index = index ? index : 0,
+                titleHeight = $('.rn_title').eq(0).outerHeight(),
                 contentTransform = contentTransform ? contentTransform : 0,
                 scrollTransform = my.scrollTransform[index],
                 scroller,
+                isSwitch = true;
 
-                title_index = 0,
-                title_len = $('.rn_title').length;
-            titleHeight = $('.rn_title').eq(0).outerHeight(),
-                goodHeight = $('.goodsList_right li').eq(title_index).outerHeight() - titleHeight;
-            old_goodHeight = $('.goodsList_right li').eq(title_index).outerHeight() - titleHeight;
-
-
-
-
-
+            my.titleIndex = my.titleIndex ? my.titleIndex : 0;
+            my.prevIndex = my.prevIndex ? my.prevIndex : 0;
 
             function scrollAnimate() {
                 var y = this.y >> 0;
 
-                console.log(y, scrollAnimate.caller.arguments[0], this.options.fixed, my.scrollTransform[my.mySwiper.activeIndex], this);
+                // console.log(y, scrollAnimate.caller.arguments[0], this.options.fixed, my.scrollTransform[my.mySwiper.activeIndex], this);
 
                 // 初始定位位置 -213 
                 if (y < my.firstPosition && this.startY > my.firstPosition || y > my.firstPosition && this.startY < my.firstPosition) {
                     y = this.y = my.scrollTransform[my.mySwiper.activeIndex] + my.firstPosition;
                     this.options.fixed = true; //进入后不执行动能
-                    console.log('骚骚的进入', scrollAnimate.caller.arguments[0], this.startY, y);
                 }
 
                 if (y > my.firstPosition) {
@@ -94,13 +97,11 @@ var commdityDetail = (function() {
                             y = this.y = this.startY = my.scrollTransform[my.mySwiper.activeIndex] + my.firstPosition;
                             my.scrollTransform[my.mySwiper.activeIndex] = 0;
                             this.options.isChangeY = false;
-                            console.log(y, 'jjjjjjjjjjjjjjjjjjjjj', this.startY);
                         }
                     }
 
                     if (scrollAnimate.caller.arguments[0] === 'beforeScrollStart') {
                         my.scrollTransform[my.mySwiper.activeIndex] = 0;
-                        console.log('我进来设置0了')
                     }
 
                     $('.container').css('transform', 'translate(0,' + my.firstPosition + 'px)');
@@ -112,80 +113,68 @@ var commdityDetail = (function() {
                 if (my.mySwiper.activeIndex === 0) {
 
 
-
-
                     if (y < my.secondPosition) {
                         $('.container').css('transform', 'translate(0,' + my.firstPosition + 'px)');
                         $(this.scroller).css('transform', 'translate(0,' + (my.secondPosition - my.firstPosition) + 'px)');
                         $('.goodsList_right').css('transform', 'translate(0,' + (y - my.secondPosition) + 'px)');
 
-                        if (this.directionY > 0) {
-                            if (!$('.rn_title').hasClass('active_rn_title_middle')) {
-                                $('.rn_title').eq(title_index).insertAfter('.goodsList_left').addClass('active_rn_title');
-                                $('.goodsList_right li').eq(title_index).addClass('goodsList_right_li_loseHead');
-                            }
-
-                            // 零界点
-                            if (y <= my.secondPosition - goodHeight) {
-                                $('.rn_title').eq(0).prependTo($('.goodsList_right li').eq(title_index)).addClass('active_rn_title_middle');
-                            }
-                            if (y < my.secondPosition - goodHeight - titleHeight && title_index < title_len) {
-                                title_index = title_index + 1;
-                                old_goodHeight = my.secondPosition - goodHeight;
-                                goodHeight += $('.goodsList_right li').eq(title_index).outerHeight();
-
-                                $('.rn_title').eq(title_index).insertAfter('.goodsList_left').addClass('active_rn_title').eq(title_index - 1).removeClass('active_rn_title_middle');
-                                $('.goodsList_right li').eq(title_index).addClass('goodsList_right_li_loseHead');
-                            }
-                            console.log(title_index,'====================================================================================================')
-                        } 
-                        if (this.directionY < 0) {
-                            if (y > old_goodHeight - titleHeight && title_index >= 0) {
-                                $('.rn_title').eq(title_index).prependTo($('.goodList_right li').eq(title_index)).removeClass('active_rn_title');
-                                $('.goodsList_right li').eq(title_index).removeClass('goodsList_right_li_loseHead');
-                                title_index = title_index - 1;
-                                old_goodHeight += $('.goodsList_right li').eq(title_index).outerHeight();
-                            }
-                            if (y > old_goodHeight - $('.goodsList_right li').eq(title_index).outerHeight()) {
-                                $('.rn_title').eq(title_index).insertAfter('.goodsList_left').addClass('active_rn_title').removeClass('active_rn_title_middle');
-                                
-                            }
-                            console.log(title_index,'====================================================================================================')
+                        if (isSwitch) {
+                            isSwitch = false;
+                            $('.rn_title').eq(my.titleIndex).addClass('active_rn_title').insertAfter('.goodsList_left');
+                            $('.goodsList_right li').eq(my.titleIndex).addClass('goodsList_right_li_loseHead');
                         }
 
 
+                        if (this.directionY > 0) {
+                            if (y < my.secondPosition - my.listHeight[my.titleIndex]) {
+                                $('.active_rn_title').prependTo($('.goodsList_right li').eq(my.titleIndex)).removeClass('active_rn_title').addClass('active_rn_title_middle');
+                                my.prevIndex = my.titleIndex;
+                            }
+                            if (y < my.secondPosition - my.listHeight[my.titleIndex] - titleHeight) {
+                                my.titleIndex = my.titleIndex + 1;
+
+                                $('.rn_title').eq(my.titleIndex).insertAfter('.goodsList_left').addClass('active_rn_title');
+                                $('.goodsList_right li').eq(my.titleIndex).addClass('goodsList_right_li_loseHead');
+
+                            }
+                        }
+                        if (this.directionY < 0) {
+                            if (my.prevIndex === my.titleIndex) {
+                                if (y > my.secondPosition - my.listHeight[my.titleIndex]) {
+                                    $('.rn_title').eq(my.titleIndex).insertAfter('.goodsList_left').addClass('active_rn_title').removeClass('active_rn_title_middle');
+                                    // console.log('我进来了')
+                                    my.prevIndex = my.prevIndex === 0 ? 0 : my.titleIndex - 1;
+                                }
+                            } else {
+                                if (y > my.secondPosition - my.listHeight[my.titleIndex - 1] - titleHeight) {
+                                    // console.log(y, my.secondPosition - my.listHeight[index - 1] - titleHeight, '上')
+                                    $('.active_rn_title').prependTo($('.goodsList_right li').eq(my.titleIndex).removeClass('goodsList_right_li_loseHead')).removeClass('active_rn_title');
+                                }
+                                if (y > my.secondPosition - my.listHeight[my.titleIndex - 1]) {
+                                    // console.log(y, my.secondPosition - my.listHeight[index - 1], '下')
+
+                                    $('.rn_title').eq(my.titleIndex - 1).insertAfter('.goodsList_left').addClass('active_rn_title').removeClass('active_rn_title_middle');
+                                    my.titleIndex = my.titleIndex - 1;
+                                    my.prevIndex = my.prevIndex === 0 ? 0 : my.titleIndex - 1;
+                                }
+                            }
+                        }
+                        console.log(my.prevIndex, my.titleIndex)
                     } else {
                         $('.goodsList_right').css('transform', 'translate(0,0)');
-                        $('.rn_title').eq(title_index).prependTo($('.goodsList_right li').eq(title_index)).removeClass('active_rn_title');
-                        $('.goodsList_right li').eq(title_index).removeClass('goodsList_right_li_loseHead');
-                        title_index = 0;
+
+                        $('.rn_title').eq(my.titleIndex).prependTo($('.goodsList_right li').eq(my.titleIndex)).removeClass('active_rn_title');
+                        $('.goodsList_right li').eq(my.titleIndex).removeClass('goodsList_right_li_loseHead');
+                        // my.titleIndex = 0;
+                        isSwitch = true;
                     }
                 }
-
-
-
-
-
-
-
-
-
-
-
-
 
                 // scrollEnd exec code 
                 if (scrollAnimate.caller.arguments[0] === 'scrollEnd') {
                     this.options.fixed = false;
                 }
-
-
-
             }
-
-
-
-
 
             // 创建滚动对象
             $.each(my.scrollersDom, function(i, item) {
@@ -221,10 +210,6 @@ var commdityDetail = (function() {
                 scroller.y = scrollTransform + contentTransform;
             }
         }
-
-
-
-
 
     }
 }())
