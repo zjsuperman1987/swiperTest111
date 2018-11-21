@@ -1662,7 +1662,7 @@
 			startY = this.y,
 			startTime = utils.getTime(),
 			destTime = startTime + duration;
-  
+ 
             function step() {
                 var now = utils.getTime(),
 				newX, newY,

@@ -2,6 +2,79 @@ window.onload = function() {
     commdityDetail.initSwiper();
     commdityDetail.initScroll();
 
+    // 初始化左边滚动
+    var leftScroll = new IScroll('.leftWrapper', {
+        probeType: 3,
+        bounce: false,
+        fixed: false,
+        subMargin: -553
+    })
+
+    function leftScroll_one() {
+        var y = this.y >> 0;
+        var rightScroll = commdityDetail.spec.scrollers[0].y >> 0;
+
+            // console.log(y, rightScroll, '==================================================================================================')
+            console.log(commdityDetail.spec.scrollers[0].y,'jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj', this.y)
+            console.log(this);
+
+
+
+        if (y <= -340) {
+            $(commdityDetail.spec.scrollers[0].scroller).css('transform', 'translate(0,-340px');
+            $('.goodsList_right').css('transform', 'translate(0,0)');
+            commdityDetail.spec.scrollers[0]._translate(0, -340);
+            this.y = 0;
+
+
+            if (!this.options.fixed) {
+                this.options.fixed = true;
+                ['touchstart', 'pointerdown', 'MSPointerDown', 'mousedown'].forEach(function(item, i) {
+                    document.querySelector('.goodsList_left').addEventListener(item, stopEvent)
+                })
+
+
+            }
+
+
+		if (!this.options.fixed) {
+        	$(this.scroller).css('transform', 'translate(0,0)');
+
+		}  
+
+
+ // if (!this.options.fixed) {
+ //                this.options.fixed = true;
+ //                ['touchstart', 'pointerdown', 'MSPointerDown', 'mousedown'].forEach(function(item, i) {
+ //                    document.querySelector('.goodsList_left').addEventListener(item, stopEvent)
+ //                })
+
+
+ //            } 
+
+
+
+
+
+    }
+}
+
+
+
+    leftScroll.on('beforeScrollStart', leftScroll_one)
+    leftScroll.on('scrollCancel', leftScroll_one)
+    leftScroll.on('scroll', leftScroll_one)
+    leftScroll.on('scrollEnd', leftScroll_one)
+
+    // // 阻止冒泡
+    function stopEvent(e) {
+    	// alert(999)
+    	e.stopPropagation();
+    	e.preventDefault();
+    }
+
+                
+
 
 }
 
@@ -10,6 +83,8 @@ var commdityDetail = (function() {
     var my = {};
 
     return {
+        spec: my,
+
         initSwiper: function() {
             my.listHeight = [];
             my.scrollTransform = [];
@@ -93,7 +168,7 @@ var commdityDetail = (function() {
                 var y = this.y >> 0;
 
                 // console.log(y, scrollAnimate.caller.arguments[0], this.options.fixed, my.scrollTransform[my.mySwiper.activeIndex], this);
-                // console.log(y);
+                console.log(y,'真实');
 
                 // 初始定位位置 -213 
                 if (y < my.firstPosition && this.startY > my.firstPosition || y > my.firstPosition && this.startY < my.firstPosition) {
@@ -204,17 +279,14 @@ var commdityDetail = (function() {
 
                 $('.goodsList_left li').removeClass('activeLeft').eq(my.titleIndex).addClass('activeLeft')
 
-                console.log(my.titleIndex, y, my.titleIndex, my.prevIndex);
+                // console.log(y, my.titleIndex, my.prevIndex,my.listHeight[my.titleIndex]);
             }
 
 
-
-
-  
             // 创建滚动对象
             $.each(my.scrollersDom, function(i, item) {
                 if (i === index) {
-                    
+
 
                     if (!my.scrollers[i]) {
                         my.scrollers[i] = new IScroll(my.scrollersDom[i], {
