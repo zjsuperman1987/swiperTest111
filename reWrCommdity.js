@@ -11,11 +11,11 @@ var commdityDetail = (function() {
         initSwiper: function() {
             my.listHeight = [];
             my.scrollTransform = [];
+            my.thirdTransform = 0;
             my.scrollers = [];
             my.scrollersDom = $('.swiper-tab .swiper-slide:not(.not-collection)').children();
             my.firstPosition = -($('.h_searchWrapper').outerHeight() + $('.iw_info').outerHeight());
-            my.secondPosition = -553;
-
+            my.secondPosition = -(-my.firstPosition + $('.advertsingImg').outerHeight() + $('.today_good_special_price').outerHeight() + $('.specialPriceShowImg').outerHeight() + parseInt($('.goodsList').css('margin-top'), 10));
 
             // 创建变量保存scroller对象
             $.each(my.scrollersDom, function(i, item) {
@@ -39,16 +39,26 @@ var commdityDetail = (function() {
                 freeMode: false,
                 on: {
                     slideChange: function() {
-                        var contentTransform = $('.container').css('transform') !== 'none' ? parseInt($('.container').css('transform').match(/-?\d+/g)[5], 10) : 0;
+                        var contentTransform = $('.container').css('transform') !== 'none' ? parseInt($('.container').css('transform').match(/-?\d+/g)[5], 10) : 0,
+                            thirdTransform = $('.goodsList_right').css('transform') !== 'none' ? parseInt($('.goodsList_right').css('transform').match(/-?\d+/g)[5], 10) : 0;
                         my.scrollTransform[this.previousIndex] = parseInt($(my.scrollers[this.previousIndex].scroller).css('transform').match(/-?\d+/g)[5], 10);
-                        
-
+                        // 如果是特殊的第一页
+                        if (this.previousIndex === 0) {
+                            my.thirdTransform = thirdTransform;
+                        }
+                        // 调用IScroll
                         my.scrollers[this.previousIndex].disable();
                         commdityDetail.initScroll(this.activeIndex, contentTransform);
                         my.scrollers[this.activeIndex].enable();
+
+                        // 转换下划线
+                        $('.border_bottom_line').appendTo($('.selectTabItem').eq(this.activeIndex).find('span'));
+                        $('.border_bottom_line').css('transform', 'translateX(0)');
+                        $('.selectTabItem span').removeClass('active_selectTabItem').eq(this.activeIndex).addClass('active_selectTabItem');
                     },
                     setTranslate: function(translate) {
-                        $('.border_bottom_line').css('transform', 'translateX(' + (-translate / my.scrollersDom.length) + 'px)');
+                        translate = -(translate + (this.width * this.activeIndex)) / $('.swiper-slide:not(.not-collection)').length;
+                        $('.border_bottom_line').css('transform', 'translateX(' + translate + 'px)');
                     }
                 }
             })
@@ -70,6 +80,7 @@ var commdityDetail = (function() {
                 titleHeight = $('.rn_title').eq(0).outerHeight(),
                 contentTransform = contentTransform ? contentTransform : 0,
                 scrollTransform = my.scrollTransform[index],
+                thirdTransform = my.thirdTransform,
                 scroller,
                 isSwitch = true;
 
@@ -80,21 +91,32 @@ var commdityDetail = (function() {
                 var y = this.y >> 0;
 
                 // console.log(y, scrollAnimate.caller.arguments[0], this.options.fixed, my.scrollTransform[my.mySwiper.activeIndex], this);
+                // console.log(y);
 
                 // 初始定位位置 -213 
                 if (y < my.firstPosition && this.startY > my.firstPosition || y > my.firstPosition && this.startY < my.firstPosition) {
-                    y = this.y = my.scrollTransform[my.mySwiper.activeIndex] + my.firstPosition;
+                    if (index === 0) {
+                        y = this.y = my.scrollTransform[my.mySwiper.activeIndex] + my.firstPosition + my.thirdTransform;
+                    } else {
+                        y = this.y = my.scrollTransform[my.mySwiper.activeIndex] + my.firstPosition;
+                    }
                     this.options.fixed = true; //进入后不执行动能
                 }
 
                 if (y > my.firstPosition) {
                     $('.container').css('transform', 'translate(0,' + y + 'px)');
                     $(this.scroller).css('transform', 'translate(0,' + (my.scrollTransform[my.mySwiper.activeIndex] ? my.scrollTransform[my.mySwiper.activeIndex] : 0) + 'px)');
+
                 } else if (y <= my.firstPosition) {
 
                     if (y === my.firstPosition) {
                         if (this.options.isChangeY) {
-                            y = this.y = this.startY = my.scrollTransform[my.mySwiper.activeIndex] + my.firstPosition;
+                            if (index === 0) {
+                                y = this.y = this.startY = my.scrollTransform[my.mySwiper.activeIndex] + my.firstPosition + my.thirdTransform;
+                            } else {
+                                y = this.y = this.startY = my.scrollTransform[my.mySwiper.activeIndex] + my.firstPosition;
+                            }
+
                             my.scrollTransform[my.mySwiper.activeIndex] = 0;
                             this.options.isChangeY = false;
                         }
@@ -117,6 +139,7 @@ var commdityDetail = (function() {
                         $('.container').css('transform', 'translate(0,' + my.firstPosition + 'px)');
                         $(this.scroller).css('transform', 'translate(0,' + (my.secondPosition - my.firstPosition) + 'px)');
                         $('.goodsList_right').css('transform', 'translate(0,' + (y - my.secondPosition) + 'px)');
+
 
                         if (isSwitch) {
                             isSwitch = false;
@@ -142,31 +165,31 @@ var commdityDetail = (function() {
                             if (my.prevIndex === my.titleIndex) {
                                 if (y > my.secondPosition - my.listHeight[my.titleIndex]) {
                                     $('.rn_title').eq(my.titleIndex).insertAfter('.goodsList_left').addClass('active_rn_title').removeClass('active_rn_title_middle');
-                                    // console.log('我进来了')
                                     my.prevIndex = my.prevIndex === 0 ? 0 : my.titleIndex - 1;
                                 }
                             } else {
                                 if (y > my.secondPosition - my.listHeight[my.titleIndex - 1] - titleHeight) {
-                                    // console.log(y, my.secondPosition - my.listHeight[index - 1] - titleHeight, '上')
                                     $('.active_rn_title').prependTo($('.goodsList_right li').eq(my.titleIndex).removeClass('goodsList_right_li_loseHead')).removeClass('active_rn_title');
+
                                 }
                                 if (y > my.secondPosition - my.listHeight[my.titleIndex - 1]) {
-                                    // console.log(y, my.secondPosition - my.listHeight[index - 1], '下')
-
                                     $('.rn_title').eq(my.titleIndex - 1).insertAfter('.goodsList_left').addClass('active_rn_title').removeClass('active_rn_title_middle');
                                     my.titleIndex = my.titleIndex - 1;
                                     my.prevIndex = my.prevIndex === 0 ? 0 : my.titleIndex - 1;
                                 }
                             }
                         }
-                        console.log(my.prevIndex, my.titleIndex)
-                    } else {
+                    } else if (y > my.secondPosition && this.startY < my.secondPosition) {
+
                         $('.goodsList_right').css('transform', 'translate(0,0)');
+                        $('.container').css('transform', 'translate(0,' + my.firstPosition + 'px)');
+                        $(this.scroller).css('transform', 'translate(0,' + (y - my.firstPosition) + 'px)');
 
                         $('.rn_title').eq(my.titleIndex).prependTo($('.goodsList_right li').eq(my.titleIndex)).removeClass('active_rn_title');
                         $('.goodsList_right li').eq(my.titleIndex).removeClass('goodsList_right_li_loseHead');
                         // my.titleIndex = 0;
                         isSwitch = true;
+
                     }
                 }
 
@@ -174,11 +197,32 @@ var commdityDetail = (function() {
                 if (scrollAnimate.caller.arguments[0] === 'scrollEnd') {
                     this.options.fixed = false;
                 }
+
+                $('.goodsList_left li').removeClass('activeLeft').eq(my.titleIndex).addClass('activeLeft')
+            }
+
+
+            function scrollerLeft() {
+                console.log(this.y);
             }
 
             // 创建滚动对象
             $.each(my.scrollersDom, function(i, item) {
                 if (i === index) {
+                    // 初始左边滚动
+                    if (i === 0) {
+                        if (!my.leftScroller) {
+                            my.leftScroller = new IScroll('.leftWrapper', {
+                                probeType: 3,
+                                bounce: false
+                            })
+                            my.leftScroller.on('scroll', scrollerLeft);
+                            my.leftScroller.on('scrollEnd', scrollerLeft);
+                        }
+                     }
+
+
+
                     if (!my.scrollers[i]) {
                         my.scrollers[i] = new IScroll(my.scrollersDom[i], {
                             probeType: 3,
@@ -205,9 +249,16 @@ var commdityDetail = (function() {
                 if (scrollTransform) {
                     $(scroller.scroller).css('transform', 'translate(0,' + scrollTransform + 'px)');
                     scroller.options.isChangeY = true;
+                    // 第三级滚动
+                    if (thirdTransform) {
+                        $('.goodsList_right').css('transform', 'translate(0,' + my.thirdTransform + 'px)');
+                    }
                 }
             } else {
                 scroller.y = scrollTransform + contentTransform;
+                if (index === 0) {
+                    scroller.y = scrollTransform + contentTransform + my.thirdTransform;
+                }
             }
         }
 

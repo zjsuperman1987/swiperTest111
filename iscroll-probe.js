@@ -1662,7 +1662,7 @@
 			startY = this.y,
 			startTime = utils.getTime(),
 			destTime = startTime + duration;
-
+  
             function step() {
                 var now = utils.getTime(),
 				newX, newY,
@@ -1685,7 +1685,7 @@
                 newY = (destY - startY) * easing + startY;
 
                 that._translate(newX, newY);
-                
+        
                  /*自定义*/
                 if (that.options.subMargin) {
                     var subMargin = that.options.subMargin;
