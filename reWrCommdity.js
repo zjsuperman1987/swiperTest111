@@ -1,6 +1,8 @@
 window.onload = function() {
     commdityDetail.initSwiper();
     commdityDetail.initScroll();
+
+
 }
 
 
@@ -147,7 +149,6 @@ var commdityDetail = (function() {
                             $('.goodsList_right li').eq(my.titleIndex).addClass('goodsList_right_li_loseHead');
                         }
 
-
                         if (this.directionY > 0) {
                             if (y < my.secondPosition - my.listHeight[my.titleIndex]) {
                                 $('.active_rn_title').prependTo($('.goodsList_right li').eq(my.titleIndex)).removeClass('active_rn_title').addClass('active_rn_title_middle');
@@ -162,6 +163,7 @@ var commdityDetail = (function() {
                             }
                         }
                         if (this.directionY < 0) {
+
                             if (my.prevIndex === my.titleIndex) {
                                 if (y > my.secondPosition - my.listHeight[my.titleIndex]) {
                                     $('.rn_title').eq(my.titleIndex).insertAfter('.goodsList_left').addClass('active_rn_title').removeClass('active_rn_title_middle');
@@ -170,12 +172,14 @@ var commdityDetail = (function() {
                             } else {
                                 if (y > my.secondPosition - my.listHeight[my.titleIndex - 1] - titleHeight) {
                                     $('.active_rn_title').prependTo($('.goodsList_right li').eq(my.titleIndex).removeClass('goodsList_right_li_loseHead')).removeClass('active_rn_title');
-
+                                    console.log('上上上上上上上上上上上上上上上上上上上上上上上上上上上上上上上上上上上')
                                 }
                                 if (y > my.secondPosition - my.listHeight[my.titleIndex - 1]) {
                                     $('.rn_title').eq(my.titleIndex - 1).insertAfter('.goodsList_left').addClass('active_rn_title').removeClass('active_rn_title_middle');
                                     my.titleIndex = my.titleIndex - 1;
                                     my.prevIndex = my.prevIndex === 0 ? 0 : my.titleIndex - 1;
+                                    console.log('下下下下下下下下下下下下下下下下下下下下下下下下下下下下下下下下下下下下下')
+
                                 }
                             }
                         }
@@ -199,29 +203,18 @@ var commdityDetail = (function() {
                 }
 
                 $('.goodsList_left li').removeClass('activeLeft').eq(my.titleIndex).addClass('activeLeft')
+
+                console.log(my.titleIndex, y, my.titleIndex, my.prevIndex);
             }
 
 
-            function scrollerLeft() {
-                console.log(this.y);
-            }
 
+
+  
             // 创建滚动对象
             $.each(my.scrollersDom, function(i, item) {
                 if (i === index) {
-                    // 初始左边滚动
-                    if (i === 0) {
-                        if (!my.leftScroller) {
-                            my.leftScroller = new IScroll('.leftWrapper', {
-                                probeType: 3,
-                                bounce: false
-                            })
-                            my.leftScroller.on('scroll', scrollerLeft);
-                            my.leftScroller.on('scrollEnd', scrollerLeft);
-                        }
-                     }
-
-
+                    
 
                     if (!my.scrollers[i]) {
                         my.scrollers[i] = new IScroll(my.scrollersDom[i], {
