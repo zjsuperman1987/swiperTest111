@@ -1,22 +1,22 @@
 /*! iScroll v5.2.0-snapshot ~ (c) 2008-2017 Matteo Spinelli ~ http://cubiq.org/license */
 
-(function (window, document, Math) {
+(function(window, document, Math) {
     var rAF = window.requestAnimationFrame ||
-	window.webkitRequestAnimationFrame ||
-	window.mozRequestAnimationFrame ||
-	window.oRequestAnimationFrame ||
-	window.msRequestAnimationFrame ||
-	function (callback) { window.setTimeout(callback, 1000 / 60); };
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function(callback) { window.setTimeout(callback, 1000 / 60); };
 
-    var utils = (function () {
+    var utils = (function() {
         var me = {};
 
         var _elementStyle = document.createElement('div').style;
-        var _vendor = (function () {
+        var _vendor = (function() {
             var vendors = ['t', 'webkitT', 'MozT', 'msT', 'OT'],
-			transform,
-			i = 0,
-			l = vendors.length;
+                transform,
+                i = 0,
+                l = vendors.length;
 
             for (; i < l; i++) {
                 transform = vendors[i] + 'ransform';
@@ -34,31 +34,31 @@
 
         me.getTime = Date.now || function getTime() { return new Date().getTime(); };
 
-        me.extend = function (target, obj) {
+        me.extend = function(target, obj) {
             for (var i in obj) {
                 target[i] = obj[i];
             }
         };
 
-        me.addEvent = function (el, type, fn, capture) {
+        me.addEvent = function(el, type, fn, capture) {
             el.addEventListener(type, fn, !!capture);
         };
 
-        me.removeEvent = function (el, type, fn, capture) {
+        me.removeEvent = function(el, type, fn, capture) {
             el.removeEventListener(type, fn, !!capture);
         };
 
-        me.prefixPointerEvent = function (pointerEvent) {
+        me.prefixPointerEvent = function(pointerEvent) {
             return window.MSPointerEvent ?
-			'MSPointer' + pointerEvent.charAt(7).toUpperCase() + pointerEvent.substr(8) :
-			pointerEvent;
+                'MSPointer' + pointerEvent.charAt(7).toUpperCase() + pointerEvent.substr(8) :
+                pointerEvent;
         };
 
-        me.momentum = function (scroller, current, start, time, lowerMargin, wrapperSize, deceleration) {
+        me.momentum = function(scroller, current, start, time, lowerMargin, wrapperSize, deceleration) {
             var distance = current - start,
-			speed = Math.abs(distance) / time,
-			destination,
-			duration;
+                speed = Math.abs(distance) / time,
+                destination,
+                duration;
 
             deceleration = deceleration === undefined ? 0.0006 : deceleration;
 
@@ -110,7 +110,7 @@
         - galaxy S6 is OK
         `AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Mobile Safari/537.36 (Chrome/)`
         */
-        me.isBadAndroid = (function () {
+        me.isBadAndroid = (function() {
             var appVersion = window.navigator.appVersion;
             // Android browser is not a chrome browser.
             if (/Android/.test(appVersion) && !(/Chrome\/\d/.test(appVersion))) {
@@ -134,12 +134,12 @@
             touchAction: _prefixStyle('touchAction')
         });
 
-        me.hasClass = function (e, c) {
+        me.hasClass = function(e, c) {
             var re = new RegExp("(^|\\s)" + c + "(\\s|$)");
             return re.test(e.className);
         };
 
-        me.addClass = function (e, c) {
+        me.addClass = function(e, c) {
             if (me.hasClass(e, c)) {
                 return;
             }
@@ -149,7 +149,7 @@
             e.className = newclass.join(' ');
         };
 
-        me.removeClass = function (e, c) {
+        me.removeClass = function(e, c) {
             if (!me.hasClass(e, c)) {
                 return;
             }
@@ -158,9 +158,9 @@
             e.className = e.className.replace(re, ' ');
         };
 
-        me.offset = function (el) {
+        me.offset = function(el) {
             var left = -el.offsetLeft,
-			top = -el.offsetTop;
+                top = -el.offsetTop;
 
             // jshint -W084
             while (el = el.offsetParent) {
@@ -175,7 +175,7 @@
             };
         };
 
-        me.preventDefaultException = function (el, exceptions) {
+        me.preventDefaultException = function(el, exceptions) {
             for (var i in exceptions) {
                 if (exceptions[i].test(el[i])) {
                     return true;
@@ -206,26 +206,26 @@
         me.extend(me.ease = {}, {
             quadratic: {
                 style: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-                fn: function (k) {
+                fn: function(k) {
                     return k * (2 - k);
                 }
             },
             circular: {
                 style: 'cubic-bezier(0.1, 0.57, 0.1, 1)', // Not properly "circular" but this looks better, it should be (0.075, 0.82, 0.165, 1)
-                fn: function (k) {
+                fn: function(k) {
                     return Math.sqrt(1 - (--k * k));
                 }
             },
             back: {
                 style: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-                fn: function (k) {
+                fn: function(k) {
                     var b = 4;
                     return (k = k - 1) * k * ((b + 1) * k + b) + 1;
                 }
             },
             bounce: {
                 style: '',
-                fn: function (k) {
+                fn: function(k) {
                     if ((k /= 1) < (1 / 2.75)) {
                         return 7.5625 * k * k;
                     } else if (k < (2 / 2.75)) {
@@ -239,9 +239,9 @@
             },
             elastic: {
                 style: '',
-                fn: function (k) {
+                fn: function(k) {
                     var f = 0.22,
-					e = 0.4;
+                        e = 0.4;
 
                     if (k === 0) { return 0; }
                     if (k == 1) { return 1; }
@@ -251,7 +251,7 @@
             }
         });
 
-        me.tap = function (e, eventName) {
+        me.tap = function(e, eventName) {
             var ev = document.createEvent('Event');
             ev.initEvent(eventName, true, true);
             ev.pageX = e.pageX;
@@ -259,9 +259,9 @@
             e.target.dispatchEvent(ev);
         };
 
-        me.click = function (e) {
+        me.click = function(e) {
             var target = e.target,
-			ev;
+                ev;
 
             if (!(/(SELECT|INPUT|TEXTAREA)/i).test(target.tagName)) {
                 // https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/initMouseEvent
@@ -285,7 +285,7 @@
             }
         };
 
-        me.getTouchAction = function (eventPassthrough, addPinch) {
+        me.getTouchAction = function(eventPassthrough, addPinch) {
             var touchAction = 'none';
             if (eventPassthrough === 'vertical') {
                 touchAction = 'pan-y';
@@ -299,7 +299,7 @@
             return touchAction;
         };
 
-        me.getRect = function (el) {
+        me.getRect = function(el) {
             if (el instanceof SVGElement) {
                 var rect = el.getBoundingClientRect();
                 return {
@@ -320,10 +320,11 @@
 
         return me;
     })();
+
     function IScroll(el, options) {
         this.wrapper = typeof el == 'string' ? document.querySelector(el) : el;
         this.scroller = this.wrapper.children[0];
-        this.scrollerStyle = this.scroller.style; 	// cache style for better performance
+        this.scrollerStyle = this.scroller.style; // cache style for better performance
 
         this.options = {
 
@@ -423,7 +424,7 @@
     IScroll.prototype = {
         version: '5.2.0-snapshot',
 
-        _init: function () {
+        _init: function() {
             this._initEvents();
 
             if (this.options.scrollbars || this.options.indicators) {
@@ -446,14 +447,14 @@
 
         },
 
-        destroy: function () {
+        destroy: function() {
             this._initEvents(true);
             clearTimeout(this.resizeTimeout);
             this.resizeTimeout = null;
             this._execEvent('destroy');
         },
 
-        _transitionEnd: function (e) {
+        _transitionEnd: function(e) {
             if (e.target != this.scroller || !this.isInTransition) {
                 return;
             }
@@ -465,7 +466,7 @@
             }
         },
 
-        _start: function (e) {
+        _start: function(e) {
             // React to left mouse button only
             if (utils.eventType[e.type] != 1) {
                 // for button property
@@ -474,7 +475,7 @@
                 if (!e.which) {
                     /* IE case */
                     button = (e.button < 2) ? 0 :
-	               ((e.button == 4) ? 1 : 2);
+                        ((e.button == 4) ? 1 : 2);
                 } else {
                     /* All others */
                     button = e.button;
@@ -493,7 +494,7 @@
             }
 
             var point = e.touches ? e.touches[0] : e,
-			pos;
+                pos;
 
             this.initiated = utils.eventType[e.type];
             this.moved = false;
@@ -526,21 +527,21 @@
             this._execEvent('beforeScrollStart');
         },
 
-        _move: function (e) {
+        _move: function(e) {
             if (!this.enabled || utils.eventType[e.type] !== this.initiated) {
                 return;
             }
 
-            if (this.options.preventDefault) {	// increases performance on Android? TODO: check!
+            if (this.options.preventDefault) { // increases performance on Android? TODO: check!
                 e.preventDefault();
             }
 
             var point = e.touches ? e.touches[0] : e,
-			deltaX = point.pageX - this.pointX,
-			deltaY = point.pageY - this.pointY,
-			timestamp = utils.getTime(),
-			newX, newY,
-			absDistX, absDistY;
+                deltaX = point.pageX - this.pointX,
+                deltaY = point.pageY - this.pointY,
+                timestamp = utils.getTime(),
+                newX, newY,
+                absDistX, absDistY;
 
             this.pointX = point.pageX;
             this.pointY = point.pageY;
@@ -558,11 +559,11 @@
             // If you are scrolling in one direction lock the other
             if (!this.directionLocked && !this.options.freeScroll) {
                 if (absDistX > absDistY + this.options.directionLockThreshold) {
-                    this.directionLocked = 'h'; 	// lock horizontally
+                    this.directionLocked = 'h'; // lock horizontally
                 } else if (absDistY >= absDistX + this.options.directionLockThreshold) {
-                    this.directionLocked = 'v'; 	// lock vertically
+                    this.directionLocked = 'v'; // lock vertically
                 } else {
-                    this.directionLocked = 'n'; 	// no lock
+                    this.directionLocked = 'n'; // no lock
                 }
             }
 
@@ -636,7 +637,7 @@
 
         },
 
-        _end: function (e) {
+        _end: function(e) {
 
             if (!this.enabled || utils.eventType[e.type] !== this.initiated) {
                 return;
@@ -647,15 +648,15 @@
             }
 
             var point = e.changedTouches ? e.changedTouches[0] : e,
-			momentumX,
-			momentumY,
-			duration = utils.getTime() - this.startTime,
-			newX = Math.round(this.x),
-			newY = Math.round(this.y),
-			distanceX = Math.abs(newX - this.startX),
-			distanceY = Math.abs(newY - this.startY),
-			time = 0,
-			easing = '';
+                momentumX,
+                momentumY,
+                duration = utils.getTime() - this.startTime,
+                newX = Math.round(this.x),
+                newY = Math.round(this.y),
+                distanceX = Math.abs(newX - this.startX),
+                distanceY = Math.abs(newY - this.startY),
+                time = 0,
+                easing = '';
 
             this.isInTransition = 0;
             this.initiated = 0;
@@ -690,7 +691,7 @@
             // start momentum animation if needed
             if (this.options.momentum && duration < 300) {
                 momentumX = this.hasHorizontalScroll ? utils.momentum(this.x, this.startX, duration, this.maxScrollX, this.options.bounce ? this.wrapperWidth : 0, this.options.deceleration) : { destination: newX, duration: 0 };
-                momentumY = this.hasVerticalScroll ? utils.momentum(/*自定义 this*/this, this.y, this.startY, duration, this.maxScrollY, this.options.bounce ? this.wrapperHeight : 0, this.options.deceleration) : { destination: newY, duration: 0 };
+                momentumY = this.hasVerticalScroll ? utils.momentum( /*自定义 this*/ this, this.y, this.startY, duration, this.maxScrollY, this.options.bounce ? this.wrapperHeight : 0, this.options.deceleration) : { destination: newY, duration: 0 };
                 newX = momentumX.destination;
                 newY = momentumY.destination;
                 time = Math.max(momentumX.duration, momentumY.duration);
@@ -702,10 +703,10 @@
                 var snap = this._nearestSnap(newX, newY);
                 this.currentPage = snap;
                 time = this.options.snapSpeed || Math.max(
-					Math.max(
-						Math.min(Math.abs(newX - snap.x), 1000),
-						Math.min(Math.abs(newY - snap.y), 1000)
-					), 300);
+                    Math.max(
+                        Math.min(Math.abs(newX - snap.x), 1000),
+                        Math.min(Math.abs(newY - snap.y), 1000)
+                    ), 300);
                 newX = snap.x;
                 newY = snap.y;
 
@@ -729,19 +730,19 @@
             this._execEvent('scrollEnd');
         },
 
-        _resize: function () {
+        _resize: function() {
             var that = this;
 
             clearTimeout(this.resizeTimeout);
 
-            this.resizeTimeout = setTimeout(function () {
+            this.resizeTimeout = setTimeout(function() {
                 that.refresh();
             }, this.options.resizePolling);
         },
 
-        resetPosition: function (time) {
+        resetPosition: function(time) {
             var x = this.x,
-			y = this.y;
+                y = this.y;
 
             time = time || 0;
 
@@ -774,17 +775,17 @@
             return true;
         },
 
-        disable: function () {
+        disable: function() {
             this.enabled = false;
         },
 
-        enable: function () {
+        enable: function() {
             this.enabled = true;
         },
 
-        refresh: function () {
-            utils.getRect(this.wrapper); 	// Force reflow
-            
+        refresh: function() {
+            utils.getRect(this.wrapper); // Force reflow
+
             this.wrapperWidth = this.wrapper.clientWidth;
             this.wrapperHeight = this.wrapper.clientHeight;
 
@@ -836,7 +837,7 @@
 
         },
 
-        on: function (type, fn) {
+        on: function(type, fn) {
             if (!this._events[type]) {
                 this._events[type] = [];
             }
@@ -844,7 +845,7 @@
             this._events[type].push(fn);
         },
 
-        off: function (type, fn) {
+        off: function(type, fn) {
             if (!this._events[type]) {
                 return;
             }
@@ -856,13 +857,13 @@
             }
         },
 
-        _execEvent: function (type) {
+        _execEvent: function(type) {
             if (!this._events[type]) {
                 return;
             }
 
             var i = 0,
-			l = this._events[type].length;
+                l = this._events[type].length;
 
             if (!l) {
                 return;
@@ -873,7 +874,7 @@
             }
         },
 
-        scrollBy: function (x, y, time, easing) {
+        scrollBy: function(x, y, time, easing) {
             x = this.x + x;
             y = this.y + y;
             time = time || 0;
@@ -881,7 +882,7 @@
             this.scrollTo(x, y, time, easing);
         },
 
-        scrollTo: function (x, y, time, easing) {
+        scrollTo: function(x, y, time, easing) {
             easing = easing || utils.ease.circular;
 
             this.isInTransition = this.options.useTransition && time > 0;
@@ -897,7 +898,7 @@
             }
         },
 
-        scrollToElement: function (el, time, offsetX, offsetY, easing) {
+        scrollToElement: function(el, time, offsetX, offsetY, easing) {
             el = el.nodeType ? el : this.scroller.querySelector(el);
 
             if (!el) {
@@ -930,7 +931,7 @@
             this.scrollTo(pos.left, pos.top, time, easing);
         },
 
-        _transitionTime: function (time) {
+        _transitionTime: function(time) {
             if (!this.options.useTransition) {
                 return;
             }
@@ -946,7 +947,7 @@
                 this.scrollerStyle[durationProp] = '0.0001ms';
                 // remove 0.0001ms
                 var self = this;
-                rAF(function () {
+                rAF(function() {
                     if (self.scrollerStyle[durationProp] === '0.0001ms') {
                         self.scrollerStyle[durationProp] = '0s';
                     }
@@ -955,7 +956,7 @@
 
 
             if (this.indicators) {
-                for (var i = this.indicators.length; i--; ) {
+                for (var i = this.indicators.length; i--;) {
                     this.indicators[i].transitionTime(time);
                 }
             }
@@ -965,12 +966,12 @@
 
         },
 
-        _transitionTimingFunction: function (easing) {
+        _transitionTimingFunction: function(easing) {
             this.scrollerStyle[utils.style.transitionTimingFunction] = easing;
 
 
             if (this.indicators) {
-                for (var i = this.indicators.length; i--; ) {
+                for (var i = this.indicators.length; i--;) {
                     this.indicators[i].transitionTimingFunction(easing);
                 }
             }
@@ -980,7 +981,7 @@
 
         },
 
-        _translate: function (x, y) {
+        _translate: function(x, y) {
             if (this.options.useTransform) {
 
                 /* REPLACE START: _translate */
@@ -1001,7 +1002,7 @@
 
 
             if (this.indicators) {
-                for (var i = this.indicators.length; i--; ) {
+                for (var i = this.indicators.length; i--;) {
                     this.indicators[i].updatePosition();
                 }
             }
@@ -1011,9 +1012,9 @@
 
         },
 
-        _initEvents: function (remove) {
+        _initEvents: function(remove) {
             var eventType = remove ? utils.removeEvent : utils.addEvent,
-			target = this.options.bindToWrapper ? this.wrapper : window;
+                target = this.options.bindToWrapper ? this.wrapper : window;
 
             eventType(window, 'orientationchange', this);
             eventType(window, 'resize', this);
@@ -1049,9 +1050,9 @@
             eventType(this.scroller, 'MSTransitionEnd', this);
         },
 
-        getComputedPosition: function () {
+        getComputedPosition: function() {
             var matrix = window.getComputedStyle(this.scroller, null),
-			x, y;
+                x, y;
 
             if (this.options.useTransform) {
                 matrix = matrix[utils.style.transform].split(')')[0].split(', ');
@@ -1064,11 +1065,11 @@
 
             return { x: x, y: y };
         },
-        _initIndicators: function () {
+        _initIndicators: function() {
             var interactive = this.options.interactiveScrollbars,
-			customStyle = typeof this.options.scrollbars != 'string',
-			indicators = [],
-			indicator;
+                customStyle = typeof this.options.scrollbars != 'string',
+                indicators = [],
+                indicator;
 
             var that = this;
 
@@ -1115,54 +1116,54 @@
                 indicators = indicators.concat(this.options.indicators);
             }
 
-            for (var i = indicators.length; i--; ) {
+            for (var i = indicators.length; i--;) {
                 this.indicators.push(new Indicator(this, indicators[i]));
             }
 
             // TODO: check if we can use array.map (wide compatibility and performance issues)
             function _indicatorsMap(fn) {
                 if (that.indicators) {
-                    for (var i = that.indicators.length; i--; ) {
+                    for (var i = that.indicators.length; i--;) {
                         fn.call(that.indicators[i]);
                     }
                 }
             }
 
             if (this.options.fadeScrollbars) {
-                this.on('scrollEnd', function () {
-                    _indicatorsMap(function () {
+                this.on('scrollEnd', function() {
+                    _indicatorsMap(function() {
                         this.fade();
                     });
                 });
 
-                this.on('scrollCancel', function () {
-                    _indicatorsMap(function () {
+                this.on('scrollCancel', function() {
+                    _indicatorsMap(function() {
                         this.fade();
                     });
                 });
 
-                this.on('scrollStart', function () {
-                    _indicatorsMap(function () {
+                this.on('scrollStart', function() {
+                    _indicatorsMap(function() {
                         this.fade(1);
                     });
                 });
 
-                this.on('beforeScrollStart', function () {
-                    _indicatorsMap(function () {
+                this.on('beforeScrollStart', function() {
+                    _indicatorsMap(function() {
                         this.fade(1, true);
                     });
                 });
             }
 
 
-            this.on('refresh', function () {
-                _indicatorsMap(function () {
+            this.on('refresh', function() {
+                _indicatorsMap(function() {
                     this.refresh();
                 });
             });
 
-            this.on('destroy', function () {
-                _indicatorsMap(function () {
+            this.on('destroy', function() {
+                _indicatorsMap(function() {
                     this.destroy();
                 });
 
@@ -1170,12 +1171,12 @@
             });
         },
 
-        _initWheel: function () {
+        _initWheel: function() {
             utils.addEvent(this.wrapper, 'wheel', this);
             utils.addEvent(this.wrapper, 'mousewheel', this);
             utils.addEvent(this.wrapper, 'DOMMouseScroll', this);
 
-            this.on('destroy', function () {
+            this.on('destroy', function() {
                 clearTimeout(this.wheelTimeout);
                 this.wheelTimeout = null;
                 utils.removeEvent(this.wrapper, 'wheel', this);
@@ -1184,7 +1185,7 @@
             });
         },
 
-        _wheel: function (e) {
+        _wheel: function(e) {
             if (!this.enabled) {
                 return;
             }
@@ -1192,8 +1193,8 @@
             e.preventDefault();
 
             var wheelDeltaX, wheelDeltaY,
-			newX, newY,
-			that = this;
+                newX, newY,
+                that = this;
 
             if (this.wheelTimeout === undefined) {
                 that._execEvent('scrollStart');
@@ -1201,7 +1202,7 @@
 
             // Execute the scrollEnd event after 400ms the wheel stopped scrolling
             clearTimeout(this.wheelTimeout);
-            this.wheelTimeout = setTimeout(function () {
+            this.wheelTimeout = setTimeout(function() {
                 if (!that.options.snap) {
                     that._execEvent('scrollEnd');
                 }
@@ -1283,22 +1284,25 @@
             // INSERT POINT: _wheel
         },
 
-        _initSnap: function () {
+        _initSnap: function() {
             this.currentPage = {};
 
             if (typeof this.options.snap == 'string') {
                 this.options.snap = this.scroller.querySelectorAll(this.options.snap);
             }
 
-            this.on('refresh', function () {
-                var i = 0, l,
-				m = 0, n,
-				cx, cy,
-				x = 0, y,
-				stepX = this.options.snapStepX || this.wrapperWidth,
-				stepY = this.options.snapStepY || this.wrapperHeight,
-				el,
-				rect;
+            this.on('refresh', function() {
+                var i = 0,
+                    l,
+                    m = 0,
+                    n,
+                    cx, cy,
+                    x = 0,
+                    y,
+                    stepX = this.options.snapStepX || this.wrapperWidth,
+                    stepY = this.options.snapStepY || this.wrapperHeight,
+                    el,
+                    rect;
 
                 this.pages = [];
 
@@ -1380,33 +1384,33 @@
                 }
             });
 
-            this.on('flick', function () {
+            this.on('flick', function() {
                 var time = this.options.snapSpeed || Math.max(
-					Math.max(
-						Math.min(Math.abs(this.x - this.startX), 1000),
-						Math.min(Math.abs(this.y - this.startY), 1000)
-					), 300);
+                    Math.max(
+                        Math.min(Math.abs(this.x - this.startX), 1000),
+                        Math.min(Math.abs(this.y - this.startY), 1000)
+                    ), 300);
 
                 this.goToPage(
-				this.currentPage.pageX + this.directionX,
-				this.currentPage.pageY + this.directionY,
-				time
-			);
+                    this.currentPage.pageX + this.directionX,
+                    this.currentPage.pageY + this.directionY,
+                    time
+                );
             });
         },
 
-        _nearestSnap: function (x, y) {
+        _nearestSnap: function(x, y) {
             if (!this.pages.length) {
                 return { x: 0, y: 0, pageX: 0, pageY: 0 };
             }
 
             var i = 0,
-			l = this.pages.length,
-			m = 0;
+                l = this.pages.length,
+                m = 0;
 
             // Check if we exceeded the snap threshold
             if (Math.abs(x - this.absStartX) < this.snapThresholdX &&
-			Math.abs(y - this.absStartY) < this.snapThresholdY) {
+                Math.abs(y - this.absStartY) < this.snapThresholdY) {
                 return this.currentPage;
             }
 
@@ -1470,7 +1474,7 @@
             };
         },
 
-        goToPage: function (x, y, time, easing) {
+        goToPage: function(x, y, time, easing) {
             easing = easing || this.options.bounceEasing;
 
             if (x >= this.pages.length) {
@@ -1486,13 +1490,13 @@
             }
 
             var posX = this.pages[x][y].x,
-			posY = this.pages[x][y].y;
+                posY = this.pages[x][y].y;
 
             time = time === undefined ? this.options.snapSpeed || Math.max(
-			Math.max(
-				Math.min(Math.abs(posX - this.x), 1000),
-				Math.min(Math.abs(posY - this.y), 1000)
-			), 300) : time;
+                Math.max(
+                    Math.min(Math.abs(posX - this.x), 1000),
+                    Math.min(Math.abs(posY - this.y), 1000)
+                ), 300) : time;
 
             this.currentPage = {
                 x: posX,
@@ -1504,9 +1508,9 @@
             this.scrollTo(posX, posY, time, easing);
         },
 
-        next: function (time, easing) {
+        next: function(time, easing) {
             var x = this.currentPage.pageX,
-			y = this.currentPage.pageY;
+                y = this.currentPage.pageY;
 
             x++;
 
@@ -1518,9 +1522,9 @@
             this.goToPage(x, y, time, easing);
         },
 
-        prev: function (time, easing) {
+        prev: function(time, easing) {
             var x = this.currentPage.pageX,
-			y = this.currentPage.pageY;
+                y = this.currentPage.pageY;
 
             x--;
 
@@ -1532,7 +1536,7 @@
             this.goToPage(x, y, time, easing);
         },
 
-        _initKeys: function (e) {
+        _initKeys: function(e) {
             // default key bindings
             var keys = {
                 pageUp: 33,
@@ -1563,23 +1567,23 @@
 
             utils.addEvent(window, 'keydown', this);
 
-            this.on('destroy', function () {
+            this.on('destroy', function() {
                 utils.removeEvent(window, 'keydown', this);
             });
         },
 
-        _key: function (e) {
+        _key: function(e) {
             if (!this.enabled) {
                 return;
             }
 
             var snap = this.options.snap, // we are using this alot, better to cache it
-			newX = snap ? this.currentPage.pageX : this.x,
-			newY = snap ? this.currentPage.pageY : this.y,
-			now = utils.getTime(),
-			prevTime = this.keyTime || 0,
-			acceleration = 0.250,
-			pos;
+                newX = snap ? this.currentPage.pageX : this.x,
+                newY = snap ? this.currentPage.pageY : this.y,
+                now = utils.getTime(),
+                prevTime = this.keyTime || 0,
+                acceleration = 0.250,
+                pos;
 
             if (this.options.useTransition && this.isInTransition) {
                 pos = this.getComputedPosition();
@@ -1655,18 +1659,18 @@
             this.keyTime = now;
         },
 
-        _animate: function (destX, destY, duration, easingFn) {
+        _animate: function(destX, destY, duration, easingFn) {
 
             var that = this,
-			startX = this.x,
-			startY = this.y,
-			startTime = utils.getTime(),
-			destTime = startTime + duration;
- 
+                startX = this.x,
+                startY = this.y,
+                startTime = utils.getTime(),
+                destTime = startTime + duration;
+
             function step() {
                 var now = utils.getTime(),
-				newX, newY,
-				easing;
+                    newX, newY,
+                    easing;
 
                 if (now >= destTime) {
                     that.isAnimating = false;
@@ -1678,15 +1682,15 @@
 
                     return;
                 }
-  
+
                 now = (now - startTime) / duration;
                 easing = easingFn(now);
                 newX = (destX - startX) * easing + startX;
                 newY = (destY - startY) * easing + startY;
 
                 that._translate(newX, newY);
-        
-                 /*自定义*/
+
+                /*自定义*/
                 if (that.options.subMargin) {
                     var subMargin = that.options.subMargin;
                     if (newY < subMargin && that.startY > subMargin && that.directionY > 0 || newY > subMargin && that.startY < subMargin && that.directionY < 0) {
@@ -1697,15 +1701,16 @@
                         return;
 
                     }
-                    if (that.options.fixed) {
-                        console.log('fixed....................................')
 
-                        that.options.fixed = false;
-                        that._execEvent('scrollEnd');
-                        return;
-                    }
                 }
-                /* 自定义 */             
+                if (that.options.fixed) {
+                    console.log('fixed....................................')
+
+                    that.options.fixed = false;
+                    that._execEvent('scrollEnd');
+                    return;
+                }
+                /* 自定义 */
 
 
                 if (that.isAnimating) {
@@ -1721,7 +1726,7 @@
             step();
         },
 
-        handleEvent: function (e) {
+        handleEvent: function(e) {
             switch (e.type) {
                 case 'touchstart':
                 case 'pointerdown':
@@ -1772,9 +1777,10 @@
             }
         }
     };
+
     function createDefaultScrollbar(direction, interactive, type) {
         var scrollbar = document.createElement('div'),
-		indicator = document.createElement('div');
+            indicator = document.createElement('div');
 
         if (type === true) {
             scrollbar.style.cssText = 'position:absolute;z-index:9999';
@@ -1861,7 +1867,7 @@
             // remove 0.0001ms
             var self = this;
             if (utils.isBadAndroid) {
-                rAF(function () {
+                rAF(function() {
                     if (self.wrapperStyle[durationProp] === '0.0001ms') {
                         self.wrapperStyle[durationProp] = '0s';
                     }
@@ -1872,7 +1878,7 @@
     }
 
     Indicator.prototype = {
-        handleEvent: function (e) {
+        handleEvent: function(e) {
             switch (e.type) {
                 case 'touchstart':
                 case 'pointerdown':
@@ -1899,7 +1905,7 @@
             }
         },
 
-        destroy: function () {
+        destroy: function() {
             if (this.options.fadeScrollbars) {
                 clearTimeout(this.fadeTimeout);
                 this.fadeTimeout = null;
@@ -1923,7 +1929,7 @@
             }
         },
 
-        _start: function (e) {
+        _start: function(e) {
             var point = e.touches ? e.touches[0] : e;
 
             e.preventDefault();
@@ -1951,11 +1957,11 @@
             this.scroller._execEvent('beforeScrollStart');
         },
 
-        _move: function (e) {
+        _move: function(e) {
             var point = e.touches ? e.touches[0] : e,
-			deltaX, deltaY,
-			newX, newY,
-			timestamp = utils.getTime();
+                deltaX, deltaY,
+                newX, newY,
+                timestamp = utils.getTime();
 
             if (!this.moved) {
                 this.scroller._execEvent('scrollStart');
@@ -1989,7 +1995,7 @@
             e.stopPropagation();
         },
 
-        _end: function (e) {
+        _end: function(e) {
             if (!this.initiated) {
                 return;
             }
@@ -2007,10 +2013,10 @@
                 var snap = this.scroller._nearestSnap(this.scroller.x, this.scroller.y);
 
                 var time = this.options.snapSpeed || Math.max(
-					Math.max(
-						Math.min(Math.abs(this.scroller.x - snap.x), 1000),
-						Math.min(Math.abs(this.scroller.y - snap.y), 1000)
-					), 300);
+                    Math.max(
+                        Math.min(Math.abs(this.scroller.x - snap.x), 1000),
+                        Math.min(Math.abs(this.scroller.y - snap.y), 1000)
+                    ), 300);
 
                 if (this.scroller.x != snap.x || this.scroller.y != snap.y) {
                     this.scroller.directionX = 0;
@@ -2025,7 +2031,7 @@
             }
         },
 
-        transitionTime: function (time) {
+        transitionTime: function(time) {
             time = time || 0;
             var durationProp = utils.style.transitionDuration;
             if (!durationProp) {
@@ -2038,7 +2044,7 @@
                 this.indicatorStyle[durationProp] = '0.0001ms';
                 // remove 0.0001ms
                 var self = this;
-                rAF(function () {
+                rAF(function() {
                     if (self.indicatorStyle[durationProp] === '0.0001ms') {
                         self.indicatorStyle[durationProp] = '0s';
                     }
@@ -2046,11 +2052,11 @@
             }
         },
 
-        transitionTimingFunction: function (easing) {
+        transitionTimingFunction: function(easing) {
             this.indicatorStyle[utils.style.transitionTimingFunction] = easing;
         },
 
-        refresh: function () {
+        refresh: function() {
             this.transitionTime();
 
             if (this.options.listenX && !this.options.listenY) {
@@ -2135,9 +2141,9 @@
             this.updatePosition();
         },
 
-        updatePosition: function () {
+        updatePosition: function() {
             var x = this.options.listenX && Math.round(this.sizeRatioX * this.scroller.x) || 0,
-			y = this.options.listenY && Math.round(this.sizeRatioY * this.scroller.y) || 0;
+                y = this.options.listenY && Math.round(this.sizeRatioY * this.scroller.y) || 0;
 
             if (!this.options.ignoreBoundaries) {
                 if (x < this.minBoundaryX) {
@@ -2190,7 +2196,7 @@
             }
         },
 
-        _pos: function (x, y) {
+        _pos: function(x, y) {
             if (x < 0) {
                 x = 0;
             } else if (x > this.maxPosX) {
@@ -2209,7 +2215,7 @@
             this.scroller.scrollTo(x, y);
         },
 
-        fade: function (val, hold) {
+        fade: function(val, hold) {
             if (hold && !this.visible) {
                 return;
             }
@@ -2218,13 +2224,13 @@
             this.fadeTimeout = null;
 
             var time = val ? 250 : 500,
-			delay = val ? 0 : 300;
+                delay = val ? 0 : 300;
 
             val = val ? '1' : '0';
 
             this.wrapperStyle[utils.style.transitionDuration] = time + 'ms';
 
-            this.fadeTimeout = setTimeout((function (val) {
+            this.fadeTimeout = setTimeout((function(val) {
                 this.wrapperStyle.opacity = val;
                 this.visible = +val;
             }).bind(this, val), delay);
@@ -2236,7 +2242,7 @@
     if (typeof module != 'undefined' && module.exports) {
         module.exports = IScroll;
     } else if (typeof define == 'function' && define.amd) {
-        define(function () { return IScroll; });
+        define(function() { return IScroll; });
     } else {
         window.IScroll = IScroll;
     }

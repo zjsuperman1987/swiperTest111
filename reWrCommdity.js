@@ -1,79 +1,11 @@
 window.onload = function() {
     commdityDetail.initSwiper();
     commdityDetail.initScroll();
-
-    // 初始化左边滚动
-    var leftScroll = new IScroll('.leftWrapper', {
-        probeType: 3,
-        bounce: false,
-        fixed: false,
-        subMargin: -553
-    })
-
-    function leftScroll_one() {
-        var y = this.y >> 0;
-        var rightScroll = commdityDetail.spec.scrollers[0].y >> 0;
-
-            // console.log(y, rightScroll, '==================================================================================================')
-            console.log(commdityDetail.spec.scrollers[0].y,'jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj', this.y)
-            console.log(this);
-
-
-
-        if (y <= -340) {
-            $(commdityDetail.spec.scrollers[0].scroller).css('transform', 'translate(0,-340px');
-            $('.goodsList_right').css('transform', 'translate(0,0)');
-            commdityDetail.spec.scrollers[0]._translate(0, -340);
-            this.y = 0;
-
-
-            if (!this.options.fixed) {
-                this.options.fixed = true;
-                ['touchstart', 'pointerdown', 'MSPointerDown', 'mousedown'].forEach(function(item, i) {
-                    document.querySelector('.goodsList_left').addEventListener(item, stopEvent)
-                })
-
-
-            }
-
-
-		if (!this.options.fixed) {
-        	$(this.scroller).css('transform', 'translate(0,0)');
-
-		}  
-
-
- // if (!this.options.fixed) {
- //                this.options.fixed = true;
- //                ['touchstart', 'pointerdown', 'MSPointerDown', 'mousedown'].forEach(function(item, i) {
- //                    document.querySelector('.goodsList_left').addEventListener(item, stopEvent)
- //                })
-
-
- //            } 
+    commdityDetail.initLeftScroll();
 
 
 
 
-
-    }
-}
-
-
-
-    leftScroll.on('beforeScrollStart', leftScroll_one)
-    leftScroll.on('scrollCancel', leftScroll_one)
-    leftScroll.on('scroll', leftScroll_one)
-    leftScroll.on('scrollEnd', leftScroll_one)
-
-    // // 阻止冒泡
-    function stopEvent(e) {
-    	// alert(999)
-    	e.stopPropagation();
-    	e.preventDefault();
-    }
-
-                
 
 
 }
@@ -166,9 +98,8 @@ var commdityDetail = (function() {
 
             function scrollAnimate() {
                 var y = this.y >> 0;
-
                 // console.log(y, scrollAnimate.caller.arguments[0], this.options.fixed, my.scrollTransform[my.mySwiper.activeIndex], this);
-                console.log(y,'真实');
+                console.log(y, '真实');
 
                 // 初始定位位置 -213 
                 if (y < my.firstPosition && this.startY > my.firstPosition || y > my.firstPosition && this.startY < my.firstPosition) {
@@ -247,14 +178,11 @@ var commdityDetail = (function() {
                             } else {
                                 if (y > my.secondPosition - my.listHeight[my.titleIndex - 1] - titleHeight) {
                                     $('.active_rn_title').prependTo($('.goodsList_right li').eq(my.titleIndex).removeClass('goodsList_right_li_loseHead')).removeClass('active_rn_title');
-                                    console.log('上上上上上上上上上上上上上上上上上上上上上上上上上上上上上上上上上上上')
                                 }
                                 if (y > my.secondPosition - my.listHeight[my.titleIndex - 1]) {
                                     $('.rn_title').eq(my.titleIndex - 1).insertAfter('.goodsList_left').addClass('active_rn_title').removeClass('active_rn_title_middle');
                                     my.titleIndex = my.titleIndex - 1;
                                     my.prevIndex = my.prevIndex === 0 ? 0 : my.titleIndex - 1;
-                                    console.log('下下下下下下下下下下下下下下下下下下下下下下下下下下下下下下下下下下下下下')
-
                                 }
                             }
                         }
@@ -279,7 +207,22 @@ var commdityDetail = (function() {
 
                 $('.goodsList_left li').removeClass('activeLeft').eq(my.titleIndex).addClass('activeLeft')
 
-                // console.log(y, my.titleIndex, my.prevIndex,my.listHeight[my.titleIndex]);
+
+                // 左右滚动切换
+                if (my.clickLeft) {
+                    if (y <= -553 && this.startY > -553) {
+                        this._translate(0, -553);
+                        y = this.y = -553;
+                        $('.goodsList_right').css('transform', 'translate(0,0)');
+                        $('.container').css('transform', 'translate(0,' + my.firstPosition + 'px)');
+                        $(this.scroller).css('transform', 'translate(0,' + (y - my.firstPosition) + 'px)');
+
+                        if (scrollAnimate.caller.arguments[0] !== 'scrollEnd' && scrollAnimate.caller.arguments[0] !== 'beforeScrollStart') {
+                            this.options.fixed = true;
+                        }
+                    }
+                }
+
             }
 
 
@@ -325,6 +268,51 @@ var commdityDetail = (function() {
                     scroller.y = scrollTransform + contentTransform + my.thirdTransform;
                 }
             }
+        },
+        initLeftScroll: function() {
+            // // 阻止冒泡
+            function stopEvent(e) {
+                e.stopPropagation();
+                e.preventDefault();
+            }
+            // 初始化左边滚动
+            function leftScroll_one() {
+                var y = this.y >> 0;
+                // 开启 左滚动 固定坐标
+                commdityDetail.spec.clickLeft = true;
+
+                if (commdityDetail.spec.scrollers[0].y <= my.secondPosition) {
+                    ['touchstart', 'pointerdown', 'MSPointerDown', 'mousedown'].forEach(function(item, i) {
+                        document.querySelector('.goodsList_left').addEventListener(item, stopEvent)
+                    })
+                } else {
+                    // $(this.scroller).css('transform', 'translate(0,0)');
+                    this._translate(0, 0);
+                }
+
+                if (y >= 0) {
+                    ['touchstart', 'pointerdown', 'MSPointerDown', 'mousedown'].forEach(function(item, i) {
+                        document.querySelector('.goodsList_left').removeEventListener(item, stopEvent)
+                    })
+                }
+            }
+
+            var leftScroll = new IScroll('.leftWrapper', {
+                probeType: 3,
+                bounce: false
+            })
+
+            leftScroll.on('beforeScrollStart', leftScroll_one);
+            leftScroll.on('scrollCancel', leftScroll_one);
+            leftScroll.on('scroll', leftScroll_one);
+            leftScroll.on('scrollEnd', leftScroll_one);
+
+            ['.advertsingImg', '.specialPriceShowImg', '.today_good_special_price', '.goodsList_right'].forEach(function(item, index) {
+                document.querySelector(item).addEventListener('touchstart', function() {
+                    // 关闭 左滚动 固定坐标
+                    commdityDetail.spec.clickLeft = false;
+                })
+            })
         }
 
     }
