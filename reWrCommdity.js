@@ -83,7 +83,7 @@ var commdityDetail = (function() {
                 thirdTransform = my.thirdTransform,
                 scroller,
                 isSwitch = true;
-
+   
             my.titleIndex = my.titleIndex ? my.titleIndex : 0;
             my.prevIndex = my.prevIndex ? my.prevIndex : 0;
 
@@ -129,67 +129,50 @@ var commdityDetail = (function() {
                     $('.container').css('transform', 'translate(0,' + my.firstPosition + 'px)');
                     $(this.scroller).css('transform', 'translate(0,' + (y - my.firstPosition) + 'px)');
                 }
-
-
+ 
                 // 二级定位
                 if (my.mySwiper.activeIndex === 0) {
-
-
                     if (y < my.secondPosition) {
-                        $('.container').css('transform', 'translate(0,' + my.firstPosition + 'px)');
+                        $('.goodsList_right').css('transform', 'translate(0,' + (y-my.secondPosition) + 'px)');
                         $(this.scroller).css('transform', 'translate(0,' + (my.secondPosition - my.firstPosition) + 'px)');
-                        $('.goodsList_right').css('transform', 'translate(0,' + (y - my.secondPosition) + 'px)');
-
-
+                        // 初始化头部定位
                         if (isSwitch) {
                             isSwitch = false;
-                            $('.rn_title').eq(my.titleIndex).addClass('active_rn_title').insertAfter('.goodsList_left');
-                            $('.goodsList_right li').eq(my.titleIndex).addClass('goodsList_right_li_loseHead');
+                            $('.rn_title').eq(my.titleIndex).insertAfter('.goodsList_left').addClass('active_rn_title').next().find('li:first-child').addClass('goodsList_right_li_loseHead');
                         }
 
+                        if (y < my.secondPosition - my.listHeight[my.titleIndex]) {
+                            $('.active_rn_title').prependTo($('.goodsList_right li').eq(my.titleIndex)).addClass('active_rn_title_middle');
 
-                        if (this.directionY > 0) {
-                            if (y < my.secondPosition - my.listHeight[my.titleIndex]) {
-                                $('.active_rn_title').prependTo($('.goodsList_right li').eq(my.titleIndex)).removeClass('active_rn_title').addClass('active_rn_title_middle');
-                                my.prevIndex = my.titleIndex;
-                            }
                             if (y < my.secondPosition - my.listHeight[my.titleIndex] - titleHeight) {
-                                my.titleIndex = my.titleIndex + 1;
-
-                                $('.rn_title').eq(my.titleIndex).insertAfter('.goodsList_left').addClass('active_rn_title');
-                                $('.goodsList_right li').eq(my.titleIndex).addClass('goodsList_right_li_loseHead');
-
+                                my.prevIndex = my.titleIndex = my.titleIndex + 1;
+                                $('.active_rn_title').removeClass('active_rn_title');
+                                $('.rn_title').eq(my.titleIndex).addClass('active_rn_title').insertAfter('.goodsList_left').next().find('li').eq(my.titleIndex).addClass('goodsList_right_li_loseHead');
                             }
-                        }
-                        if (this.directionY < 0) {
-                            if (my.prevIndex === my.titleIndex) {
-                                if (y > my.secondPosition - my.listHeight[my.titleIndex]) {
-                                    $('.rn_title').eq(my.titleIndex).insertAfter('.goodsList_left').addClass('active_rn_title').removeClass('active_rn_title_middle');
-                                    my.prevIndex = my.prevIndex === 0 ? 0 : my.titleIndex - 1;
-                                }
-                            } else {
-                                if (y > my.secondPosition - my.listHeight[my.titleIndex - 1] - titleHeight) {
-                                    $('.active_rn_title').prependTo($('.goodsList_right li').eq(my.titleIndex).removeClass('goodsList_right_li_loseHead')).removeClass('active_rn_title');
+                        }                        
+                        else{
+                            if (my.prevIndex !== my.titleIndex) {
+                                $('.active_rn_title').insertAfter('.goodsList_left').removeClass('active_rn_title_middle');
+                            }else {
+                                my.prevIndex = my.prevIndex === 0 ? my.prevIndex : my.prevIndex - 1;
+                                if (y > my.secondPosition - my.listHeight[my.prevIndex] - titleHeight) {
+                                   $('.active_rn_title').removeClass('active_rn_title').prependTo($('.goodsList_right li').eq(my.titleIndex).removeClass('goodsList_right_li_loseHead'));
+                                   $('.rn_title').eq(my.prevIndex).addClass('active_rn_title')
 
-                                }
-                                if (y > my.secondPosition - my.listHeight[my.titleIndex - 1]) {
-                                    $('.rn_title').eq(my.titleIndex - 1).insertAfter('.goodsList_left').addClass('active_rn_title').removeClass('active_rn_title_middle');
-                                    my.titleIndex = my.titleIndex - 1;
-                                    my.prevIndex = my.prevIndex === 0 ? 0 : my.titleIndex - 1;
+                                   my.titleIndex = my.titleIndex === 0 ? my.titleIndex : my.titleIndex - 1;
+
+                                   if (y > my.secondPosition - my.listHeight[my.prevIndex]) {
+                                        $('.rn_title').eq(my.titleIndex).insertAfter('.goodsList_left').removeClass('.active_rn_title_middle');
+                                   }
                                 }
                             }
                         }
-                    } else if (y > my.secondPosition && this.startY < my.secondPosition) {
-
+console.log(my.titleIndex);
+                    }else {
                         $('.goodsList_right').css('transform', 'translate(0,0)');
-                        $('.container').css('transform', 'translate(0,' + my.firstPosition + 'px)');
-                        $(this.scroller).css('transform', 'translate(0,' + (y - my.firstPosition) + 'px)');
-
-                        $('.rn_title').eq(my.titleIndex).prependTo($('.goodsList_right li').eq(my.titleIndex)).removeClass('active_rn_title');
-                        $('.goodsList_right li').eq(my.titleIndex).removeClass('goodsList_right_li_loseHead');
-                        // my.titleIndex = 0;
+                        $('.rn_title').eq(my.titleIndex).prependTo($('.goodsList_right li').eq(my.titleIndex).removeClass('goodsList_right_li_loseHead')).removeClass('active_rn_title');
+                        my.titleIndex = 0;
                         isSwitch = true;
-
                     }
                 }
 
