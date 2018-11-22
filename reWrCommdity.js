@@ -83,9 +83,10 @@ var commdityDetail = (function() {
                 thirdTransform = my.thirdTransform,
                 scroller,
                 isSwitch = true;
-   
+
             my.titleIndex = my.titleIndex ? my.titleIndex : 0;
             my.prevIndex = my.prevIndex ? my.prevIndex : 0;
+            my.changeActive = false;
 
             function scrollAnimate() {
                 var y = this.y >> 0;
@@ -129,49 +130,55 @@ var commdityDetail = (function() {
                     $('.container').css('transform', 'translate(0,' + my.firstPosition + 'px)');
                     $(this.scroller).css('transform', 'translate(0,' + (y - my.firstPosition) + 'px)');
                 }
- 
+
                 // 二级定位
                 if (my.mySwiper.activeIndex === 0) {
                     if (y < my.secondPosition) {
-                        $('.goodsList_right').css('transform', 'translate(0,' + (y-my.secondPosition) + 'px)');
+                        $('.goodsList_right').css('transform', 'translate(0,' + (y - my.secondPosition) + 'px)');
                         $(this.scroller).css('transform', 'translate(0,' + (my.secondPosition - my.firstPosition) + 'px)');
+
                         // 初始化头部定位
                         if (isSwitch) {
                             isSwitch = false;
                             $('.rn_title').eq(my.titleIndex).insertAfter('.goodsList_left').addClass('active_rn_title').next().find('li:first-child').addClass('goodsList_right_li_loseHead');
                         }
 
-                        if (y < my.secondPosition - my.listHeight[my.titleIndex]) {
-                            $('.active_rn_title').prependTo($('.goodsList_right li').eq(my.titleIndex)).addClass('active_rn_title_middle');
 
-                            if (y < my.secondPosition - my.listHeight[my.titleIndex] - titleHeight) {
-                                my.prevIndex = my.titleIndex = my.titleIndex + 1;
+                        if (y < my.secondPosition - my.listHeight[my.titleIndex]) { // 1743
+                            $('.active_rn_title').prependTo($('.goodsList_right li').eq(my.titleIndex)).addClass('active_rn_title_middle');
+                            my.prevIndex = my.titleIndex
+                            console.log('小于')
+                            if (y < my.secondPosition - my.listHeight[my.titleIndex] - titleHeight) { //1783
+                                my.titleIndex = my.titleIndex + 1;
                                 $('.active_rn_title').removeClass('active_rn_title');
                                 $('.rn_title').eq(my.titleIndex).addClass('active_rn_title').insertAfter('.goodsList_left').next().find('li').eq(my.titleIndex).addClass('goodsList_right_li_loseHead');
-                            }
-                        }                        
-                        else{
-                            if (my.prevIndex !== my.titleIndex) {
-                                $('.active_rn_title').insertAfter('.goodsList_left').removeClass('active_rn_title_middle');
-                            }else {
-                                my.prevIndex = my.prevIndex === 0 ? my.prevIndex : my.prevIndex - 1;
-                                if (y > my.secondPosition - my.listHeight[my.prevIndex] - titleHeight) {
-                                   $('.active_rn_title').removeClass('active_rn_title').prependTo($('.goodsList_right li').eq(my.titleIndex).removeClass('goodsList_right_li_loseHead'));
-                                   $('.rn_title').eq(my.prevIndex).addClass('active_rn_title')
+                                my.changeActive = true;
+                                console.log('小于 + 40')
 
-                                   my.titleIndex = my.titleIndex === 0 ? my.titleIndex : my.titleIndex - 1;
-
-                                   if (y > my.secondPosition - my.listHeight[my.prevIndex]) {
-                                        $('.rn_title').eq(my.titleIndex).insertAfter('.goodsList_left').removeClass('.active_rn_title_middle');
-                                   }
-                                }
                             }
                         }
-console.log(my.titleIndex);
-                    }else {
+                        if (y > my.secondPosition - my.listHeight[my.prevIndex] - titleHeight) { // 1783
+                        	if (my.prevIndex !== my.titleIndex) {
+                        		$('.active_rn_title').prependTo($('.goodsList_right li').eq(my.titleIndex).removeClass('goodsList_right_li_loseHead')).removeClass('active_rn_title');
+                        		$('.rn_title').eq(my.prevIndex).addClass('active_rn_title');
+                        		my.titleIndex = my.titleIndex - 1;
+                        	}
+
+                            console.log('大于 - 40')
+                            if (y > my.secondPosition - my.listHeight[my.prevIndex]) { // 1743
+                            	$('.active_rn_title').insertAfter('.goodsList_left').removeClass('active_rn_title_middle');
+                            	my.prevIndex = my.prevIndex ? my.prevIndex - 1 : 0;
+                            }
+                        }
+
+
+
+
+                        console.log(my.titleIndex);
+                    } else {
                         $('.goodsList_right').css('transform', 'translate(0,0)');
                         $('.rn_title').eq(my.titleIndex).prependTo($('.goodsList_right li').eq(my.titleIndex).removeClass('goodsList_right_li_loseHead')).removeClass('active_rn_title');
-                        my.titleIndex = 0;
+                        my.titleIndex = my.prevIndex = 0;
                         isSwitch = true;
                     }
                 }
@@ -202,7 +209,7 @@ console.log(my.titleIndex);
                             my.leftScroller.on('scroll', scrollerLeft);
                             my.leftScroller.on('scrollEnd', scrollerLeft);
                         }
-                     }
+                    }
 
 
 
