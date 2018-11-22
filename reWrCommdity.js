@@ -287,7 +287,7 @@ var commdityDetail = (function() {
                     })
                 } else {
                     // $(this.scroller).css('transform', 'translate(0,0)');
-                    this._translate(0, 0);
+                    this._translate(0, -1);
                 }
 
                 if (y >= 0) {
