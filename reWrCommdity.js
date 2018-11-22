@@ -150,17 +150,13 @@ var commdityDetail = (function() {
                             isSwitch = false;
                             $('.rn_title').eq(my.titleIndex).insertAfter('.goodsList_left').addClass('active_rn_title').next().find('li:first-child').addClass('goodsList_right_li_loseHead');
                         }
-
-<<<<<<< HEAD
-     
-=======
-
+ 
                         if (y < my.secondPosition - my.listHeight[my.titleIndex]) { // 1743
                             $('.active_rn_title').prependTo($('.goodsList_right li').eq(my.titleIndex)).addClass('active_rn_title_middle');
                             my.prevIndex = my.titleIndex
                             console.log('小于')
                             if (y < my.secondPosition - my.listHeight[my.titleIndex] - titleHeight) { //1783
->>>>>>> iss53
+ 
                                 my.titleIndex = my.titleIndex + 1;
                                 $('.active_rn_title').removeClass('active_rn_title');
                                 $('.rn_title').eq(my.titleIndex).addClass('active_rn_title').insertAfter('.goodsList_left').next().find('li').eq(my.titleIndex).addClass('goodsList_right_li_loseHead');
@@ -169,9 +165,9 @@ var commdityDetail = (function() {
 
                             }
                         }
-<<<<<<< HEAD
+ 
     
-=======
+ 
                         if (y > my.secondPosition - my.listHeight[my.prevIndex] - titleHeight) { // 1783
                         	if (my.prevIndex !== my.titleIndex) {
                         		$('.active_rn_title').prependTo($('.goodsList_right li').eq(my.titleIndex).removeClass('goodsList_right_li_loseHead')).removeClass('active_rn_title');
@@ -183,7 +179,7 @@ var commdityDetail = (function() {
                             if (y > my.secondPosition - my.listHeight[my.prevIndex]) { // 1743
                             	$('.active_rn_title').insertAfter('.goodsList_left').removeClass('active_rn_title_middle');
                             	my.prevIndex = my.prevIndex ? my.prevIndex - 1 : 0;
->>>>>>> iss53
+ 
                             }
                         }
 
@@ -228,12 +224,6 @@ var commdityDetail = (function() {
             // 创建滚动对象
             $.each(my.scrollersDom, function(i, item) {
                 if (i === index) {
-<<<<<<< HEAD
-=======
-     
->>>>>>> iss53
-
-
                     if (!my.scrollers[i]) {
                         my.scrollers[i] = new IScroll(my.scrollersDom[i], {
                             probeType: 3,
