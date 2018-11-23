@@ -2,13 +2,21 @@ window.onload = function() {
     commdityDetail.initSwiper();
     commdityDetail.initScroll();
     commdityDetail.initLeftScroll();
-
-
-
-
-
-
+    commdityDetail.initClickTab();
 }
+
+// 影子
+function shadow(arrEl) {
+    $.each(arrEl, function (i,item){
+        item.addEventListener('touchstart',function(){
+            $(this).css('background', 'rgba(0,0,0,.5)');
+        })
+        item.addEventListener('touchend',function(){
+            $(this).css('background', 'unset');
+        })
+    })
+}
+
 
 
 var commdityDetail = (function() {
@@ -16,7 +24,6 @@ var commdityDetail = (function() {
 
     return {
         spec: my,
-
         initSwiper: function() {
             my.listHeight = [];
             my.scrollTransform = [];
@@ -48,12 +55,12 @@ var commdityDetail = (function() {
                 freeMode: false,
                 on: {
                     slideChange: function() {
-                        var contentTransform = $('.container').css('transform') !== 'none' ? parseInt($('.container').css('transform').match(/-?\d+/g)[5], 10) : 0,
-                            thirdTransform = $('.goodsList_right').css('transform') !== 'none' ? parseInt($('.goodsList_right').css('transform').match(/-?\d+/g)[5], 10) : 0;
+                        var contentTransform = $('.container').css('transform') !== 'none' ? parseInt($('.container').css('transform').match(/-?\d+/g)[5], 10) : 0;
+
                         my.scrollTransform[this.previousIndex] = parseInt($(my.scrollers[this.previousIndex].scroller).css('transform').match(/-?\d+/g)[5], 10);
                         // 如果是特殊的第一页
                         if (this.previousIndex === 0) {
-                            my.thirdTransform = thirdTransform;
+                            my.thirdTransform = $('.goodsList_right').css('transform') !== 'none' ? parseInt($('.goodsList_right').css('transform').match(/-?\d+/g)[5], 10) : 0;
                         }
                         // 调用IScroll
                         my.scrollers[this.previousIndex].disable();
@@ -95,12 +102,38 @@ var commdityDetail = (function() {
 
             my.titleIndex = my.titleIndex ? my.titleIndex : 0;
             my.prevIndex = my.prevIndex ? my.prevIndex : 0;
-            my.changeActive = false;
+
+
+
+            //原始
+            var scaleValue = 10,
+                searchOpacity = 0;
+
+            function setStatus(status) {
+                if (status) {
+                    // 开启 模糊 缩小 等
+                    $('.header img').css('filter', 'blur(10px)');
+                    $('.brandIcon').css('transform', 'scale(0)');
+                    $('.favoriteIcon').css('transform', 'scale(0)');
+                    $('.spell').css('opacity', 0).hide();
+                    $('.header').addClass('headerPosition');
+                    $('.hswm_search').css({ 'display': 'block', 'opacity': 1 })
+                } else {
+                    // 关闭 模糊 缩小 等
+                    $('.header img').css('filter', 'blur(0px)');
+                    $('.brandIcon').css('transform', 'scale(1)');
+                    $('.favoriteIcon').css('transform', 'scale(1)');
+                    $('.spell').css('opacity', 1).show();
+                    $('.header').removeClass('headerPosition');
+                    $('.hswm_search').css({ 'display': 'none', 'opacity': 0 })
+                    $('.container').css('transform', 'translateY(0px)');
+                }
+            }
+            //结束
+
 
             function scrollAnimate() {
                 var y = this.y >> 0;
-                // console.log(y, scrollAnimate.caller.arguments[0], this.options.fixed, my.scrollTransform[my.mySwiper.activeIndex], this);
-                console.log(y, '真实');
 
                 // 初始定位位置 -213 
                 if (y < my.firstPosition && this.startY > my.firstPosition || y > my.firstPosition && this.startY < my.firstPosition) {
@@ -115,19 +148,27 @@ var commdityDetail = (function() {
                 if (y > my.firstPosition) {
                     $('.container').css('transform', 'translate(0,' + y + 'px)');
                     $(this.scroller).css('transform', 'translate(0,' + (my.scrollTransform[my.mySwiper.activeIndex] ? my.scrollTransform[my.mySwiper.activeIndex] : 0) + 'px)');
+                     
+                        $('.oneScrollerWrapper, .twoScrollerWrapper, .threeScrollerWrapper').css({overflow: 'hidden', height: 488})
 
                 } else if (y <= my.firstPosition) {
+                        $('.oneScrollerWrapper, .twoScrollerWrapper, .threeScrollerWrapper').css({overflow: 'unset', height: 275})
 
                     if (y === my.firstPosition) {
                         if (this.options.isChangeY) {
                             if (index === 0) {
                                 y = this.y = this.startY = my.scrollTransform[my.mySwiper.activeIndex] + my.firstPosition + my.thirdTransform;
+                                my.thirdTransform = 0;
+    
                             } else {
                                 y = this.y = this.startY = my.scrollTransform[my.mySwiper.activeIndex] + my.firstPosition;
                             }
 
                             my.scrollTransform[my.mySwiper.activeIndex] = 0;
                             this.options.isChangeY = false;
+                            if (index ===0) {
+                                my.thirdTransform = 0;
+                            }
                         }
                     }
 
@@ -137,61 +178,59 @@ var commdityDetail = (function() {
 
                     $('.container').css('transform', 'translate(0,' + my.firstPosition + 'px)');
                     $(this.scroller).css('transform', 'translate(0,' + (y - my.firstPosition) + 'px)');
+
                 }
 
                 // 二级定位
                 if (my.mySwiper.activeIndex === 0) {
                     if (y < my.secondPosition) {
+
                         $('.goodsList_right').css('transform', 'translate(0,' + (y - my.secondPosition) + 'px)');
                         $(this.scroller).css('transform', 'translate(0,' + (my.secondPosition - my.firstPosition) + 'px)');
+                        my.thirdTransform = 0;
 
                         // 初始化头部定位
                         if (isSwitch) {
                             isSwitch = false;
                             $('.rn_title').eq(my.titleIndex).insertAfter('.goodsList_left').addClass('active_rn_title').next().find('li:first-child').addClass('goodsList_right_li_loseHead');
                         }
- 
+
                         if (y < my.secondPosition - my.listHeight[my.titleIndex]) { // 1743
                             $('.active_rn_title').prependTo($('.goodsList_right li').eq(my.titleIndex)).addClass('active_rn_title_middle');
                             my.prevIndex = my.titleIndex
-                            console.log('小于')
                             if (y < my.secondPosition - my.listHeight[my.titleIndex] - titleHeight) { //1783
- 
                                 my.titleIndex = my.titleIndex + 1;
                                 $('.active_rn_title').removeClass('active_rn_title');
                                 $('.rn_title').eq(my.titleIndex).addClass('active_rn_title').insertAfter('.goodsList_left').next().find('li').eq(my.titleIndex).addClass('goodsList_right_li_loseHead');
-                                my.changeActive = true;
-                                console.log('小于 + 40')
 
                             }
                         }
- 
-    
- 
+
+
+
                         if (y > my.secondPosition - my.listHeight[my.prevIndex] - titleHeight) { // 1783
-                        	if (my.prevIndex !== my.titleIndex) {
-                        		$('.active_rn_title').prependTo($('.goodsList_right li').eq(my.titleIndex).removeClass('goodsList_right_li_loseHead')).removeClass('active_rn_title');
-                        		$('.rn_title').eq(my.prevIndex).addClass('active_rn_title');
-                        		my.titleIndex = my.titleIndex - 1;
-                        	}
-
-                            console.log('大于 - 40')
+                            if (my.prevIndex !== my.titleIndex) {
+                                $('.active_rn_title').prependTo($('.goodsList_right li').eq(my.titleIndex).removeClass('goodsList_right_li_loseHead')).removeClass('active_rn_title');
+                                $('.rn_title').eq(my.prevIndex).addClass('active_rn_title');
+                                my.titleIndex = my.titleIndex - 1;
+                            }
                             if (y > my.secondPosition - my.listHeight[my.prevIndex]) { // 1743
-                            	$('.active_rn_title').insertAfter('.goodsList_left').removeClass('active_rn_title_middle');
-                            	my.prevIndex = my.prevIndex ? my.prevIndex - 1 : 0;
- 
+                                $('.active_rn_title').insertAfter('.goodsList_left').removeClass('active_rn_title_middle');
+                                my.prevIndex = my.prevIndex ? my.prevIndex - 1 : 0;
+
                             }
                         }
-
-
-
-
-                        console.log(my.titleIndex);
+                        
+                        // console.log(my.titleIndex);
                     } else {
-                        $('.goodsList_right').css('transform', 'translate(0,0)');
-                        $('.rn_title').eq(my.titleIndex).prependTo($('.goodsList_right li').eq(my.titleIndex).removeClass('goodsList_right_li_loseHead')).removeClass('active_rn_title');
-                        my.titleIndex = my.prevIndex = 0;
-                        isSwitch = true;
+                        if (my.thirdTransform) {
+                            $('.goodsList_right').css('transform', 'translate(0,' + my.thirdTransform + 'px)');
+                        } else {
+                            $('.goodsList_right').css('transform', 'translate(0,0)');
+                            $('.rn_title').eq(my.titleIndex).prependTo($('.goodsList_right li').eq(my.titleIndex).removeClass('goodsList_right_li_loseHead')).removeClass('active_rn_title');
+                            my.titleIndex = my.prevIndex = 0;
+                            isSwitch = true;
+                        }
                     }
                 }
 
@@ -201,7 +240,6 @@ var commdityDetail = (function() {
                 }
 
                 $('.goodsList_left li').removeClass('activeLeft').eq(my.titleIndex).addClass('activeLeft')
-
 
                 // 左右滚动切换
                 if (my.clickLeft) {
@@ -218,8 +256,79 @@ var commdityDetail = (function() {
                     }
                 }
 
-            }
+                //原始
+                // 模糊
+                if (y >= -10) {
+                    $('.header img').css('filter', 'blur(' + -y + 'px)');
+                }
+                // 缩小
+                if (y <= -10 && this.directionY > 0 && scaleValue) {
+                    // 确保在通过 10px 移动后 模糊终值
+                    $('.header img').css('filter', 'blur(' + 10 + 'px)');
 
+                    //图标缩小
+                    scaleValue -= 1;
+                    $('.brandIcon').css('transform', 'scale(.' + scaleValue + ')');
+                    $('.favoriteIcon').css('transform', 'scale(.' + scaleValue + ')');
+                    $('.spell').css('opacity', '.' + scaleValue);
+                    if (scaleValue == 0) {
+                        $('.spell').hide();
+                    }
+                }
+                // 放大
+                if (y >= -20 && this.directionY < 0 && scaleValue < 10) {
+                    //图标放大
+                    scaleValue += 1;
+                    $('.brandIcon').css('transform', 'scale(' + (scaleValue == 10 ? 1 : '.' + scaleValue) + ')');
+                    $('.favoriteIcon').css('transform', 'scale(' + (scaleValue == 10 ? 1 : '.' + scaleValue) + ')');
+                    $('.spell').css({ display: 'block', opacity: scaleValue == 10 ? 1 : '.' + scaleValue });
+                    if (scaleValue == 10) {
+                        $('.spell').show();
+                    }
+                }
+                // 搜索栏 透明度 显示
+                if (y <= -30 && this.directionY > 0 && searchOpacity < 10) {
+                    searchOpacity += 1;
+                    $('.hswm_search').css({ 'display': 'block', 'opacity': (searchOpacity == 10 ? 1 : '.' + searchOpacity) })
+                }
+                // 搜索栏 透明度 隐藏
+                if (y > -30 && this.directionY < 0 && searchOpacity) {
+                    searchOpacity -= 1;
+                    $('.hswm_search').css({ 'display': 'block', 'opacity': (searchOpacity == 0 ? 0 : '.' + searchOpacity) })
+                    if (searchOpacity == 0) {
+                        $('.hswm_search').hide();
+                    }
+                }
+                // 头部 模糊
+                if (y <= -50) {
+                    $('.header').addClass('headerPosition').css('clip', 'rect(0,' + window.document.body.offsetWidth + 'px, .5rem, 0)');
+                    $('.container').css('margin-top', '100px');
+                    // 开启 所有 效果 最终值 例如 opacity 1 scale 1
+                    setStatus(1);
+
+                } else {
+                    $('.header').removeClass('headerPosition').css('clip', 'unset');
+                    $('.container').css('margin-top', '0');
+                }
+
+                if (y <= -213) {
+                    $('.selectWrapper').appendTo('body').addClass('con_top_position');
+                } else {
+                    $('.selectWrapper').insertAfter($('.container_inner_bottom')).removeClass('con_top_position');
+                }
+
+                if (y < -213 && this.startY > -213 || y > -213 && this.startY < -213) {
+                    this.options.subMargin = -213;
+                    this._translate(0, -213);
+                    $('#scroller').css('transform', 'translate(0,0)');
+                    $('.container').css('transform', 'translateY(' + -213 + 'px)');
+                }
+                if (y === 0) {
+                    // 关闭 所有 效果 最终值 opacity 0 scale 0
+                    setStatus();
+                }
+
+            }
 
             // 创建滚动对象
             $.each(my.scrollersDom, function(i, item) {
@@ -263,6 +372,7 @@ var commdityDetail = (function() {
             }
         },
         initLeftScroll: function() {
+            var switchStop = false;
             // // 阻止冒泡
             function stopEvent(e) {
                 e.stopPropagation();
@@ -275,18 +385,24 @@ var commdityDetail = (function() {
                 my.clickLeft = true;
 
                 if (my.scrollers[0].y <= my.secondPosition) {
-                    ['touchstart', 'pointerdown', 'MSPointerDown', 'mousedown'].forEach(function(item, i) {
-                        document.querySelector('.goodsList_left').addEventListener(item, stopEvent)
-                    })
+                    if (!switchStop && leftScroll_one.caller.arguments[0] !== 'scroll') {
+                        ['touchstart', 'pointerdown', 'MSPointerDown', 'mousedown'].forEach(function(item, i) {
+                            document.querySelector('.goodsList_left').addEventListener(item, stopEvent)
+                        });
+                        switchStop = true;
+                    }
                 } else {
-                    // $(this.scroller).css('transform', 'translate(0,0)');
+                    this._translate(0, -1);
+                    switchStop = false;
+
+                }
+                if (y === 0) {
                     this._translate(0, -1);
                 }
-
-                if (y >= 0) {
+                if (y >= 0 && switchStop && leftScroll_one.caller.arguments[0] === 'scroll') {
                     ['touchstart', 'pointerdown', 'MSPointerDown', 'mousedown'].forEach(function(item, i) {
                         document.querySelector('.goodsList_left').removeEventListener(item, stopEvent)
-                    })
+                    });
                 }
             }
 
@@ -296,9 +412,8 @@ var commdityDetail = (function() {
             })
 
             leftScroll.on('beforeScrollStart', leftScroll_one);
-            leftScroll.on('scrollCancel', leftScroll_one);
-            leftScroll.on('scroll', leftScroll_one);
             leftScroll.on('scrollEnd', leftScroll_one);
+            leftScroll.on('scroll', leftScroll_one);
 
             ['.advertsingImg', '.specialPriceShowImg', '.today_good_special_price', '.goodsList_right'].forEach(function(item, index) {
                 document.querySelector(item).addEventListener('touchstart', function() {
@@ -306,7 +421,14 @@ var commdityDetail = (function() {
                     my.clickLeft = false;
                 })
             })
-        }
 
+            // 点击方法
+        },
+        initClickTab: function () {
+            shadow($('.selectTabItem'));          
+            $('.selectTabItem').on('click', function(){
+                my.mySwiper.slideTo($(this).index());
+            })
+        }
     }
 }())
