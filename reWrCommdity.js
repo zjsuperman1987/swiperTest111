@@ -272,9 +272,9 @@ var commdityDetail = (function() {
             function leftScroll_one() {
                 var y = this.y >> 0;
                 // 开启 左滚动 固定坐标
-                commdityDetail.spec.clickLeft = true;
+                my.clickLeft = true;
 
-                if (commdityDetail.spec.scrollers[0].y <= my.secondPosition) {
+                if (my.scrollers[0].y <= my.secondPosition) {
                     ['touchstart', 'pointerdown', 'MSPointerDown', 'mousedown'].forEach(function(item, i) {
                         document.querySelector('.goodsList_left').addEventListener(item, stopEvent)
                     })
@@ -303,7 +303,7 @@ var commdityDetail = (function() {
             ['.advertsingImg', '.specialPriceShowImg', '.today_good_special_price', '.goodsList_right'].forEach(function(item, index) {
                 document.querySelector(item).addEventListener('touchstart', function() {
                     // 关闭 左滚动 固定坐标
-                    commdityDetail.spec.clickLeft = false;
+                    my.clickLeft = false;
                 })
             })
         }
