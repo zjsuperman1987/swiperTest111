@@ -1,5 +1,7 @@
 window.onload = function() {
     initControl.init();
+
+
 }
 
 
@@ -8,14 +10,18 @@ var initControl = (function() {
     var my = {};
 
 
+
+    function stopPop(e) {
+        var e = e || event;
+        e.stopPropagation();
+    }
+
+
+
     function mianScrollAnimate() {
         var y = this.y >> 0;
 
-        // if (mianScrollAnimate.caller.arguments[0] === '')
-
-
-
-        if (y < -100) {
+        if (y <= -100) {
             $('.placehold').css({ position: 'fixed', clip: 'rect(0, 320px, 100px, 0)', 'z-index': 1 }).prependTo('body');
             $(this.scroller).css('margin-top', 200);
 
@@ -31,34 +37,24 @@ var initControl = (function() {
         }
 
 
-        if (my.leftScroll) {
-            if (y < -100) {
+        if (y <= -100) {
+            if (my.leftScroll) {
                 this.options.fixed = true;
-                this.options.position = true;
                 this._translate(0, -100);
+                $('.right').css('transform', 'translate(0,0)');
+                console.log('进来了')
             }
-
-            $('.right').css('transform', 'translate(0,0px)');
+            // ['touchstart', 'pointerdown', 'MSPointerDown', 'mousedown'].forEach(function(item, i) {
+            //     document.querySelector('.subWrapper').addEventListener(item, stopPop, false)
+            // })
         } else {
-            this.options.fixed = false;
-            this.options.position = false;
+
         }
-
-
-
-
-
 
 
         console.log(y, '右边', mianScrollAnimate.caller.arguments[0], my.leftScroll)
     }
 
-    var switchStop = true;
-
-    function stopPop(e) {
-        var e = e || event;
-        e.stopPropagation();
-    }
 
 
 
@@ -66,24 +62,10 @@ var initControl = (function() {
     function subScrollAnimate() {
         var y = this.y >> 0;
         my.leftScroll = true;
-        if (my.mainScroll.options.position && switchStop) {
-            switchStop = false;
-            ['touchstart', 'pointerdown', 'MSPointerDown', 'mousedown'].forEach(function(item, i) {
-                document.querySelector('.subWrapper').addEventListener(item, stopPop)
-            })
 
-        }
-
-        if (!my.mainScroll.options.position) {
+        // 到达位置
+        if (my.mainScroll.y > -100) {
             this._translate(0, 0);
-        }
-
-
-        if (y >= 0 && subScrollAnimate.caller.arguments[0] === 'beforeScrollStart') {
-        	['touchstart', 'pointerdown', 'MSPointerDown', 'mousedown'].forEach(function(item, i) {
-                document.querySelector('.subWrapper').removeEventListener(item, stopPop)
-            })
-             switchStop = true;
         }
 
 
@@ -95,6 +77,17 @@ var initControl = (function() {
     return {
 
         init: function() {
+
+            //  function clickRight () {
+            // 	my.leftScroll = false;
+            //     console.log('我是阻止····························')
+            // }
+
+            // ['touchstart', 'pointerdown', 'MSPointerDown', 'mousedown'].forEach(function(item, i) {
+            //     document.querySelector('.right').addEventListener(item, clickRight);
+            // })
+
+
             var mainScroll = my.mainScroll = new IScroll('.wrapper', {
                 probeType: 3,
                 bounce: false
@@ -105,37 +98,16 @@ var initControl = (function() {
             mainScroll.on('scrollEnd', mianScrollAnimate);
             mainScroll.on('scrollCancel', mianScrollAnimate);
 
-
-
-
-
-
-
-
-
+            //我是分割---------------------------------------------------
             subScroll = new IScroll('.subWrapper', {
                 probeType: 3,
                 bounce: false
             });
 
-            subScroll.on('beforeScrollStart', subScrollAnimate);
+            // subScroll.on('beforeScrollStart', subScrollAnimate);
             subScroll.on('scroll', subScrollAnimate);
             subScroll.on('scrollEnd', subScrollAnimate);
 
-
-
-            // ['touchstart', 'touchmove', 'touchend', 'pointerdown', 'pointermove', 'mousedown', 'mousemove','MSPointerDown','MSPointerMove'].forEach(function(item, i) {
-            //     document.querySelector('.subWrapper').addEventListener(item, function(e) {
-            //         var e = e || event;
-            //         e.stopPropagation();
-            //     })
-            // })
-
-
-
-            document.querySelector('.right').addEventListener('touchstart', function() {
-                my.leftScroll = false;
-            })
 
 
         }
