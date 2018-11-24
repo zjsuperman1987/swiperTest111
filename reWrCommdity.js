@@ -1,15 +1,13 @@
 window.onload = function() {
     initControl.init();
-
-
 }
 
 
 
 var initControl = (function() {
     var my = {};
-
-
+    stopBubble = false;
+    rightSCroll = 0;
 
     function stopPop(e) {
         var e = e || event;
@@ -27,31 +25,33 @@ var initControl = (function() {
 
             $(this.scroller).css('transform', 'translate(0,-100px)');
             $('.right').css('transform', 'translate(0,' + (y + 100) + 'px)');
-
-
         } else {
             $('.placehold').css({ position: 'unset', clip: 'unset' }).prependTo($(this.scroller));
             $(this.scroller).css('margin-top', 0);
-            $('.right').css('transform', 'translate(0,0)');
+            $('.right').css('transform', 'translate(0,' + rightSCroll + 'px)');
 
         }
 
 
         if (y <= -100) {
             if (my.leftScroll) {
+                $('.goddsListWrapper').css({ overflow: 'unset' });
                 this.options.fixed = true;
-                this._translate(0, -100);
+                this._translate(0, rightSCroll - 100);
                 $('.right').css('transform', 'translate(0,0)');
                 console.log('进来了')
             }
-            // ['touchstart', 'pointerdown', 'MSPointerDown', 'mousedown'].forEach(function(item, i) {
-            //     document.querySelector('.subWrapper').addEventListener(item, stopPop, false)
-            // })
+            ['touchstart', 'pointerdown', 'MSPointerDown', 'mousedown'].forEach(function(item, i) {
+                document.querySelector('.subWrapper').addEventListener(item, stopPop, false)
+            })
         } else {
-
+            ['touchstart', 'pointerdown', 'MSPointerDown', 'mousedown'].forEach(function(item, i) {
+                document.querySelector('.subWrapper').removeEventListener(item, stopPop, false)
+            })
+            if (rightSCroll) {
+                $('.goddsListWrapper').css({ overflow: 'hidden' });
+            }
         }
-
-
         console.log(y, '右边', mianScrollAnimate.caller.arguments[0], my.leftScroll)
     }
 
@@ -66,6 +66,18 @@ var initControl = (function() {
         // 到达位置
         if (my.mainScroll.y > -100) {
             this._translate(0, 0);
+        } else {
+            my.leftScroll = false;
+        }
+
+        if (y === 0 && this.directionY < 0) {
+            ['touchstart', 'pointerdown', 'MSPointerDown', 'mousedown'].forEach(function(item, i) {
+                document.querySelector('.subWrapper').removeEventListener(item, stopPop, false)
+            })
+            if (!my.leftScroll) {
+                rightSCroll = my.mainScroll.y + 100;
+                my.mainScroll.y = -99;
+            }
         }
 
 
@@ -77,16 +89,12 @@ var initControl = (function() {
     return {
 
         init: function() {
-
-            //  function clickRight () {
-            // 	my.leftScroll = false;
-            //     console.log('我是阻止····························')
-            // }
-
-            // ['touchstart', 'pointerdown', 'MSPointerDown', 'mousedown'].forEach(function(item, i) {
-            //     document.querySelector('.right').addEventListener(item, clickRight);
-            // })
-
+            ['touchstart', 'pointerdown', 'MSPointerDown', 'mousedown'].forEach(function(item, i) {
+                document.querySelector('.right').addEventListener(item, function() {
+                    my.leftScroll = false;
+                    console.log('阻止了没')
+                })
+            })
 
             var mainScroll = my.mainScroll = new IScroll('.wrapper', {
                 probeType: 3,
@@ -106,7 +114,6 @@ var initControl = (function() {
 
             // subScroll.on('beforeScrollStart', subScrollAnimate);
             subScroll.on('scroll', subScrollAnimate);
-            subScroll.on('scrollEnd', subScrollAnimate);
 
 
 
