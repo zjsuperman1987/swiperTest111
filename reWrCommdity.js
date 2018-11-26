@@ -143,7 +143,7 @@ var initControl = (function() {
 
             var mainScroll = my.mainScroll = new IScroll('.wrapper', {
                 probeType: 3,
-                bounce: false
+                bounce: false   
             })
 
             mainScroll.on('beforeScrollStart', mianScrollAnimate);
