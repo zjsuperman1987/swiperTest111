@@ -680,6 +680,7 @@
                 }
 
                 this._execEvent('scrollCancel');
+                console.log('我先cancel')
                 return;
             }
 
@@ -1668,6 +1669,8 @@
                 destTime = startTime + duration;
 
             function step() {
+                    console.log('end我后')
+                
                 var now = utils.getTime(),
                     newX, newY,
                     easing;
