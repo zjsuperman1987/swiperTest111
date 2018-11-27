@@ -699,7 +699,7 @@
                 this.isInTransition = 1;
             }
 
-
+ 
             if (this.options.snap) {
                 var snap = this._nearestSnap(newX, newY);
                 this.currentPage = snap;
@@ -1669,7 +1669,7 @@
                 destTime = startTime + duration;
 
             function step() {
-                    console.log('end我后')
+                    // console.log('end我后')
                 
                 var now = utils.getTime(),
                     newX, newY,

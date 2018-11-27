@@ -6,11 +6,17 @@ window.onload = function() {
 
 var initControl = (function() {
     var my = {},
+        lastLeftEvent,
         stopBubble = false,
         rightSCroll = 0,
         leftScroll = 0,
-        endBool = false,
         storageCancel = 0;
+
+
+
+
+
+
 
     function stopPop(e) {
         var e = e || event;
@@ -22,36 +28,25 @@ var initControl = (function() {
     function mianScrollAnimate() {
         var y = this.y >> 0,
             e = window.event || e;
-
         if (y <= -100) {
             $('.placehold').css({ position: 'fixed', clip: 'rect(0, 320px, 100px, 0)', 'z-index': 1 }).prependTo('body');
             $(this.scroller).css('margin-top', 200);
-            if (rightSCroll) { //  || storageCancel
+            if (rightSCroll || storageCancel) { //  || storageCancel
                 var temporaryY = y + rightSCroll + 100;
                 temporaryY = temporaryY < (this.maxScrollY + 100) ? (this.maxScrollY + 100) : temporaryY;
-
-                // if (mianScrollAnimate.caller.arguments[0] === 'scrollCancel') {
-                //     y = this.y = storageCancel - 100;
-                //     storageCancel = 0;
-                //     console.log('进来了', y, temporaryY);
-                //     console.log('scrollcancel=======================================');
-                // }
-                // if (mianScrollAnimate.caller.arguments[0] === 'scrollEnd' && this.startY > -100) {
-                //     storageCancel = temporaryY;
-                //     y = this.y = temporaryY - 100;
-                //     rightSCroll = 0;
-                //     console.log('scrollend=======================================')
-                // }
-
-                // 转换Y值
-                y = this.y = temporaryY - 100;
-                if (mianScrollAnimate.caller.arguments[0] === 'scrollEnd' && this.startY > -100) {
-                    rightSCroll = 0;
+                if ((mianScrollAnimate.caller.arguments[0] === 'scrollCancel' || mianScrollAnimate.caller.arguments[0] === 'scroll') && storageCancel) {
+                    y = this.y = storageCancel - 100;
+                    // if (mianScrollAnimate.caller.arguments[0] === 'scrollCancel') {
+                    storageCancel = 0;
+                    // }
+                    console.log('进来了', y, temporaryY);
+                    console.log('scrollcancel=======================================');
                 }
-                if (e) {
-                    if (e.type = 'pointermove') {
-                        rightSCroll = 0;
-                    }
+                if (mianScrollAnimate.caller.arguments[0] === 'scrollEnd' && this.startY > -100) {
+                    storageCancel = temporaryY;
+                    y = this.y = temporaryY - 100;
+                    rightSCroll = 0;
+                    console.log('scrollend=======================================')
                 }
             }
 
@@ -98,14 +93,14 @@ var initControl = (function() {
 
 
     function subScrollAnimate() {
-        var y = this.y >> 0,
-            event = window.event || event;
-        console.log(event);
+        var y = this.y >> 0;
         my.switchLeftScroll = true;
+        lastLeftEvent = subScrollAnimate.caller.arguments[0];
+
+
         if (stopBubble) {
             my.switchLeftScroll = false;
         }
-
 
         if (my.mainScroll.y > -100) {
             this._translate(0, leftScroll);
@@ -113,27 +108,38 @@ var initControl = (function() {
             leftScroll = y;
 
             if (y === 0 && this.directionY < 0) {
+                // ['touchstart', 'pointerdown', 'MSPointerDown', 'mousedown'].forEach(function(item, i) {
+                //     document.querySelector('.subWrapper').removeEventListener(item, stopPop, false);
+                // })
+                // stopBubble = false;
+                // rightSCroll = my.mainScroll.y + 100;
+
+                // my.mainScroll.y = -99;  
+                // my.mainScroll._execEvent('scroll');
+            }
+            console.log(lastLeftEvent, '====================')
+            if (y === 0 && this.directionY < 0) {
                 ['touchstart', 'pointerdown', 'MSPointerDown', 'mousedown'].forEach(function(item, i) {
                     document.querySelector('.subWrapper').removeEventListener(item, stopPop, false);
                 })
-                stopBubble = false;
-                rightSCroll = my.mainScroll.y + 100;
-
-                my.mainScroll.y = -99;
-                // my.mainScroll._execEvent('scroll');
+                // my.rightDom.dispatchEvent(my.rightTouchMove);
 
             }
         }
 
 
-        console.log(y, '左边===============', this.directionY, subScrollAnimate.caller.arguments[0]);
-
+        // console.log(y, '左边===============', this.directionY, subScrollAnimate.caller.arguments[0]);
     }
 
 
     return {
 
         init: function() {
+            var mainScroll,
+                subScroll;
+
+
+
             ['touchstart', 'pointerdown', 'MSPointerDown', 'mousedown'].forEach(function(item, i) {
                 document.querySelector('.right').addEventListener(item, function() {
                     my.switchLeftScroll = false;
@@ -141,9 +147,9 @@ var initControl = (function() {
                 })
             })
 
-            var mainScroll = my.mainScroll = new IScroll('.wrapper', {
+            mainScroll = my.mainScroll = new IScroll('.wrapper', {
                 probeType: 3,
-                bounce: false   
+                bounce: false
             })
 
             mainScroll.on('beforeScrollStart', mianScrollAnimate);
@@ -152,7 +158,7 @@ var initControl = (function() {
             mainScroll.on('scrollCancel', mianScrollAnimate);
 
             //我是分割---------------------------------------------------
-            var subScroll = my.subScroll = new IScroll('.subWrapper', {
+            subScroll = my.subScroll = new IScroll('.subWrapper', {
                 probeType: 3,
                 bounce: false
             });
@@ -160,6 +166,12 @@ var initControl = (function() {
             subScroll.on('beforeScrollStart', subScrollAnimate);
             subScroll.on('scroll', subScrollAnimate);
 
+            my.rightTouchMove = document.createEvent('Events');
+            my.rightTouchMove.initEvent('pointermove',true,false);
+            my.rightDom = document.querySelector('.wrapper');
+            my.rightDom.addEventListener('pointermove', function () {
+                console.log('执行touchStart===============================');
+            })
         }
 
 
