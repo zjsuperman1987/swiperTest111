@@ -680,7 +680,6 @@
                 }
 
                 this._execEvent('scrollCancel');
-                console.log('我先cancel')
                 return;
             }
 
@@ -1661,7 +1660,7 @@
         },
 
         _animate: function(destX, destY, duration, easingFn) {
-
+ 
             var that = this,
                 startX = this.x,
                 startY = this.y,
