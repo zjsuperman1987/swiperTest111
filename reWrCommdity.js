@@ -28,12 +28,12 @@ var initControl = (function() {
 
         if (mainScrollAnimate.caller.arguments[0] === 'beforeScrollStart') {
             this.options.clickRight = true;
+            this.options.fixed = false;
         }
         if (this.options.clickRight) {
             my.leftY = y < -100 ? -100 : y;
             leftScroll = my.subScroll.y;
         }
-
 
 
 
@@ -49,13 +49,6 @@ var initControl = (function() {
             // 转换Y值
             if (rightSCroll || storageCancel) {
                 // 滚动左边停止右边
-                if (this.moved && !this.options.clickRight && !leftScroll) {
-                    my.leftChange = false;
-                    y = this.y;
-                    this.options.fixed = true;
-                    return;
-                } 
-
 
 
 
@@ -77,12 +70,21 @@ var initControl = (function() {
 
             }
 
-
-
-
             $(this.scroller).css('transform', 'translate(0,-100px)');
             $('.right').css('transform', 'translate(0,' + (y + 100) + 'px)');
             my.leftChange = true;
+
+
+            if (this.moved && !this.options.clickRight) {
+                my.leftChange = false;
+                this.options.fixed = true;
+                debugger;
+                this.y = y;
+                console.log('====================================================================================================')
+            }
+
+
+
 
 
         } else {
@@ -133,12 +135,12 @@ var initControl = (function() {
         } else {
             my.leftChange = true;
             if (this.startY === 0 && this.directionY < 0) {
-                rightSCroll = my.mainScroll.y + 100;
+                rightSCroll = parseInt($('.right').css('transform').match(/-?\d+/g)[5], 10);
+                console.log(rightSCroll);
                 my.leftChange = false;
                 my.leftY = -99;
                 leftScroll = 0;
                 my.rightSCroll = my.mainScroll.y;
-                // console.log(my.rightSCroll, 'kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk', leftScroll)
             }
         }
     }
