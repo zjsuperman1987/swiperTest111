@@ -7,7 +7,9 @@ window.onload = function() {
 var initControl = (function() {
     var my = {},
         rightSCroll = 0,
-        leftScroll = 0;
+        leftScroll = 0,
+        storageCancel = 0;
+
 
     my.pointY = 0;
     my.leftMoveY = 0;
@@ -21,29 +23,79 @@ var initControl = (function() {
 
 
 
-    function mianScrollAnimate() {
+    function mainScrollAnimate() {
         var y = this.y >> 0;
-        // my.newY = my.leftY = y < -100 ? -100 : y;
+
+        if (mainScrollAnimate.caller.arguments[0] === 'beforeScrollStart') {
+            this.options.clickRight = true;
+        }
+        if (this.options.clickRight) {
+            my.leftY = y < -100 ? -100 : y;
+            leftScroll = my.subScroll.y;
+        }
+
+
+
+
+
 
 
         if (y < -100) {
             $('.placehold').css({ position: 'fixed', clip: 'rect(0, 320px, 100px, 0)', 'z-index': 1 }).prependTo('body');
+            $('.goddsListWrapper').css('overflow', 'unset');
             $(this.scroller).css('margin-top', 200);
+            // console.log(mainScrollAnimate.caller.arguments[0]);
+
+            // 转换Y值
+            if (rightSCroll || storageCancel) {
+                // 滚动左边停止右边
+                if (this.moved && !this.options.clickRight && !leftScroll) {
+                    my.leftChange = false;
+                    y = this.y;
+                    this.options.fixed = true;
+                    return;
+                } 
+
+
+
+
+                y = y + rightSCroll < this.maxScrollY ? this.maxScrollY : y + rightSCroll;
+                if (mainScrollAnimate.caller.arguments[0] === 'scrollEnd') {
+                    this.y = y;
+                    storageCancel = rightSCroll;
+                    rightSCroll = 0;
+                }
+                if (mainScrollAnimate.caller.arguments[0] === 'scroll' && !this.moved) {
+                    y = this.y = y + storageCancel;
+                    storageCancel = 0;
+                }
+
+                if (y === this.maxScrollY && mainScrollAnimate.caller.arguments[0] === 'scroll') {
+                    this.y = this.maxScrollY;
+                    this.options.fixed = true;
+                }
+
+            }
+
+
+
 
             $(this.scroller).css('transform', 'translate(0,-100px)');
             $('.right').css('transform', 'translate(0,' + (y + 100) + 'px)');
+            my.leftChange = true;
+
 
         } else {
             $('.placehold').css({ position: 'unset', clip: 'unset' }).prependTo($(this.scroller));
+            $('.goddsListWrapper').css('overflow', 'hidden');
             $(this.scroller).css('margin-top', 0);
 
             $('.right').css('transform', 'translate(0,' + rightSCroll + 'px)');
-            console.log(rightSCroll, 'jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj')
+            // console.log(rightSCroll, 'jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj');
             my.leftChange = false;
-            // leftScroll = my.subScroll.y;
         }
 
-        // console.log(y, '右边', mianScrollAnimate.caller.arguments[0],this.y);
+        // console.log(y, '右边', mainScrollAnimate.caller.arguments[0],this.y);
     }
 
 
@@ -54,8 +106,11 @@ var initControl = (function() {
         var y = this.y >> 0,
             e = window.event || e;
 
+        console.log(y, this.directionY);
+
         if (subScrollAnimate.caller.arguments[0] === 'beforeScrollStart') {
             my.pointY = e.pageY; // 初始值
+            my.mainScroll.options.clickRight = false;
         }
 
         if (e && !my.leftChange) {
@@ -68,11 +123,9 @@ var initControl = (function() {
             }
 
             my.mainScroll.y = my.newY;
-            console.log(my.mainScroll.y, 'middlemiddlemiddlemiddlemiddlemiddlemiddlemiddlemiddlemiddlemiddlemiddlemiddlemiddlemiddlemiddlemiddle')
-
-            my.mainScroll._execEvent('scroll');
+            my.mainScroll._execEvent('scrollEnd');
             $(my.mainScroll.scroller).css('transform', 'translate(0,' + my.newY + 'px)');
-
+            // console.log(my.mainScroll.y, 'middlemiddlemiddlemiddlemiddlemiddlemiddlemiddlemiddlemiddlemiddlemiddlemiddlemiddlemiddlemiddlemiddle')
         }
 
         if (my.leftY > -100) {
@@ -83,9 +136,9 @@ var initControl = (function() {
                 rightSCroll = my.mainScroll.y + 100;
                 my.leftChange = false;
                 my.leftY = -99;
-                my.leftScroll = 0;
-                my.rightSCroll = my.mainScroll.y + 100;
-                console.log(my.rightSCroll, 'kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk')
+                leftScroll = 0;
+                my.rightSCroll = my.mainScroll.y;
+                // console.log(my.rightSCroll, 'kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk', leftScroll)
             }
         }
     }
@@ -107,10 +160,10 @@ var initControl = (function() {
                 bounce: false
             })
 
-            mainScroll.on('beforeScrollStart', mianScrollAnimate);
-            mainScroll.on('scroll', mianScrollAnimate);
-            mainScroll.on('scrollEnd', mianScrollAnimate);
-            mainScroll.on('scrollCancel', mianScrollAnimate);
+            mainScroll.on('beforeScrollStart', mainScrollAnimate);
+            mainScroll.on('scroll', mainScrollAnimate);
+            mainScroll.on('scrollEnd', mainScrollAnimate);
+            mainScroll.on('scrollCancel', mainScrollAnimate);
 
             //我是分割---------------------------------------------------
             subScroll = my.subScroll = new IScroll('.subWrapper', {
