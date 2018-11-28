@@ -6,11 +6,8 @@ window.onload = function() {
 
 var initControl = (function() {
     var my = {},
-        lastLeftEvent,
-        stopBubble = false,
         rightSCroll = 0,
-        leftScroll = 0,
-        storageCancel = 0;
+        leftScroll = 0;
 
     my.pointY = 0;
     my.leftMoveY = 0;
@@ -26,9 +23,8 @@ var initControl = (function() {
 
     function mianScrollAnimate() {
         var y = this.y >> 0;
-        my.newY = my.leftY = y < -100 ? -100 : y;
-        
-        console.log(y);
+        // my.newY = my.leftY = y < -100 ? -100 : y;
+
 
         if (y < -100) {
             $('.placehold').css({ position: 'fixed', clip: 'rect(0, 320px, 100px, 0)', 'z-index': 1 }).prependTo('body');
@@ -40,9 +36,10 @@ var initControl = (function() {
         } else {
             $('.placehold').css({ position: 'unset', clip: 'unset' }).prependTo($(this.scroller));
             $(this.scroller).css('margin-top', 0);
+
             $('.right').css('transform', 'translate(0,' + rightSCroll + 'px)');
             my.leftChange = false;
-            leftScroll = my.subScroll.y;
+            // leftScroll = my.subScroll.y;
         }
 
         // console.log(y, '右边', mianScrollAnimate.caller.arguments[0],this.y);
@@ -68,20 +65,24 @@ var initControl = (function() {
             if (subScrollAnimate.caller.arguments[0] === 'scrollEnd') {
                 my.leftY = my.newY;
             }
+
+            console.log(my.newY);
             my.mainScroll.y = my.newY;
             my.mainScroll._execEvent('scroll');
-            console.log(my.newY, 'pppppppppppppppppppppppppppp');
             $(my.mainScroll.scroller).css('transform', 'translate(0,' + my.newY + 'px)');
-            
+            console.log(my.newY, 'pppppppppppppppppppppppppppp');
+
         }
 
         if (my.leftY > -100) {
             this._translate(0, leftScroll);
-        } else if (my.leftY <= -100) {
+        } else {
             my.leftChange = true;
-            if (this.startY === 0 && this.directionY < 0 && my.leftChange) {
+            if (this.startY === 0 && this.directionY < 0) {
                 rightSCroll = my.mainScroll.y + 100;
                 my.leftChange = false;
+                my.leftY = -99;
+                my.leftScroll = 0;
             }
         }
     }
