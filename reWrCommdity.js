@@ -38,6 +38,7 @@ var initControl = (function() {
             $(this.scroller).css('margin-top', 0);
 
             $('.right').css('transform', 'translate(0,' + rightSCroll + 'px)');
+            console.log(rightSCroll, 'jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj')
             my.leftChange = false;
             // leftScroll = my.subScroll.y;
         }
@@ -66,11 +67,11 @@ var initControl = (function() {
                 my.leftY = my.newY;
             }
 
-            console.log(my.newY);
             my.mainScroll.y = my.newY;
+            console.log(my.mainScroll.y, 'middlemiddlemiddlemiddlemiddlemiddlemiddlemiddlemiddlemiddlemiddlemiddlemiddlemiddlemiddlemiddlemiddle')
+
             my.mainScroll._execEvent('scroll');
             $(my.mainScroll.scroller).css('transform', 'translate(0,' + my.newY + 'px)');
-            console.log(my.newY, 'pppppppppppppppppppppppppppp');
 
         }
 
@@ -83,6 +84,8 @@ var initControl = (function() {
                 my.leftChange = false;
                 my.leftY = -99;
                 my.leftScroll = 0;
+                my.rightSCroll = my.mainScroll.y + 100;
+                console.log(my.rightSCroll, 'kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk')
             }
         }
     }
