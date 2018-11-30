@@ -15,11 +15,15 @@ var initControl = (function() {
     my.leftMoveY = 0;
     my.leftY = 0;
     my.leftChange = false;
+    my.oneRightSet = true;
 
     function stopPop(e) {
         var e = e || event;
         e.stopPropagation();
     }
+
+
+    function 
 
 
 
@@ -28,63 +32,21 @@ var initControl = (function() {
 
         if (mainScrollAnimate.caller.arguments[0] === 'beforeScrollStart') {
             this.options.clickRight = true;
-            this.options.fixed = false;
         }
-        if (this.options.clickRight) {
-            my.leftY = y < -100 ? -100 : y;
-            leftScroll = my.subScroll.y;
-        }
-
-
-
-
 
 
         if (y < -100) {
             $('.placehold').css({ position: 'fixed', clip: 'rect(0, 320px, 100px, 0)', 'z-index': 1 }).prependTo('body');
             $('.goddsListWrapper').css('overflow', 'unset');
             $(this.scroller).css('margin-top', 200);
-            // console.log(mainScrollAnimate.caller.arguments[0]);
-
-            // 转换Y值
-            if (rightSCroll || storageCancel) {
-                // 滚动左边停止右边
-
-
-
-                y = y + rightSCroll < this.maxScrollY ? this.maxScrollY : y + rightSCroll;
-                if (mainScrollAnimate.caller.arguments[0] === 'scrollEnd') {
-                    this.y = y;
-                    storageCancel = rightSCroll;
-                    rightSCroll = 0;
-                }
-                if (mainScrollAnimate.caller.arguments[0] === 'scroll' && !this.moved) {
-                    y = this.y = y + storageCancel;
-                    storageCancel = 0;
-                }
-
-                if (y === this.maxScrollY && mainScrollAnimate.caller.arguments[0] === 'scroll') {
-                    this.y = this.maxScrollY;
-                    this.options.fixed = true;
-                }
-
-            }
 
             $(this.scroller).css('transform', 'translate(0,-100px)');
             $('.right').css('transform', 'translate(0,' + (y + 100) + 'px)');
-            my.leftChange = true;
 
-
-            if (this.moved && !this.options.clickRight) {
-                my.leftChange = false;
-                this.options.fixed = true;
-                debugger;
-                this.y = y;
-                console.log('====================================================================================================')
+            if (my.oneRightSet) {
+                my.oneRightSet = false;
+                my.leftY = -100;
             }
-
-
-
 
 
         } else {
@@ -92,12 +54,15 @@ var initControl = (function() {
             $('.goddsListWrapper').css('overflow', 'hidden');
             $(this.scroller).css('margin-top', 0);
 
+            $(this.scroller).css('transfrom', 'translate(0,0)');
             $('.right').css('transform', 'translate(0,' + rightSCroll + 'px)');
-            // console.log(rightSCroll, 'jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj');
-            my.leftChange = false;
         }
 
-        // console.log(y, '右边', mainScrollAnimate.caller.arguments[0],this.y);
+
+        if (!my.leftChange && !this.options.clickRight) {
+            // console.log('进来了·····························进来了·····························进来了·····························')
+            $(this.scroller).css('transform', 'translate(0,' + my.newY + 'px)');
+        }
     }
 
 
@@ -108,11 +73,14 @@ var initControl = (function() {
         var y = this.y >> 0,
             e = window.event || e;
 
-        console.log(y, this.directionY);
 
         if (subScrollAnimate.caller.arguments[0] === 'beforeScrollStart') {
             my.pointY = e.pageY; // 初始值
             my.mainScroll.options.clickRight = false;
+        }
+
+        if (subScrollAnimate.caller.arguments[0] === 'scrollEnd') {
+            my.leftY = my.newY;
         }
 
         if (e && !my.leftChange) {
@@ -123,26 +91,21 @@ var initControl = (function() {
             if (subScrollAnimate.caller.arguments[0] === 'scrollEnd') {
                 my.leftY = my.newY;
             }
-
-            my.mainScroll.y = my.newY;
-            my.mainScroll._execEvent('scrollEnd');
             $(my.mainScroll.scroller).css('transform', 'translate(0,' + my.newY + 'px)');
-            // console.log(my.mainScroll.y, 'middlemiddlemiddlemiddlemiddlemiddlemiddlemiddlemiddlemiddlemiddlemiddlemiddlemiddlemiddlemiddlemiddle')
-        }
 
+
+
+        }
         if (my.leftY > -100) {
-            this._translate(0, leftScroll);
+            this._translate(0, 0);
         } else {
             my.leftChange = true;
             if (this.startY === 0 && this.directionY < 0) {
-                rightSCroll = parseInt($('.right').css('transform').match(/-?\d+/g)[5], 10);
-                console.log(rightSCroll);
                 my.leftChange = false;
-                my.leftY = -99;
-                leftScroll = 0;
-                my.rightSCroll = my.mainScroll.y;
             }
         }
+        console.log(my.leftY, my.newY);
+
     }
 
 
