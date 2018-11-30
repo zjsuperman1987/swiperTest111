@@ -14,8 +14,12 @@ var initControl = (function() {
     my.pointY = 0;
     my.leftMoveY = 0;
     my.leftY = 0;
+    // my.newY = 0;
     my.leftChange = false;
     my.oneRightSet = true;
+    my.oneLeftSet = true;
+    my.rightY = 0;
+
 
     function stopPop(e) {
         var e = e || event;
@@ -38,44 +42,56 @@ var initControl = (function() {
 
 
     function mainScrollAnimate() {
-        var y = this.y >> 0;
+        var y = this.y >> 0,
+            rightMoveY = 0;
 
         if (mainScrollAnimate.caller.arguments[0] === 'beforeScrollStart') {
             this.options.clickRight = true;
+            my.rightY = y;
         }
 
-
         if (y < -100) {
-            // $('.placehold').css({ position: 'fixed', clip: 'rect(0, 320px, 100px, 0)', 'z-index': 1 }).prependTo('body');
-            // $('.goddsListWrapper').css('overflow', 'unset');
-            // $(this.scroller).css('margin-top', 200);
-
             $(this.scroller).css('transform', 'translate(0,-100px)');
             $('.right').css('transform', 'translate(0,' + (y + 100) + 'px)');
+
+            if (this.directionY > 0) {
+
+            }
+            if (this.directionY < 0) {
+
+            }
 
             if (my.oneRightSet) {
                 my.oneRightSet = false;
                 my.leftY = -100;
             }
-
-
         } else {
-            // $('.placehold').css({ position: 'unset', clip: 'unset' }).prependTo($(this.scroller));
-            // $('.goddsListWrapper').css('overflow', 'hidden');
-            // $(this.scroller).css('margin-top', 0);
+            $(this.scroller).css('transfrom', 'translate(0,' + y + 'px)');
+            // if (my.leftY < y && this.directionY < 0) {
+            //     my.leftY = y;
+            // }else {
+            //     my.leftY = y;
+            // }
 
-            $(this.scroller).css('transfrom', 'translate(0,0)');
-            $('.right').css('transform', 'translate(0,' + rightSCroll + 'px)');
+
         }
 
-
+        // 下拉左边
         if (!my.leftChange && !this.options.clickRight) {
-            // console.log('进来了·····························进来了·····························进来了·····························')
             $(this.scroller).css('transform', 'translate(0,' + my.newY + 'px)');
         }
+        // 下拉右边
+        // if (my.leftY > -100) {
+        //     $(this.scroller).css('transform', 'translate(0,' + my.leftY + 'px)');
+        // console.log(my.leftY,'=====================================')
 
-        console.log(y,'==========================================右边')
+        //     // if (this.directionY > 0 && this.options.clickRight) {
+        //     //     rightMoveY = y - my.rightY;
+        //     //     my.leftY = my.newY = rightMoveY;
 
+        //     //     console.log(rightMoveY)
+        //     // }
+        // }
     }
 
 
@@ -92,10 +108,6 @@ var initControl = (function() {
             my.mainScroll.options.clickRight = false;
         }
 
-        if (subScrollAnimate.caller.arguments[0] === 'scrollEnd') {
-            my.leftY = my.newY;
-        }
-
         if (e && !my.leftChange) {
             my.leftMoveY = e.pageY - my.pointY; //移动值
             my.newY = my.leftY + my.leftMoveY;
@@ -105,19 +117,25 @@ var initControl = (function() {
                 my.leftY = my.newY;
             }
             $(my.mainScroll.scroller).css('transform', 'translate(0,' + my.newY + 'px)');
-
-
-
+            
+            if (!rightSCroll) {
+                my.mainScroll.y = my.newY;
+            }
         }
+
+
         if (my.leftY > -100) {
             this._translate(0, 0);
         } else {
             my.leftChange = true;
+            if (my.oneLeftSet) {
+                oneLeftSet = false;
+            }
             if (this.startY === 0 && this.directionY < 0) {
                 my.leftChange = false;
             }
         }
-        console.log(my.leftY, my.newY, y);
+
     }
 
 
@@ -152,9 +170,6 @@ var initControl = (function() {
             subScroll.on('scroll', subScrollAnimate);
             subScroll.on('scrollEnd', subScrollAnimate);
 
-
         }
-
-
     }
 })()
