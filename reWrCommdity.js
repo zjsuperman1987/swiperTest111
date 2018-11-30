@@ -23,7 +23,17 @@ var initControl = (function() {
     }
 
 
-    function 
+    function sythesizeAnimate(y) {
+        if (y < -100) {
+            $('.placehold').css({ position: 'fixed', clip: 'rect(0, 320px, 100px, 0)', 'z-index': 1 }).prependTo('body');
+            $('.goddsListWrapper').css('overflow', 'unset');
+            $(this.scroller).css('margin-top', 200);
+        } else {
+            $('.placehold').css({ position: 'unset', clip: 'unset' }).prependTo($(this.scroller));
+            $('.goddsListWrapper').css('overflow', 'hidden');
+            $(this.scroller).css('margin-top', 0);
+        }
+    }
 
 
 
@@ -36,9 +46,9 @@ var initControl = (function() {
 
 
         if (y < -100) {
-            $('.placehold').css({ position: 'fixed', clip: 'rect(0, 320px, 100px, 0)', 'z-index': 1 }).prependTo('body');
-            $('.goddsListWrapper').css('overflow', 'unset');
-            $(this.scroller).css('margin-top', 200);
+            // $('.placehold').css({ position: 'fixed', clip: 'rect(0, 320px, 100px, 0)', 'z-index': 1 }).prependTo('body');
+            // $('.goddsListWrapper').css('overflow', 'unset');
+            // $(this.scroller).css('margin-top', 200);
 
             $(this.scroller).css('transform', 'translate(0,-100px)');
             $('.right').css('transform', 'translate(0,' + (y + 100) + 'px)');
@@ -50,9 +60,9 @@ var initControl = (function() {
 
 
         } else {
-            $('.placehold').css({ position: 'unset', clip: 'unset' }).prependTo($(this.scroller));
-            $('.goddsListWrapper').css('overflow', 'hidden');
-            $(this.scroller).css('margin-top', 0);
+            // $('.placehold').css({ position: 'unset', clip: 'unset' }).prependTo($(this.scroller));
+            // $('.goddsListWrapper').css('overflow', 'hidden');
+            // $(this.scroller).css('margin-top', 0);
 
             $(this.scroller).css('transfrom', 'translate(0,0)');
             $('.right').css('transform', 'translate(0,' + rightSCroll + 'px)');
@@ -63,6 +73,9 @@ var initControl = (function() {
             // console.log('进来了·····························进来了·····························进来了·····························')
             $(this.scroller).css('transform', 'translate(0,' + my.newY + 'px)');
         }
+
+        console.log(y,'==========================================右边')
+
     }
 
 
@@ -104,8 +117,7 @@ var initControl = (function() {
                 my.leftChange = false;
             }
         }
-        console.log(my.leftY, my.newY);
-
+        console.log(my.leftY, my.newY, y);
     }
 
 
