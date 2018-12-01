@@ -19,6 +19,7 @@ var initControl = (function() {
     my.oneRightSet = true;
     my.oneLeftSet = true;
     my.rightY = 0;
+    my.hasRightTransform = false;
 
 
     function stopPop(e) {
@@ -39,12 +40,21 @@ var initControl = (function() {
         }
     }
 
-
-
     function mainScrollAnimate() {
         var y = this.y >> 0,
-            rightMoveY = 0;
+            e = window.event || e;
+        rightMoveY = 0;
 
+        if (mainScrollAnimate.caller.arguments[0] === 'beforeScrollStart') {
+            my.pointY = e.pageY;
+        }
+        if (e) {
+            my.leftMoveY = e.pageY - my.pointY;
+        }
+
+
+
+        console.log(y)
         if (mainScrollAnimate.caller.arguments[0] === 'beforeScrollStart') {
             this.options.clickRight = true;
             my.rightY = y;
@@ -54,12 +64,8 @@ var initControl = (function() {
             $(this.scroller).css('transform', 'translate(0,-100px)');
             $('.right').css('transform', 'translate(0,' + (y + 100) + 'px)');
 
-            if (this.directionY > 0) {
 
-            }
-            if (this.directionY < 0) {
 
-            }
 
             if (my.oneRightSet) {
                 my.oneRightSet = false;
@@ -75,6 +81,13 @@ var initControl = (function() {
 
 
         }
+
+        // 左右同步
+        if (my.leftY >= -100 && my.hasRightTransform) {
+            $(this.scroller).css('transform', 'translate(0,' + my.leftY + 'px)');
+        }
+
+
 
         // 下拉左边
         if (!my.leftChange && !this.options.clickRight) {
@@ -117,7 +130,7 @@ var initControl = (function() {
                 my.leftY = my.newY;
             }
             $(my.mainScroll.scroller).css('transform', 'translate(0,' + my.newY + 'px)');
-            
+
             if (!rightSCroll) {
                 my.mainScroll.y = my.newY;
             }
@@ -133,9 +146,13 @@ var initControl = (function() {
             }
             if (this.startY === 0 && this.directionY < 0) {
                 my.leftChange = false;
+                if (my.mainScroll.y < -100) {
+                    my.hasRightTransform = true;
+                }
+
             }
         }
-
+        console.log(my.leftY);
     }
 
 
