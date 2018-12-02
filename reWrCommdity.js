@@ -46,26 +46,14 @@ var initControl = (function() {
         rightMoveY = 0;
 
         if (mainScrollAnimate.caller.arguments[0] === 'beforeScrollStart') {
-            my.pointY = e.pageY;
-        }
-        if (e) {
-            my.leftMoveY = e.pageY - my.pointY;
-        }
-
-
-
-        console.log(y)
-        if (mainScrollAnimate.caller.arguments[0] === 'beforeScrollStart') {
             this.options.clickRight = true;
             my.rightY = y;
+            my.pointY = e.pageY;
         }
 
         if (y < -100) {
             $(this.scroller).css('transform', 'translate(0,-100px)');
             $('.right').css('transform', 'translate(0,' + (y + 100) + 'px)');
-
-
-
 
             if (my.oneRightSet) {
                 my.oneRightSet = false;
@@ -73,38 +61,50 @@ var initControl = (function() {
             }
         } else {
             $(this.scroller).css('transfrom', 'translate(0,' + y + 'px)');
-            // if (my.leftY < y && this.directionY < 0) {
-            //     my.leftY = y;
-            // }else {
-            //     my.leftY = y;
-            // }
-
-
+            $('.right').css('transform', 'translate(0,0)');
+            my.oneRightSet = true;
+            my.leftY = y;
         }
 
-        // 左右同步
+        // 下拉左边后 左右同步...
         if (my.leftY >= -100 && my.hasRightTransform) {
             $(this.scroller).css('transform', 'translate(0,' + my.leftY + 'px)');
+
+            if (e) {
+                my.leftMoveY = e.pageY - my.pointY;
+
+                // 向上拉动 。。。 回拉...
+                if (my.leftMoveY < 0) {
+
+                    my.newY = my.leftY + my.leftMoveY;
+                    if (my.newY <= -100) {
+                        my.leftY = my.newY = -100;
+                        my.hasRightTransform = false;
+                    }
+
+                    if (my.rightY) {
+                        this.y = my.rightY;
+                    }
+
+                    $(this.scroller).css('transform', 'translate(0,' + my.newY + 'px)');
+
+                    if (e && e.type === 'pointerup') {
+                        my.leftY = my.newY;
+                    }
+                } else {
+                    if (y > my.leftY) {
+                        my.leftY = y;
+                    }
+                }
+            }
         }
-
-
 
         // 下拉左边
         if (!my.leftChange && !this.options.clickRight) {
             $(this.scroller).css('transform', 'translate(0,' + my.newY + 'px)');
         }
-        // 下拉右边
-        // if (my.leftY > -100) {
-        //     $(this.scroller).css('transform', 'translate(0,' + my.leftY + 'px)');
-        // console.log(my.leftY,'=====================================')
 
-        //     // if (this.directionY > 0 && this.options.clickRight) {
-        //     //     rightMoveY = y - my.rightY;
-        //     //     my.leftY = my.newY = rightMoveY;
 
-        //     //     console.log(rightMoveY)
-        //     // }
-        // }
     }
 
 
@@ -131,7 +131,7 @@ var initControl = (function() {
             }
             $(my.mainScroll.scroller).css('transform', 'translate(0,' + my.newY + 'px)');
 
-            if (!rightSCroll) {
+            if (!my.rightY) {
                 my.mainScroll.y = my.newY;
             }
         }
@@ -149,7 +149,6 @@ var initControl = (function() {
                 if (my.mainScroll.y < -100) {
                     my.hasRightTransform = true;
                 }
-
             }
         }
         console.log(my.leftY);
