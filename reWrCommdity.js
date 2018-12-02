@@ -43,68 +43,34 @@ var initControl = (function() {
     function mainScrollAnimate() {
         var y = this.y >> 0,
             e = window.event || e;
-        rightMoveY = 0;
+        if (!this.options.clickRight) {
+            my.rightScrollY = y;
+        }
 
+console.log(y)
         if (mainScrollAnimate.caller.arguments[0] === 'beforeScrollStart') {
             this.options.clickRight = true;
-            my.rightY = y;
-            my.pointY = e.pageY;
+            if (my.subScroll.moved) {
+                my.subScroll.options.fixed = true;    
+            }
         }
 
         if (y < -100) {
             $(this.scroller).css('transform', 'translate(0,-100px)');
             $('.right').css('transform', 'translate(0,' + (y + 100) + 'px)');
 
-            if (my.oneRightSet) {
-                my.oneRightSet = false;
-                my.leftY = -100;
-            }
+            my.leftY = -100;
         } else {
             $(this.scroller).css('transfrom', 'translate(0,' + y + 'px)');
             $('.right').css('transform', 'translate(0,0)');
-            my.oneRightSet = true;
             my.leftY = y;
         }
 
-        // 下拉左边后 左右同步...
-        if (my.leftY >= -100 && my.hasRightTransform) {
-            $(this.scroller).css('transform', 'translate(0,' + my.leftY + 'px)');
 
-            if (e) {
-                my.leftMoveY = e.pageY - my.pointY;
-
-                // 向上拉动 。。。 回拉...
-                if (my.leftMoveY < 0) {
-
-                    my.newY = my.leftY + my.leftMoveY;
-                    if (my.newY <= -100) {
-                        my.leftY = my.newY = -100;
-                        my.hasRightTransform = false;
-                    }
-
-                    if (my.rightY) {
-                        this.y = my.rightY;
-                    }
-
-                    $(this.scroller).css('transform', 'translate(0,' + my.newY + 'px)');
-
-                    if (e && e.type === 'pointerup') {
-                        my.leftY = my.newY;
-                    }
-                } else {
-                    if (y > my.leftY) {
-                        my.leftY = y;
-                    }
-                }
-            }
+        if (mainScrollAnimate.caller.arguments[0] === 'scrollEnd') {
+            this.moved = false;
         }
-
-        // 下拉左边
-        if (!my.leftChange && !this.options.clickRight) {
-            $(this.scroller).css('transform', 'translate(0,' + my.newY + 'px)');
-        }
-
-
+ 
     }
 
 
@@ -114,11 +80,18 @@ var initControl = (function() {
     function subScrollAnimate() {
         var y = this.y >> 0,
             e = window.event || e;
-
+        if (!this.options.clickRight) {
+            my.leftScrollY = y;
+        }
+ 
 
         if (subScrollAnimate.caller.arguments[0] === 'beforeScrollStart') {
             my.pointY = e.pageY; // 初始值
             my.mainScroll.options.clickRight = false;
+            if (my.mainScroll.moved) {
+                my.mainScroll.options.fixed = true;    
+            }
+            
         }
 
         if (e && !my.leftChange) {
@@ -130,11 +103,10 @@ var initControl = (function() {
                 my.leftY = my.newY;
             }
             $(my.mainScroll.scroller).css('transform', 'translate(0,' + my.newY + 'px)');
-
-            if (!my.rightY) {
-                my.mainScroll.y = my.newY;
+            if (my.mainScroll.y >= -100) {
+                my.mainScroll.y = my.newY;    
             }
-        }
+         }
 
 
         if (my.leftY > -100) {
@@ -151,7 +123,10 @@ var initControl = (function() {
                 }
             }
         }
-        console.log(my.leftY);
+        
+        if (subScrollAnimate.caller.arguments[0] === 'scrollEnd') {
+            this.moved = false;
+        }
     }
 
 
