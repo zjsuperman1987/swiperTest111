@@ -20,6 +20,8 @@ var initControl = (function() {
     my.oneLeftSet = true;
     my.rightY = 0;
     my.hasRightTransform = false;
+    my.isRightScrollEnd = false;
+
 
 
     function stopPop(e) {
@@ -43,34 +45,95 @@ var initControl = (function() {
     function mainScrollAnimate() {
         var y = this.y >> 0,
             e = window.event || e;
+
         if (!this.options.clickRight) {
             my.rightScrollY = y;
         }
 
-console.log(y)
+        console.log(y, my.realRightY, mainScrollAnimate.caller.arguments[0], my.leftY)
+
         if (mainScrollAnimate.caller.arguments[0] === 'beforeScrollStart') {
             this.options.clickRight = true;
-            if (my.subScroll.moved) {
-                my.subScroll.options.fixed = true;    
+            my.pointY = e.pageY;
+
+            if ($('.right').css('transform') !== 'none') {
+                my.rightScrollTransform = parseInt($('.right').css('transform').match(/-?\d+/g)[5], 10);
             }
+            if (my.subScroll.moved) {
+                my.subScroll.options.fixed = true;
+            }
+            my.ScrollY = my.leftY;
         }
 
+
+
         if (y < -100) {
+
             $(this.scroller).css('transform', 'translate(0,-100px)');
             $('.right').css('transform', 'translate(0,' + (y + 100) + 'px)');
 
-            my.leftY = -100;
+            // 直接拉过顶部
+            if (!my.hasRightTransform && parseInt($(this.scroller).css('transform').match(/-?\d+/g)[5]) === -100) {
+                my.leftY = -100;
+            }
+            // 左边下滑
+            if (my.hasRightTransform) {
+                $(this.scroller).css('transform', 'translate(0,' + my.leftY + 'px)');
+                if (e) {
+                    my.rightMoveY = e.pageY - my.pointY;
+                    // 向上拉动
+                    if (my.rightMoveY < 0) {
+                        this._translate(0, my.rightScrollTransform);
+                        my.ScrollY = (my.leftY + my.rightMoveY) <= -100 ? -100 : (my.leftY + my.rightMoveY);
+                        if (my.ScrollY == -100) {
+                            my.hasRightTransform = false;
+                        }
+                    }
+                    console.log(my.ScrollY, 'jlsdjfl=======================数量交了手机费老师', my.rightScrollTransform)
+                    $(this.scroller).css('transform', 'translate(0,' + my.ScrollY + 'px)');
+                }
+            }
         } else {
-            $(this.scroller).css('transfrom', 'translate(0,' + y + 'px)');
-            $('.right').css('transform', 'translate(0,0)');
-            my.leftY = y;
+
+            if (my.hasRightTransform) {
+                if (my.oneRightSet) {
+                    my.oneRightSet = false;
+                    my.initY = y;
+                    $(this.scroller).css('transform', 'translate(0,' + my.leftY + 'px)');
+                    return;
+                }
+                my.rightMoveY = y - my.initY;
+                my.realRightY = (my.leftY + my.rightMoveY) >= 0 ? 0 : (my.leftY + my.rightMoveY);
+                $(this.scroller).css('transform', 'translate(0,' + my.realRightY + 'px)');
+
+                if (mainScrollAnimate.caller.arguments[0] === 'scrollEnd') {
+                    y = this.y = my.leftY = my.realRightY;
+                    my.hasRightTransform = false;
+                    my.isRightScrollEnd = true;
+                }
+                $('.right').css('transform', 'translate(0,0)');
+            } else {
+                if (mainScrollAnimate.caller.arguments[0] === 'scrollCancel' || mainScrollAnimate.caller.arguments[0] === 'scroll') {
+                    if (my.isRightScrollEnd) {
+                        y = this.y = my.leftY = my.realRightY;
+                        my.isRightScrollEnd = false;
+                    }
+                }
+                if (y === 0) {
+                    y = this.y = my.leftY = my.realRightY = 0;
+                }
+
+                $(this.scroller).css('transform', 'translate(0,' + y + 'px)');
+                $('.right').css('transform', 'translate(0,0)');
+            }
+
         }
+
 
 
         if (mainScrollAnimate.caller.arguments[0] === 'scrollEnd') {
             this.moved = false;
         }
- 
     }
 
 
@@ -83,15 +146,15 @@ console.log(y)
         if (!this.options.clickRight) {
             my.leftScrollY = y;
         }
- 
+
 
         if (subScrollAnimate.caller.arguments[0] === 'beforeScrollStart') {
             my.pointY = e.pageY; // 初始值
             my.mainScroll.options.clickRight = false;
             if (my.mainScroll.moved) {
-                my.mainScroll.options.fixed = true;    
+                my.mainScroll.options.fixed = true;
             }
-            
+
         }
 
         if (e && !my.leftChange) {
@@ -104,10 +167,10 @@ console.log(y)
             }
             $(my.mainScroll.scroller).css('transform', 'translate(0,' + my.newY + 'px)');
             if (my.mainScroll.y >= -100) {
-                my.mainScroll.y = my.newY;    
+                my.mainScroll.y = my.newY;
             }
-         }
-
+        }
+        console.log(my.leftY)
 
         if (my.leftY > -100) {
             this._translate(0, 0);
@@ -123,7 +186,7 @@ console.log(y)
                 }
             }
         }
-        
+
         if (subScrollAnimate.caller.arguments[0] === 'scrollEnd') {
             this.moved = false;
         }

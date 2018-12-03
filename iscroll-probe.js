@@ -1691,7 +1691,7 @@
                 newY = (destY - startY) * easing + startY;
 
                 that._translate(newX, newY);
-
+ 
                 /*自定义*/
                 if (that.options.subMargin) {
                     var subMargin = that.options.subMargin;
@@ -1699,7 +1699,6 @@
 
                         that._translate(0, that.options.subMargin);
                         that._execEvent('scrollEnd');
-                        console.log('_animate')
                         return;
 
                     }
