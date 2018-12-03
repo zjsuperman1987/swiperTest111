@@ -89,7 +89,6 @@ var initControl = (function() {
                             my.hasRightTransform = false;
                         }
                     }
-                    console.log(my.ScrollY, 'jlsdjfl=======================数量交了手机费老师', my.rightScrollTransform)
                     $(this.scroller).css('transform', 'translate(0,' + my.ScrollY + 'px)');
                 }
             }
