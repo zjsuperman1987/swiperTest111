@@ -83,11 +83,16 @@ var initControl = (function() {
                     my.rightMoveY = e.pageY - my.pointY;
                     // 向上拉动
                     if (my.rightMoveY < 0) {
-                        this._translate(0, my.rightScrollTransform);
+                        $('.right').css('transform','translate(0,' + my.rightScrollTransform  + 'px)');
+                        this.y = my.rightScrollTransform - 100;
+
                         my.ScrollY = (my.leftY + my.rightMoveY) <= -100 ? -100 : (my.leftY + my.rightMoveY);
                         if (my.ScrollY == -100) {
                             my.hasRightTransform = false;
                         }
+                    }
+                    if (e.type === 'pointerup') {
+                        my.leftY = my.ScrollY;
                     }
                     $(this.scroller).css('transform', 'translate(0,' + my.ScrollY + 'px)');
                 }
