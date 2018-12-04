@@ -30,17 +30,6 @@ var initControl = (function() {
     }
 
 
-    function sythesizeAnimate(y) {
-        if (y < -100) {
-            $('.placehold').css({ position: 'fixed', clip: 'rect(0, 320px, 100px, 0)', 'z-index': 1 }).prependTo('body');
-            $('.goddsListWrapper').css('overflow', 'unset');
-            $(this.scroller).css('margin-top', 200);
-        } else {
-            $('.placehold').css({ position: 'unset', clip: 'unset' }).prependTo($(this.scroller));
-            $('.goddsListWrapper').css('overflow', 'hidden');
-            $(this.scroller).css('margin-top', 0);
-        }
-    }
 
     function mainScrollAnimate() {
         var y = this.y >> 0,
