@@ -84,16 +84,21 @@ var initControl = (function() {
                     // 向上拉动
                     if (my.rightMoveY < 0) {
                         $('.right').css('transform','translate(0,' + my.rightScrollTransform  + 'px)');
-                        this.y = my.rightScrollTransform - 100;
+                         this.y = my.rightScrollTransform - 100;
 
                         my.ScrollY = (my.leftY + my.rightMoveY) <= -100 ? -100 : (my.leftY + my.rightMoveY);
                         if (my.ScrollY == -100) {
                             my.hasRightTransform = false;
                         }
+                        if (mainScrollAnimate.caller.arguments[0] === 'scrollEnd') {
+                            my.leftY = my.ScrollY
+                        }
                     }
+
                     if (e.type === 'pointerup') {
                         my.leftY = my.ScrollY;
                     }
+ 
                     $(this.scroller).css('transform', 'translate(0,' + my.ScrollY + 'px)');
                 }
             }
@@ -131,12 +136,12 @@ var initControl = (function() {
                 $('.right').css('transform', 'translate(0,0)');
             }
 
+
         }
-
-
 
         if (mainScrollAnimate.caller.arguments[0] === 'scrollEnd') {
             this.moved = false;
+            my.leftChange = false;
         }
     }
 
@@ -147,10 +152,6 @@ var initControl = (function() {
     function subScrollAnimate() {
         var y = this.y >> 0,
             e = window.event || e;
-        if (!this.options.clickRight) {
-            my.leftScrollY = y;
-        }
-
 
         if (subScrollAnimate.caller.arguments[0] === 'beforeScrollStart') {
             my.pointY = e.pageY; // 初始值
@@ -158,7 +159,7 @@ var initControl = (function() {
             if (my.mainScroll.moved) {
                 my.mainScroll.options.fixed = true;
             }
-
+            my.leftScrollY = y;
         }
 
         if (e && !my.leftChange) {
@@ -174,10 +175,14 @@ var initControl = (function() {
                 my.mainScroll.y = my.newY;
             }
         }
-        console.log(my.leftY)
+        console.log(my.leftY, my.leftScrollY)
 
         if (my.leftY > -100) {
-            this._translate(0, 0);
+            if (!my.leftScrollY) {
+                this._translate(0, 0);
+            }else {
+                this._translate(0, my.leftScrollY);
+            }
         } else {
             my.leftChange = true;
             if (my.oneLeftSet) {
