@@ -31,8 +31,9 @@
     <title>会员中心</title>
     <style type="text/css">
     * {
-    	font-size: 12px;
+        font-size: 12px;
     }
+
     header {
         width: 100%;
         height: 1rem;
@@ -112,127 +113,168 @@
         text-align: center;
         color: white;
     }
-    main{
-    	position: relative;
-    	width: 100%;
-    	height: 4.68rem;
+
+    main {
+        position: relative;
+        width: 100%;
+        height: 4.68rem;
     }
-    .brandIcon{
-    	position: absolute;
-    	left: 50%;
-    	top: -.4rem;
-    	margin-left: -.3rem;
-    	width: .6rem;
-    	height: .6rem;
-    	background: blue;
+
+    .brandIcon {
+        position: absolute;
+        left: 50%;
+        top: -.4rem;
+        margin-left: -.3rem;
+        width: .6rem;
+        height: .6rem;
+        background: blue;
     }
+
     .favoriteIcon {
-    	position: absolute;
-    	right: .1rem;
-    	top: -.15rem;
-    	width: .3rem;
-    	height: .3rem;
-    	background: blue;
-    	border-radius: 100%;
+        position: absolute;
+        right: .1rem;
+        top: -.15rem;
+        width: .3rem;
+        height: .3rem;
+        background: blue;
+        border-radius: 100%;
     }
-    .first-wrapper{
-    	width: 100%;
-    	height: 100%;
-    	background: #eee;
+
+    /*底层*/
+    .first-wrapper {
+        width: 100%;
+        height: 100%;
+        background: #eee;
     }
-    .fw-brandName{
-    	padding-top: .3rem;
-    	padding-bottom: .1rem;
-    	text-align: center;
+
+    .fw-brandName {
+        padding-top: .3rem;
+        padding-bottom: .1rem;
+        text-align: center;
     }
+
     .fw-brandName span {
-    	font-size: 16px;
-    	font-weight: bold;
+        font-size: 16px;
+        font-weight: bold;
     }
-    .fw-evaluate{
-    	text-align: center;
-    	padding-bottom: .1rem;
+
+    .fw-evaluate {
+        text-align: center;
+        padding-bottom: .1rem;
     }
+
     .fw-evaluate span {
-    	margin-right: .05rem;
+        margin-right: .05rem;
     }
+
     .fw-threshold {
-    	text-align: center;
-    	font-size: 0;
-    	letter-spacing: -3px;
+        text-align: center;
+        font-size: 0;
+        letter-spacing: -3px;
     }
+
     .fw-threshold span {
-    	background: gold;
-    	letter-spacing: 0;
-    	font-size: 12px;
-    	padding: .02rem .05rem;
-    	color: #793301;
+        background: gold;
+        letter-spacing: 0;
+        font-size: 12px;
+        padding: .02rem .05rem;
+        color: #793301;
     }
+
     .fw-threshold>i {
-    	display: inline-block;
-    	width: 12px;
-    	height: 12px;
-    	vertical-align: middle;
-    	margin-top: -.02rem;
-    	margin-right: .03rem;
-    	background: #793301;
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        vertical-align: middle;
+        margin-top: -.02rem;
+        margin-right: .03rem;
+        background: #793301;
     }
+
     .fw-threshold span:nth-child(2) {
-    	padding-right: .15rem;
-    	border-top-right-radius: 5px;
-    	border-bottom-right-radius: 5px;
+        padding-right: .15rem;
+        border-top-right-radius: 5px;
+        border-bottom-right-radius: 5px;
     }
+
     .fw-threshold span:nth-child(3) {
-    	border-top-left-radius: 5px;
-    	border-bottom-left-radius: 5px;
+        border-top-left-radius: 5px;
+        border-bottom-left-radius: 5px;
     }
-    .fw-fullReduce-announcement{
-    	display: none;
-    	padding: 10px 20px 10px 20px;
+
+    .fw-fullReduce-announcement {
+        display: none;
+        padding: 10px 20px 10px 20px;
     }
-    .fw-fullReduce, .fw-announcement{
-    	margin-bottom: 5px;
+
+    .fw-fullReduce,
+    .fw-announcement {
+        margin-bottom: 5px;
     }
-    .fw-fullReduce i{
-    	background: pink;
-    	border: 1px solid red;
+
+    .fw-fullReduce i {
+        background: pink;
+        border: 1px solid red;
     }
-    .fw-fullReduce-counpon{
-    	float: right;
+
+    .fw-fullReduce-counpon {
+        float: right;
     }
-    .fw-fullReduce-counpon i{
-    	width: 12px;
-    	height: 12px;
-    	display: inline-block;
-    	margin-top: -1px;
-    	margin-left: 5px;
-    	vertical-align: middle;
+
+    .fw-fullReduce-counpon i {
+        width: 12px;
+        height: 12px;
+        display: inline-block;
+        margin-top: -1px;
+        margin-left: 5px;
+        vertical-align: middle;
     }
-    .fw-discount-wrapper{
-    	width: 100%;
-    	height: 2.98rem;
-    	padding: 0 10px;
-    	background: blue;
+
+    .fw-discount-wrapper {
+        width: 100%;
+        height: 2.98rem;
+        padding: 0 10px;
+        overflow: scroll;
     }
-    .fw-discount-title{
-    	padding-top: 20px;
-    	padding-bottom: 10px;
+
+    .fw-discount-title {
+        padding-top: 20px;
+        padding-bottom: 10px;
     }
-    .fw-discount-title span{
-    	font-size: 14px;
-    	font-weight: bold;	
+
+    .fw-discount-title span {
+        font-size: 14px;
+        font-weight: bold;
     }
+
     .fw-discount-title i {
-    	float: right;
-    	width: 12px;
-    	height: 12px;
-    	background: red;
+        float: right;
+        width: 12px;
+        height: 12px;
+        background: red;
     }
+
+    .fw-discount-wrapper p {
+        margin-bottom: 10 px;
+    }
+
+    .fw-discount-wrapper p i {
+        background: pink;
+        padding: 0 2px;
+        border: 1px solid pink;
+        border-radius: 2px;
+    }
+
     .fw-discount-bottom {
-    	width: 100%;
-    	height: .6rem;
-    	background: gold;
+        width: 100%;
+        height: .6rem;
+        line-height: .6rem;
+        text-align: center;
+        color: white;
+        background: gold;
     }
+
+    /*中间层*/
     </style>
 </head>
 
@@ -262,48 +304,98 @@
         </div>
     </header>
     <main>
-    	<div class='brandIcon'></div>
-    	<div class='favoriteIcon'></div>
-    	<!-- 底层 -->
-    	<div class='first-wrapper'>
-    		<div class='fw-brandName'>
-    			<span>不二干劳麻辣烫</span>
-    		</div>
-    		<div class='fw-evaluate'>
-    			评价<span>4.5</span>
-    			月售<span>880</span>
-    			蜂鸟快送约<span>38分钟</span>
-    		</div>
-    		<div class='fw-threshold'>
-				<span>￥8</span>    			
-				<span><i></i>无门槛</span>    			
-				<span>领取</span>    			
-    		</div>
-    		<div class='fw-fullReduce-announcement'>
-    			 <div class='fw-fullReduce'>
-    			 	<i>满减</i>
-    			 	<span>满25减15,</span>
-    			 	<span>满55减21,</span>
-    			 	<span>满85减27</span>
-    			 	<div class='fw-fullReduce-counpon'>
-    			 		<span>8个优惠<i></i></span>
-    			 	</div>
-    			 </div>
-    			 <div class='fw-announcement'>
-    			 	<span>公告：麻辣暖心，烫煮幸福，感谢你支持干捞麻辣烫</span>
-    			 </div>
-    		</div>
-    		<div class='fw-discount'>
-				<div class='fw-discount-wrapper'>
-					<div class='fw-discount-title'>
-						<span>优惠</span>
-						<i></i>
-					</div>
-					<p></p>
-				</div>
-				<div class='fw-discount-bottom'></div>
-    		</div>
-    	</div>
+        <div class='brandIcon'></div>
+        <div class='favoriteIcon'></div>
+        <!-- 底层 -->
+        <div class='first-wrapper'>
+            <div class='fw-brandName'>
+                <span>不二干劳麻辣烫</span>
+            </div>
+            <div class='fw-evaluate'>
+                评价<span>4.5</span>
+                月售<span>880</span>
+                蜂鸟快送约<span>38分钟</span>
+            </div>
+            <div class='fw-threshold'>
+                <span>￥8</span>
+                <span><i></i>无门槛</span>
+                <span>领取</span>
+            </div>
+            <div class='fw-fullReduce-announcement'>
+                <div class='fw-fullReduce'>
+                    <i>满减</i>
+                    <span>满25减15,</span>
+                    <span>满55减21,</span>
+                    <span>满85减27</span>
+                    <div class='fw-fullReduce-counpon'>
+                        <span>8个优惠<i></i></span>
+                    </div>
+                </div>
+                <div class='fw-announcement'>
+                    <span>公告：麻辣暖心，烫煮幸福，感谢你支持干捞麻辣烫</span>
+                </div>
+            </div>
+            <div class='fw-discount'>
+                <div class='fw-discount-wrapper'>
+                    <div class='fw-discount-title'>
+                        <span>优惠</span>
+                        <i></i>
+                    </div>
+                    <p>
+                        <i>满减</i>
+                        <span>满25减15,满55减21,满85减27</span>
+                    </p>
+                    <p>
+                        <i>会员</i>
+                        <span>超级会员领8元无门槛红包</span>
+                    </p>
+                    <p>
+                        <i>特价</i>
+                        <span>特价商品1元起</span>
+                    </p>
+                    <p>
+                        <i>首单</i>
+                        <span>新用户下单立减16元(不与其他活动同享)</span>
+                    </p>
+                    <p>
+                        <i>新客</i>
+                        <span>本店新用户立减1元</span>
+                    </p>
+                    <p>
+                        <i>满赠</i>
+                        <span>满58元赠送酸梅汤或泰式奶茶1份</span>
+                    </p>
+                    <p>
+                        <i>折扣</i>
+                        <span>折扣商品4折起</span>
+                    </p>
+                    <p>
+                        <i>红包</i>
+                        <span>实付15元返2元店铺专享红包</span>
+                    </p>
+                    <div class='fw-discount-title'>
+                        <span>服务</span>
+                    </div>
+                    <p>
+                        <i>拒单赔</i>
+                        <span>商家原因导致订单取消，赔付代金券</span>
+                    </p>
+                    <p>
+                        <i>食安保</i>
+                        <span>该商户食品安全已有国泰产险承担，食品安全有保障</span>
+                    </p>
+                    <div class='fw-discount-title'>
+                        <span>公告</span>
+                    </div>
+                    <p>麻辣暖心，烫煮幸福，感谢你支持干捞麻辣烫 (巴蜀丽景店), 正宗的牛油火锅底，纯手工炒制15小时，精选上等食材，不含任何添加剂，实体店位于渝北区康园路28号，店内环境优雅，干净卫生，如您收到餐后有任何问题，可随时与店铺售后联系，我们将及时为您处理</p>
+                </div>
+                <div class='fw-discount-bottom'>
+                    ︿
+                </div>
+            </div>
+        </div>
+        <!-- 中间层 -->
+        <div class='second-wrapper'></div>
     </main>
 </body>
 
