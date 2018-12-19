@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- meta使用viewport以确保页面可自由缩放 -->
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <!-- 引入 底层css 样式 -->
+    <link type="text/css" rel="stylesheet" href="/Mobile/WeChat/_css/common.css" />
+    <link type="text/css" rel="stylesheet" href="/Mobile/WeChat/_css/CommonPartially.css" />
+    <!--字体样式-->
+    <!--<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css"
+        integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp"
+        crossorigin="anonymous">-->
+    <!--轮播swiper.css-->
+    <link rel="stylesheet" href="swiper.css">
+    <!--引入pullToRefresh.css-->
+    <link rel="stylesheet" type="text/css" href="reset.css" />
+    <!-- 引入 底层Js 库-->
+    <script type="text/javascript" language="javascript" src="jquery.js"></script>
+    <!--<script type="text/javascript" language="javascript" src="https://cdn.bootcss.com/zepto/1.0rc1/zepto.min.js"></script>-->
+    <script type="text/javascript" language="javascript" src="common.js"></script>
+    <!-- 引入Swiper轮播插件-->
+    <script src="swiper.js"></script>
+    <!--引入IScroll.js-->
+    <script src="iscroll-probe.js"></script>
+    <!--引入自身js-->
+    <script type="text/javascript" language="javascript" src="lastCommdity.js"></script>
+    <title>会员中心</title>
+    <style type="text/css">
+    * {
+    	font-size: 12px;
+    }
+    header {
+        width: 100%;
+        height: 1rem;
+        background: red;
+    }
+
+    .searchWrapper {
+        width: 100%;
+        height: .5rem;
+        padding: .1rem;
+        background: gold;
+    }
+
+    .swLeft {
+        float: left;
+        width: 30px;
+        height: 30px;
+        background: red;
+    }
+
+    .swRight {
+        float: right;
+        width: .3rem;
+        height: .3rem;
+        background: red;
+    }
+
+    .swMiddle {
+        padding: 0 .3rem;
+        height: .3rem;
+    }
+
+    .searchBar {
+        position: relative;
+        width: 90%;
+        height: 100%;
+        line-height: .3rem;
+        margin: 0 5%;
+        border-radius: .15rem;
+        background: #e8e3e4;
+        text-align: center;
+        font-size: .12rem;
+        color: gray;
+    }
+
+    .searchBar>svg {
+        vertical-align: middle;
+        height: .12rem;
+        fill: gray;
+        margin-top: -.01rem;
+    }
+
+    .sbIcon {
+        position: absolute;
+        right: 0px;
+        width: .3rem;
+        height: .3rem;
+    }
+
+    .sbIcon:nth-child(2) {
+        right: .3rem;
+    }
+
+    .sbIcon-sou svg {
+        fill: white;
+        height: .2rem;
+        margin: .05rem;
+    }
+
+    .sbIcon-spellWrapper {
+        width: .2rem;
+        height: .2rem;
+        line-height: .2rem;
+        margin: .05rem;
+        border: 1px solid white;
+        border-radius: 100%;
+        text-align: center;
+        color: white;
+    }
+    main{
+    	position: relative;
+    	width: 100%;
+    	height: 4.68rem;
+    }
+    .brandIcon{
+    	position: absolute;
+    	left: 50%;
+    	top: -.4rem;
+    	margin-left: -.3rem;
+    	width: .6rem;
+    	height: .6rem;
+    	background: blue;
+    }
+    .favoriteIcon {
+    	position: absolute;
+    	right: .1rem;
+    	top: -.15rem;
+    	width: .3rem;
+    	height: .3rem;
+    	background: blue;
+    	border-radius: 100%;
+    }
+    .first-wrapper{
+    	width: 100%;
+    	height: 100%;
+    	background: #eee;
+    }
+    .fw-brandName{
+    	padding-top: .3rem;
+    	padding-bottom: .1rem;
+    	text-align: center;
+    }
+    .fw-brandName span {
+    	font-size: 16px;
+    	font-weight: bold;
+    }
+    .fw-evaluate{
+    	text-align: center;
+    	padding-bottom: .1rem;
+    }
+    .fw-evaluate span {
+    	margin-right: .05rem;
+    }
+    .fw-threshold {
+    	text-align: center;
+    	font-size: 0;
+    	letter-spacing: -3px;
+    }
+    .fw-threshold span {
+    	background: gold;
+    	letter-spacing: 0;
+    	font-size: 12px;
+    	padding: .02rem .05rem;
+    	color: #793301;
+    }
+    .fw-threshold>i {
+    	display: inline-block;
+    	width: 12px;
+    	height: 12px;
+    	vertical-align: middle;
+    	margin-top: -.02rem;
+    	margin-right: .03rem;
+    	background: #793301;
+    }
+    .fw-threshold span:nth-child(2) {
+    	padding-right: .15rem;
+    	border-top-right-radius: 5px;
+    	border-bottom-right-radius: 5px;
+    }
+    .fw-threshold span:nth-child(3) {
+    	border-top-left-radius: 5px;
+    	border-bottom-left-radius: 5px;
+    }
+    .fw-fullReduce-announcement{
+    	display: none;
+    	padding: 10px 20px 10px 20px;
+    }
+    .fw-fullReduce, .fw-announcement{
+    	margin-bottom: 5px;
+    }
+    .fw-fullReduce i{
+    	background: pink;
+    	border: 1px solid red;
+    }
+    .fw-fullReduce-counpon{
+    	float: right;
+    }
+    .fw-fullReduce-counpon i{
+    	width: 12px;
+    	height: 12px;
+    	display: inline-block;
+    	margin-top: -1px;
+    	margin-left: 5px;
+    	vertical-align: middle;
+    }
+    .fw-discount-wrapper{
+    	width: 100%;
+    	height: 2.98rem;
+    	padding: 0 10px;
+    	background: blue;
+    }
+    .fw-discount-title{
+    	padding-top: 20px;
+    	padding-bottom: 10px;
+    }
+    .fw-discount-title span{
+    	font-size: 14px;
+    	font-weight: bold;	
+    }
+    .fw-discount-title i {
+    	float: right;
+    	width: 12px;
+    	height: 12px;
+    	background: red;
+    }
+    .fw-discount-bottom {
+    	width: 100%;
+    	height: .6rem;
+    	background: gold;
+    }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class='searchWrapper'>
+            <div class='swLeft'></div>
+            <div class='swRight'></div>
+            <div class='swMiddle'>
+                <div class='searchBar'>
+                    <div class='sbIcon'>
+                        <div class='sbIcon-spellWrapper'>
+                            <span>拼</span>
+                        </div>
+                    </div>
+                    <div class='sbIcon sbIcon-sou'>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 16 16">
+                            <path fill-opacity="1" d="M14.778 13.732a.739.739 0 1 1-1.056 1.036l-2.515-2.565a.864.864 0 0 1-.01-1.206 4.894 4.894 0 0 0 1.357-3.651c-.126-2.492-2.156-4.52-4.648-4.647a4.911 4.911 0 0 0-5.16 5.163c.126 2.475 2.13 4.496 4.605 4.642.451.026.896-.008 1.326-.1a.739.739 0 0 1 .308 1.446c-.56.12-1.137.164-1.72.13-3.227-.19-5.83-2.815-5.995-6.042a6.39 6.39 0 0 1 6.71-6.715c3.25.165 5.884 2.8 6.05 6.048a6.37 6.37 0 0 1-1.374 4.3l2.12 2.161z"></path>
+                        </svg>
+                    </div>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 16 16">
+                        <path fill-opacity="1" d="M14.778 13.732a.739.739 0 1 1-1.056 1.036l-2.515-2.565a.864.864 0 0 1-.01-1.206 4.894 4.894 0 0 0 1.357-3.651c-.126-2.492-2.156-4.52-4.648-4.647a4.911 4.911 0 0 0-5.16 5.163c.126 2.475 2.13 4.496 4.605 4.642.451.026.896-.008 1.326-.1a.739.739 0 0 1 .308 1.446c-.56.12-1.137.164-1.72.13-3.227-.19-5.83-2.815-5.995-6.042a6.39 6.39 0 0 1 6.71-6.715c3.25.165 5.884 2.8 6.05 6.048a6.37 6.37 0 0 1-1.374 4.3l2.12 2.161z"></path>
+                    </svg>
+                    <span>想吃什么搜一搜</span>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main>
+    	<div class='brandIcon'></div>
+    	<div class='favoriteIcon'></div>
+    	<!-- 底层 -->
+    	<div class='first-wrapper'>
+    		<div class='fw-brandName'>
+    			<span>不二干劳麻辣烫</span>
+    		</div>
+    		<div class='fw-evaluate'>
+    			评价<span>4.5</span>
+    			月售<span>880</span>
+    			蜂鸟快送约<span>38分钟</span>
+    		</div>
+    		<div class='fw-threshold'>
+				<span>￥8</span>    			
+				<span><i></i>无门槛</span>    			
+				<span>领取</span>    			
+    		</div>
+    		<div class='fw-fullReduce-announcement'>
+    			 <div class='fw-fullReduce'>
+    			 	<i>满减</i>
+    			 	<span>满25减15,</span>
+    			 	<span>满55减21,</span>
+    			 	<span>满85减27</span>
+    			 	<div class='fw-fullReduce-counpon'>
+    			 		<span>8个优惠<i></i></span>
+    			 	</div>
+    			 </div>
+    			 <div class='fw-announcement'>
+    			 	<span>公告：麻辣暖心，烫煮幸福，感谢你支持干捞麻辣烫</span>
+    			 </div>
+    		</div>
+    		<div class='fw-discount'>
+				<div class='fw-discount-wrapper'>
+					<div class='fw-discount-title'>
+						<span>优惠</span>
+						<i></i>
+					</div>
+					<p></p>
+				</div>
+				<div class='fw-discount-bottom'></div>
+    		</div>
+    	</div>
+    </main>
+</body>
+
+</html>
